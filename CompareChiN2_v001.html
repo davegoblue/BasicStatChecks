@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Background and Synopsis</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Background and Synopsis</h2>
+
+<p>I took an online course form University of Amsterdam which presented McNemar&#39;s test in a form different than commonly presented.  Specifically: </p>
+
+<ul>
+<li>Common - (Good - Bad)<sup>2</sup> / (Good + Bad) which is claimed to follow chi-squared df=1<br/></li>
+<li>UvA - (Good - Bad) / sqrt(Good + Bad) which is claimed to follow N(0,1)<br/></li>
+</ul>
+
+<p>The purposes of this analysis are to 1) confirm that if x follows N(0,1) then x<sup>2</sup> follows chi-squared df=1, and 2) assess results from a sample of paired outcomes against each of these tests.  </p>
+
+<p>As expected, the results of the various approaches are found to be substantially the same, provided that the mcnemar.test is run with correct=FALSE and the UvA p-values are converted to reflect their equivalents from running a two-sided test.  </p>
+
+<h2>Analysis</h2>
+
+<p>###<em>Generate CDF for x &gt;= 0 using chisq(x<sup>2,df=1)</sup> and N(0,1)</em>  </p>
+
+<p>Note that for N(0,1) we want to generate the CDF of abs(x) which is to say we need 0 -&gt; 0 and Inf -&gt; 1.  The appropriate calculation for this is 2 * (pnorm(x) - 0.5).  </p>
+
+<pre><code class="r">myChi &lt;- data.frame(x=rep(NA,401),y=rep(NA,401))
+myNorm &lt;- data.frame(x=rep(NA,401),y=rep(NA,401))
+
+for (intCtr in seq(0,400,by=1)) {
+    myNorm[intCtr+1,1] &lt;- intCtr/100
+    myNorm[intCtr+1,2] &lt;- 2 * (pnorm(intCtr/100,mean=0,sd=1) - 0.5)
+
+    myChi[intCtr+1,1] &lt;- intCtr/100
+    myChi[intCtr+1,2] &lt;- pchisq((intCtr/100)^2,df=1)
+}
+</code></pre>
+
+<p>We then plot the results:  </p>
+
+<pre><code class="r">plot(x=myNorm[,1],y=myNorm[,2],type=&quot;l&quot;,col=rgb(1,0,0,0.5),lwd=12,
+     main=&quot;Comparison of chi-squared df=1 and N(0,1)&quot;,xlab=&quot;x-value&quot;,ylab=&quot;CDF&quot;
+     )
+
+lines(x=myChi[,1],y=myChi[,2],col=rgb(0,0,1,1),lwd=4)
+
+legend(&quot;bottomright&quot;,legend=c(&quot;2 * pnorm(x, mean=0, sd=1) - 1&quot;,&quot;pchisq(x^2, df=1)&quot;),
+       col=c(rgb(1,0,0,0.5),rgb(0,0,1,1)),lwd=c(8,4),cex=1.5
+       )
+
+abline(h=1)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-2"/></p>
+
+<p>As expected, the CDF for abs(x) on N(0,1) matches the CDF for x<sup>2</sup> on chi-squared, df=1.  </p>
+
+<h3><em>Compare McNemar Test results</em></h3>
+
+<p>Additionally, we force a pattern to some 2x2 data and assess using 1) McNemar&#39;s test in R, and 2) the UvA formula that follows N(0,1).  </p>
+
+<p>First, generate data with patterns ranging from 5% on-diagonal change to 50% on-diagonal change, crossed with 50% bias towards Bad to 50% bias towards good.  The diagonal will loop by 5% while the bias loops by 10%.</p>
+
+<pre><code class="r">nTrials &lt;- 10 * 11
+storeTestResults &lt;- data.frame(diag=rep(0,nTrials),
+                               good=rep(0,nTrials),
+                               bad=rep(0,nTrials),
+                               mcnRp=rep(0.00,nTrials),
+                               chisqp=rep(0.00,nTrials),
+                               uvAp=rep(0.00,nTrials),
+                               uvAmodp=rep(0.00,nTrials)
+                               )
+
+intCtr &lt;- 0
+
+for (diagCtr in seq(0.05,0.5,by=0.05)) {
+    for (badCtr in seq(-0.5,0.5,by=0.1)) {
+
+        nChange &lt;- round(diagCtr*100,0)
+        nGood &lt;- round(nChange * (1+badCtr)/2 , 0)
+        nBad &lt;- nChange - nGood
+        nPerNull &lt;- round(50 - 0.5*nChange,0)
+
+        intCtr &lt;- intCtr + 1
+
+        myTest &lt;- matrix(data=c(nPerNull,nGood,nBad,nPerNull),nrow=2,byrow=TRUE)
+        uATestStat &lt;- (nGood - nBad) / sqrt(nGood + nBad)
+        chiTestStat &lt;- uATestStat^2
+
+        storeTestResults$diag[intCtr] &lt;- nPerNull
+        storeTestResults$good[intCtr] &lt;- nGood
+        storeTestResults$bad[intCtr] &lt;- nBad
+        storeTestResults$mcnRp[intCtr] &lt;- round(mcnemar.test(myTest,correct=FALSE)$p.value,4)
+        storeTestResults$chisqp[intCtr] &lt;- round(pchisq(chiTestStat,df=1,lower.tail=FALSE),4)
+        storeTestResults$uvAp[intCtr] &lt;- round(pnorm(uATestStat),4)
+        storeTestResults$uvAmodp[intCtr] &lt;- round(1-2*abs(pnorm(uATestStat)-0.5),4)
+    }
+}
+</code></pre>
+
+<p>Lastly, we examine some of the data and relevant summary statistics:  </p>
+
+<pre><code class="r">set.seed(0304160830)
+myRands &lt;- sample(nrow(storeTestResults),size=20,replace=FALSE)
+storeTestResults[myRands[order(myRands)],]
+</code></pre>
+
+<pre><code>##     diag good bad  mcnRp chisqp   uvAp uvAmodp
+## 3     48    2   3 0.6547 0.6547 0.3274  0.6547
+## 16    45    4   6 0.5271 0.5271 0.2635  0.5271
+## 20    45    6   4 0.5271 0.5271 0.7365  0.5271
+## 21    45    7   3 0.2059 0.2059 0.8970  0.2059
+## 23    42    4  11 0.0707 0.0707 0.0354  0.0707
+## 28    42    8   7 0.7963 0.7963 0.6019  0.7963
+## 30    42    9   6 0.4386 0.4386 0.7807  0.4386
+## 31    42   10   5 0.1967 0.1967 0.9016  0.1967
+## 38    40    9  11 0.6547 0.6547 0.3274  0.6547
+## 45    38    6  19 0.0093 0.0093 0.0047  0.0093
+## 50    38   12  13 0.8415 0.8415 0.4207  0.8415
+## 51    38   14  11 0.5485 0.5485 0.7257  0.5485
+## 54    38   18   7 0.0278 0.0278 0.9861  0.0278
+## 64    35   20  10 0.0679 0.0679 0.9661  0.0679
+## 79    30   12  28 0.0114 0.0114 0.0057  0.0114
+## 81    30   16  24 0.2059 0.2059 0.1030  0.2059
+## 89    28   11  34 0.0006 0.0006 0.0003  0.0006
+## 95    28   25  20 0.4561 0.4561 0.7720  0.4561
+## 97    28   29  16 0.0526 0.0526 0.9737  0.0526
+## 110   25   38  12 0.0002 0.0002 0.9999  0.0002
+</code></pre>
+
+<pre><code class="r">summary(storeTestResults)
+</code></pre>
+
+<pre><code>##       diag           good            bad            mcnRp       
+##  Min.   :25.0   Min.   : 1.00   Min.   : 1.00   Min.   :0.0002  
+##  1st Qu.:30.0   1st Qu.: 7.00   1st Qu.: 7.00   1st Qu.:0.0526  
+##  Median :36.5   Median :12.00   Median :12.00   Median :0.1967  
+##  Mean   :36.3   Mean   :13.75   Mean   :13.75   Mean   :0.3108  
+##  3rd Qu.:42.0   3rd Qu.:19.75   3rd Qu.:19.75   3rd Qu.:0.5271  
+##  Max.   :48.0   Max.   :38.00   Max.   :38.00   Max.   :1.0000  
+##      chisqp            uvAp            uvAmodp      
+##  Min.   :0.0002   Min.   :0.00010   Min.   :0.0002  
+##  1st Qu.:0.0526   1st Qu.:0.09955   1st Qu.:0.0526  
+##  Median :0.1967   Median :0.50000   Median :0.1967  
+##  Mean   :0.3108   Mean   :0.50042   Mean   :0.3108  
+##  3rd Qu.:0.5271   3rd Qu.:0.90160   3rd Qu.:0.5271  
+##  Max.   :1.0000   Max.   :0.99990   Max.   :1.0000
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Do p-values from mcnemar.test with correct=FALSE match p-values from chisq df=1: &quot;,
+             identical(storeTestResults$mcnRp,storeTestResults$chisqp)
+            )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Do p-values from mcnemar.test with correct=FALSE match p-values from chisq df=1: TRUE&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Do p-values from mcnemar.test with correct=FALSE match adjusted p-values from N(0,1): &quot;,
+             identical(storeTestResults$mcnRp,storeTestResults$uvAmodp)
+            )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Do p-values from mcnemar.test with correct=FALSE match adjusted p-values from N(0,1): TRUE&quot;
+</code></pre>
+
+<p>Examination of this sample of results shows the following:  </p>
+
+<ul>
+<li>The R-function mcnemar.test(myTest,correct=FALSE) produces the same p-values as the chi-squared df=1 distribution applied against Difference<sup>2</sup> / Sum<br/></li>
+<li>The UVA-stat Difference/sqrt(Sum) generates p-values that could be used in a one-sided test.  When these p-values are modified to reflect a two-sided test, they match mcnemar.test(myTest,correct=FALSE).</li>
+</ul>
+
+</body>
+
+</html>
