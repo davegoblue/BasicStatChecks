@@ -1,0 +1,95 @@
+---
+title: "Chi-Squared Residuals"
+author: "davegoblue"
+date: "March 11, 2016"
+output: html_document
+---
+
+This document is to validate how R calculates chi-squared, Cramer's V, and standardized residuals for a simple test of categorical association.  The test data frame will be a small 3x3 example.
+
+```{r}
+testFrame <- data.frame(colI = c(5, 34, 33), colII = c(6, 47, 32), 
+                        colIII = c(9, 48, 14), row.names=c("A","B","C")
+                        )
+testFrame
+```
+
+Next, expected values are calculated for each cell as N * Prow * Pcol.  Further, residuals are calculated as (observed - expected):
+
+```{r}
+expMatrix <- as.matrix(rowSums(testFrame)) %*% t(as.matrix(colSums(testFrame)))
+expMatrix <- expMatrix / sum(testFrame)
+round(expMatrix,1)
+
+resMatrix <- testFrame - expMatrix
+round(resMatrix,1)
+```
+
+Then, we run (by hand) each of the chi-squared, df, Cramer's V, and standardized residuals:  
+
+```{r}
+testChiSq <- sum(resMatrix^2 / expMatrix)
+nR <- nrow(resMatrix)
+nC <- ncol(resMatrix)
+
+dfChiSq <- (nR - 1) * (nC - 1)
+cramerV <- sqrt(testChiSq / (nR * nC) / (min(nR, nC) - 1) )
+
+## Pearson residuals - (obs - exp) / sqrt(exp)
+prsMatrix <- resMatrix / sqrt(expMatrix)
+
+## Standardized residuals - (obs - exp) / sqrt(V)
+## Vij = sqrt(Expij * (1 - pRow) * (1 - pCol))
+stdMatrix <- resMatrix / 
+             sqrt(expMatrix * 
+                   (as.matrix(1 - rowSums(expMatrix)/sum(expMatrix)) 
+                    %*%             
+                    t(as.matrix(1-colSums(expMatrix)/sum(expMatrix)))
+                    )
+                  )
+
+print(paste0("Chi-squared is ",round(testChiSq,2)," with df=",dfChiSq,
+             " (p=",
+             round(pchisq(testChiSq, df=dfChiSq, lower.tail=FALSE),4),
+             ")"
+             )
+      )
+
+print(paste0("Cramer's V is: ",round(cramerV,3)))
+
+## Pearson residuals - (obs - exp) / sqrt(exp)
+round(prsMatrix,2)
+
+## Standardized residuals - (obs - exp) / sqrt(V)
+## Vij = sqrt(Expij * (1 - pRow) * (1 - pCol))
+round(stdMatrix,2)
+```
+
+The results are compared with just running the chi-squared test in R, listing each of the 9 dimensions in order.  Note that following as per residual calculations in chisq.test:  
+  
+* "residuals"" are the Pearson residuals (observed - expected) / sqrt(expected)  
+* "stdres" are the standardized residuals (observed - expected) / sqrt(V)  
+* Vij = sqrt[ EXPij x (1 - P_i_ALL) x (1 - P_ALL_j ) ]  
+  
+```{r}
+testChi <- chisq.test(testFrame)
+for (intCtr in 1:length(testChi)) {
+    print(testChi[intCtr])
+}
+
+## Borrowed from http://www.r-bloggers.com/example-8-39-calculating-cramers-v/
+## With adaptations
+cv.test <- function(x) {
+    CV <- sqrt(chisq.test(x, correct=FALSE)$statistic /
+               (sum(!is.na(x)) * (min(nrow(x), ncol(x)) - 1) )
+               )
+  
+    print.noquote("Cramér V / Phi:")
+  
+    return(as.numeric(CV))
+}
+
+cv.test(testFrame)
+```
+
+The hand-calculated results match up with the R pchisq.test outputs in this particular example.  
