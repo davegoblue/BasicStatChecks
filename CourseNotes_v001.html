@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Synopsis and Overview</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Synopsis and Overview</h2>
+
+<p>This document contains some of the key concepts, statistics, and R formulae from the UvA Inferential Statistics course.  It is intended as a helpful reference sheet for future use.  </p>
+
+<h3>Module 1: Comparing Two Groups</h3>
+
+<p>There are two schools of thought, frequentist (more common) and Bayesian (growing):  </p>
+
+<ul>
+<li>Frequentist - what are the odds of observing X given my hypothesized population?<br/></li>
+<li>Bayesian - what are the odds of a hypothesized population given that I observed X?<br/></li>
+</ul>
+
+<p>There are a few good cautions raised about significance and confidence levels:  </p>
+
+<ul>
+<li>Statistical Significance - The x% confidence interval is constructed such that if we run the experiment infinite times, x% of our intervals would contain the true population mean<br/></li>
+<li>Practical Significance - does it actually matter that Ho: P=0 is rejected?  The confidence interval helps to assess effect magnitude<br/></li>
+</ul>
+
+<p>Recall that there are two key error types:  </p>
+
+<ul>
+<li>Type I (reject a true null) - happens (1 - alpha), where alpha is pre-set<br/></li>
+<li>Type II (fail to reject a false null) &ndash; happend beta, so (1 - beta) is the test power<br/></li>
+<li>Power is increased by better instruments, more homogenous samples, larger N, larger effect, one-sided tests, parametric tests (for sufficiently large N)<br/></li>
+</ul>
+
+<p>####<em>Two indepedent proportions</em><br/>
+The main metric is a z-test, and it generally requires at least 10 positive and 10 negative per group for one-sided tests, and at least 5 positive and 5 negative per group for two-sided tests:  </p>
+
+<p>The test statistic is designed to follow a z-distribution, specifically:  </p>
+
+<ul>
+<li>Since null is equality, the test stastic starts as (p1-hat - p2-hat)<br/></li>
+<li>Standard error is then sqrt(p-hat * (1 - p-hat) * (1/n1 + 1/n2))<br/></li>
+<li>P-hat is the pooled proportion, or (n1 * p1-hat + n2 * p2-hat) / (n1 + n2)<br/></li>
+<li>CI (after the fact) can no longer use the pooled proportion since null is no longer assumed<br/></li>
+<li>(p1-hat - p2-hat) +/- z(alpha/2) * sqrt(p-hat1 * (1-p-hat1) / n1 + p-hat2 * (1-p-hat2) / n2)<br/></li>
+</ul>
+
+<p>This can also be expressed as a relative risk, or p1/p2, with its own assumed confidence intervals.  </p>
+
+<p>See below for an example from two random normal distributions:  </p>
+
+<pre><code class="r">set.seed(0313160758)
+norm1 &lt;- rnorm(100,mean=2,sd=1)
+norm2 &lt;- rnorm(120,mean=2.5,sd=1.5)
+p1Norm &lt;- norm1 &gt; 2
+p2Norm &lt;- norm2 &gt; 2
+p1Hat &lt;- mean(p1Norm)
+p2Hat &lt;- mean(p2Norm)
+n1 &lt;- length(p1Norm)
+n2 &lt;- length(p2Norm)
+
+## Calculate means, difference, pooled proportion, standard error
+print(paste0(&quot;Means of the data are P1: &quot;,p1Hat,&quot; and P2: &quot;,p2Hat))
+</code></pre>
+
+<pre><code>## [1] &quot;Means of the data are P1: 0.6 and P2: 0.55&quot;
+</code></pre>
+
+<pre><code class="r">poolProp &lt;- (n1*p1Hat + n2*p2Hat) / (n1 + n2)
+stdError &lt;- sqrt(poolProp * (1-poolProp) * (1/n1 + 1/n2))
+print(paste0(&quot;Pooled proportion is: &quot;,round(poolProp,3),&quot; with stderr: &quot;,round(stdError,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;Pooled proportion is: 0.573 with stderr: 0.067&quot;
+</code></pre>
+
+<pre><code class="r">## Calculate test statistic and p-value
+zTestStat &lt;- (p1Hat - p2Hat) / stdError
+pTwoSided &lt;- 1 - 2 * abs((pnorm(zTestStat) - 0.5))
+print(paste0(&quot;The z-stat of: &quot;,round(zTestStat,3),&quot;which has z^2: &quot;,round(zTestStat^2,3),
+             &quot; has two-sided significance: &quot;,round(pTwoSided,3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The z-stat of: 0.746which has z^2: 0.557 has two-sided significance: 0.455&quot;
+</code></pre>
+
+<pre><code class="r">## Calculate post-hoc CI
+newStdErr &lt;- sqrt(p1Hat * (1 - p1Hat) / n1 + p2Hat * (1 - p2Hat) / n2)
+critZ &lt;- qnorm(.05/2, lower.tail=FALSE)
+print(paste0(&quot;Post-hoc 95% CI for difference in proportions is &quot;,
+             paste(round(p1Hat - p2Hat + c(-1,1) * critZ * newStdErr, 3), collapse=&quot; , &quot;)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Post-hoc 95% CI for difference in proportions is -0.081 , 0.181&quot;
+</code></pre>
+
+<pre><code class="r">## Comparison to R -- note that R uses chi-squared which is directly related to N(0.1)
+prop.test(x=c(sum(p1Norm),sum(p2Norm)) , n=c(n1, n2) , correct=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  2-sample test for equality of proportions without continuity
+##  correction
+## 
+## data:  c(sum(p1Norm), sum(p2Norm)) out of c(n1, n2)
+## X-squared = 0.55724, df = 1, p-value = 0.4554
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.08092941  0.18092941
+## sample estimates:
+## prop 1 prop 2 
+##   0.60   0.55
+</code></pre>
+
+<p>And, we observe that the findings from R match the hand calculations, with the exception that R runs a chi-squared test and the hand calculations are a z-test.  If x~N(0,1) then x<sup>2</sup> ~ chi-squared df=1, so these are functionally the same approach and outcome.  </p>
+
+<p>####<em>Two indepedent means</em><br/>
+For two indepednent means, the t-test is applied.  This requires independence of samples, roughly normal population distributions (though t is robust against this), and a &ldquo;large enough&rdquo; (N ~30) sample:  </p>
+
+<p>The test statistic is designed to follow a t-distribution, specifically:  </p>
+
+<p>#####<em>Unequal variance</em>  </p>
+
+<ul>
+<li>Since null is equality, the test stastic starts as (x1-hat - x2-hat)<br/></li>
+<li>Pooled standard error is then unPSE = sqrt(s1<sup>2/n1</sup> + s2<sup>2/n2)</sup><br/></li>
+<li>df is a cluster - (s1<sup>2/n1</sup> + s2<sup>2/n2)<sup>2</sup></sup> / [ (s1<sup>2/n1)<sup>2</sup></sup> / (n1 - 1) + (s2<sup>2/n2)<sup>2</sup></sup> / (n2 - 1) ]<br/></li>
+<li>Test-statistic is (x1-hat - x2-hat) / unPSE, following t with df<br/></li>
+<li>Post-hoc CI is (x1-bar - x2-bar) +/- t(alpha/2) * unPSE </li>
+</ul>
+
+<p>#####<em>Assume equal variance</em>  </p>
+
+<ul>
+<li>Pooled standard error is then eqPSE = sqrt( [ (n1-1) * s1<sup>2</sup> + (n2-1) * s2<sup>2</sup> ] / [ (n1 - 1) + (n2 - 1) ]<br/></li>
+<li>df is easy - n1 + n2 - 2<br/></li>
+<li>Test-statistic is (x1-hat - x2-hat) / eqPSE, following t with df<br/></li>
+</ul>
+
+<p>Note that the unequal variances approach is greatly preferred, as the equal variances approach can be sensitive to violations of normality.  </p>
+
+<p>See below for an example from two random normal distributions (we will keep the norm1 and norm2 as originally drawn, but without any conversions for &ldquo;greater than 2&rdquo;:  </p>
+
+<pre><code class="r">x1Hat &lt;- mean(norm1)
+x2Hat &lt;- mean(norm2)
+s1 &lt;- sd(norm1)
+s2 &lt;- sd(norm2)
+n1 &lt;- length(p1Norm)
+n2 &lt;- length(p2Norm)
+
+## Report on individual means, standard deviations, and sample sizes
+print(paste0(&quot;Distribution 1 has mean: &quot;,round(x1Hat,2),&quot; with std &quot;,round(s1,2),&quot; on n=&quot;,n1))
+</code></pre>
+
+<pre><code>## [1] &quot;Distribution 1 has mean: 2.19 with std 1.09 on n=100&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Distribution 2 has mean: &quot;,round(x2Hat,2),&quot; with std &quot;,round(s2,2),&quot; on n=&quot;,n2))
+</code></pre>
+
+<pre><code>## [1] &quot;Distribution 2 has mean: 2.44 with std 1.59 on n=120&quot;
+</code></pre>
+
+<pre><code class="r">## Run this as an unequal variance approach
+unPSE &lt;- sqrt(s1^2/n1 + s2^2/n2)
+unDF &lt;- (s1^2/n1 + s2^2/n2)^2 / ((s1^2/n1)^2 / (n1-1) + (s2^2/n2)^2 / (n2-1))
+print(paste0(&quot;Assuming unequal variance, we have difference: &quot;,round(x1Hat - x2Hat,2),
+             &quot; with pooled SE: &quot;,round(unPSE,2),&quot; and df = &quot;,round(unDF,1)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Assuming unequal variance, we have difference: -0.26 with pooled SE: 0.18 and df = 210.3&quot;
+</code></pre>
+
+<pre><code class="r">unTest &lt;- (x1Hat - x2Hat) / unPSE
+unPTwoSided &lt;- 1 - 2 * abs(pt(unTest,df=unDF) - 0.5)
+print(paste0(&quot;The t-statistic &quot;,round(unTest,3),&quot; has two-sided significance &quot;,round(unPTwoSided,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;The t-statistic -1.416 has two-sided significance 0.158&quot;
+</code></pre>
+
+<pre><code class="r">critT &lt;- qt(.05/2,df=unDF,lower.tail=FALSE)
+print(paste0(&quot;The 95% CI for difference in means is &quot;,
+             paste(round(x1Hat - x2Hat + c(-1,1) * critT * unPSE, 3), collapse=&quot; , &quot;)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The 95% CI for difference in means is -0.615 , 0.101&quot;
+</code></pre>
+
+<pre><code class="r">## Comparison to the R results
+t.test(norm1,norm2,paired=FALSE,var.equal=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  norm1 and norm2
+## t = -1.4156, df = 210.29, p-value = 0.1584
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.6149437  0.1009042
+## sample estimates:
+## mean of x mean of y 
+##  2.187555  2.444575
+</code></pre>
+
+<pre><code class="r">## Run this as an equal variance approach
+eqS &lt;- sqrt( ( (n1-1) * s1^2 + (n2-1) * s2^2 ) / ( (n1 - 1) + (n2 - 1) ) )
+eqPSE &lt;- eqS * sqrt(1/n1 + 1/n2)
+eqDF &lt;- n1 + n2 - 2
+print(paste0(&quot;Assuming equal variance, we have difference: &quot;,round(x1Hat - x2Hat,2),
+             &quot; with S: &quot;,round(eqS,2),&quot; and pooled SE: &quot;,round(eqPSE,2),&quot; with df = &quot;,round(eqDF,1)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Assuming equal variance, we have difference: -0.26 with S: 1.39 and pooled SE: 0.19 with df = 218&quot;
+</code></pre>
+
+<pre><code class="r">eqTest &lt;- (x1Hat - x2Hat) / eqPSE
+eqPTwoSided &lt;- 1 - 2 * abs(pt(eqTest,df=eqDF) - 0.5)
+print(paste0(&quot;The t-statistic &quot;,round(eqTest,3),&quot; has two-sided significance &quot;,round(eqPTwoSided,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;The t-statistic -1.369 has two-sided significance 0.172&quot;
+</code></pre>
+
+<pre><code class="r">critT &lt;- qt(.05/2,df=eqDF,lower.tail=FALSE)
+print(paste0(&quot;The 95% CI for difference in means is &quot;,
+             paste(round(x1Hat - x2Hat + c(-1,1) * critT * eqPSE, 3), collapse=&quot; , &quot;)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The 95% CI for difference in means is -0.627 , 0.113&quot;
+</code></pre>
+
+<pre><code class="r">## Comparison to the R results
+t.test(norm1,norm2,paired=FALSE,var.equal=TRUE)
+</code></pre>
+
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  norm1 and norm2
+## t = -1.3693, df = 218, p-value = 0.1723
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.6269680  0.1129285
+## sample estimates:
+## mean of x mean of y 
+##  2.187555  2.444575
+</code></pre>
+
+<p>And, we observe that the findings from R match the hand calculations.  </p>
+
+<p>####<em>Two dependent proportions</em><br/>
+With two dependent proportions, you have a McNemar test.  Note that R will run this as a chi-squared (worry about the direction for one-sided in interpretation) while UvA runs this as a z-test (worry about the direction in the statistic set-up).  </p>
+
+<p>Essentially, there are four things that can happen:  Good -&gt; Good, Good -&gt; Bad, Bad -&gt; Good, and Bad -&gt; Bad.  We are only actually interested in Good -&gt; Bad (GB) and Bad -&gt; Good (BG).  </p>
+
+<ul>
+<li>z = (BG - GB) / sqrt(BG + GB)<br/></li>
+<li>chiSq = (BG - GB)<sup>2</sup> / (BG + GB)<br/></li>
+</ul>
+
+<p>Suppose we have a grid of 311, 34 (BG), 17 (GB), 14.  We only care about the 34 and the 17:  </p>
+
+<pre><code class="r">zTest &lt;- (34 - 17) / sqrt(34 + 17)
+zPStat &lt;- 1 - 2 * abs(pnorm(zTest) - 0.5)
+print(paste0(&quot;Using z-test, we have z: &quot;,round(zTest,3),&quot; with two-sided p: &quot;,round(zPStat,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;Using z-test, we have z: 2.38 with two-sided p: 0.017&quot;
+</code></pre>
+
+<pre><code class="r">## Compare to R
+mcnemar.test(x=matrix(data=c(311,34,17,14),nrow=2,byrow=TRUE),correct=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  McNemar&#39;s Chi-squared test
+## 
+## data:  matrix(data = c(311, 34, 17, 14), nrow = 2, byrow = TRUE)
+## McNemar&#39;s chi-squared = 5.6667, df = 1, p-value = 0.01729
+</code></pre>
+
+<p>Except for the use of chi-squared vs. z-statistic, the outputs are substantially the same.  </p>
+
+<p>####<em>Two dependent means</em><br/>
+This test is much simpler to run since you have paired observations.  Essentially:  </p>
+
+<ul>
+<li>Test-statistic t = (x1-bar - x2-bar) / ( Sd / sqrt(n) )<br/></li>
+<li>Sd is the standard deviation of the differences<br/></li>
+<li>df = n-1<br/></li>
+<li>CI = (x1-bar - x2-bar) +/- t(alpha/2) * Sd / sqrt(n)<br/></li>
+</ul>
+
+<p>Below is an example for a random normal added to a random normal:  </p>
+
+<pre><code class="r">myVar1 &lt;- norm1
+myVar2 &lt;- norm1 + rnorm(100,mean=0.5,sd=5)
+myDiff &lt;- myVar1 - myVar2
+
+muDiff &lt;- mean(myDiff)
+sDiff &lt;- sd(myDiff)
+nDiff &lt;- length(myDiff)
+seDiff &lt;- sDiff / sqrt(nDiff)
+dfDiff &lt;- nDiff - 1
+
+tStatDiff &lt;- muDiff / seDiff
+pStatDiff &lt;- 1 - 2 * abs(pnorm(tStatDiff) - 0.5)
+
+print(paste0(&quot;The difference in means is: &quot;,round(muDiff,2),&quot; with standard error: &quot;,round(seDiff,2)))
+</code></pre>
+
+<pre><code>## [1] &quot;The difference in means is: -1.55 with standard error: 0.49&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;The t-statistic &quot;,round(tStatDiff,2),&quot; with df = &quot;,dfDiff,
+             &quot; has two-sided significance &quot;,round(pStatDiff,3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The t-statistic -3.16 with df = 99 has two-sided significance 0.002&quot;
+</code></pre>
+
+<pre><code class="r">tCritical &lt;- qt(.05/2,lower.tail=FALSE,df=dfDiff)
+print(paste0(&quot;The 95% CI for difference in means is: &quot;,
+             paste(round(muDiff + c(-1,1) * seDiff * tCritical,3),collapse=&quot; , &quot;)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The 95% CI for difference in means is: -2.515 , -0.576&quot;
+</code></pre>
+
+<pre><code class="r">## Compare with R
+t.test(myVar1,myVar2,paired=TRUE)
+</code></pre>
+
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  myVar1 and myVar2
+## t = -3.1638, df = 99, p-value = 0.002069
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.5150923 -0.5762888
+## sample estimates:
+## mean of the differences 
+##               -1.545691
+</code></pre>
+
+<p>As expected, the results from R match the associated hand calculations.  </p>
+
+<h3>Module 2: Categorical Association</h3>
+
+</body>
+
+</html>
