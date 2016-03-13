@@ -201,11 +201,11 @@ hr {
 </head>
 
 <body>
-<h2>Synopsis and Overview</h2>
+<h1>Synopsis and Overview</h1>
 
 <p>This document contains some of the key concepts, statistics, and R formulae from the UvA Inferential Statistics course.  It is intended as a helpful reference sheet for future use.  </p>
 
-<h3>Module 1: Comparing Two Groups</h3>
+<h2>Module 1: Comparing Two Groups</h2>
 
 <p>There are two schools of thought, frequentist (more common) and Bayesian (growing):  </p>
 
@@ -274,13 +274,13 @@ print(paste0(&quot;Pooled proportion is: &quot;,round(poolProp,3),&quot; with st
 <pre><code class="r">## Calculate test statistic and p-value
 zTestStat &lt;- (p1Hat - p2Hat) / stdError
 pTwoSided &lt;- 1 - 2 * abs((pnorm(zTestStat) - 0.5))
-print(paste0(&quot;The z-stat of: &quot;,round(zTestStat,3),&quot;which has z^2: &quot;,round(zTestStat^2,3),
+print(paste0(&quot;The z-stat of: &quot;,round(zTestStat,3),&quot; which has z^2: &quot;,round(zTestStat^2,3),
              &quot; has two-sided significance: &quot;,round(pTwoSided,3)
              )
       )
 </code></pre>
 
-<pre><code>## [1] &quot;The z-stat of: 0.746which has z^2: 0.557 has two-sided significance: 0.455&quot;
+<pre><code>## [1] &quot;The z-stat of: 0.746 which has z^2: 0.557 has two-sided significance: 0.455&quot;
 </code></pre>
 
 <pre><code class="r">## Calculate post-hoc CI
@@ -561,7 +561,540 @@ t.test(myVar1,myVar2,paired=TRUE)
 
 <p>As expected, the results from R match the associated hand calculations.  </p>
 
-<h3>Module 2: Categorical Association</h3>
+<h2>Module 2: Categorical Association</h2>
+
+<p>Tests for categorical association check relative frequencies for two or more categories.  The typical test statistic is chi-squared.  Comparisons are made against an &ldquo;expected frequency&rdquo; which can be a theoretical frequency or the frequency that would be obtained by multiplying out row/column frequencies.  </p>
+
+<p>The general approach to a test matrix is to put the explanatory variables in the rows and the response variable in the columns.  There is, of course, no actual meaningful correlation statistic since the column orders are arbitrary.  So, the general framing would be:</p>
+
+<ul>
+<li>Ho: The variables are all independent, which is to say P(row, column) = P(row) * P(column)<br/></li>
+<li>Ha: There are one or more dependencies<br/></li>
+<li>Approach:  Create a new table (expected) that is P(row) * P(column)<br/></li>
+</ul>
+
+<p>The example from the UvA course is used a few times in this module:  </p>
+
+<pre><code class="r">artHistory &lt;- data.frame(fruit=c(11,8,3), flowers=c(5,6,10),mixed=c(1,8,12),
+                         row.names=c(&quot;early&quot;,&quot;late&quot;,&quot;Baroque&quot;)
+                         )
+## Raw data frame
+artHistory
+</code></pre>
+
+<pre><code>##         fruit flowers mixed
+## early      11       5     1
+## late        8       6     8
+## Baroque     3      10    12
+</code></pre>
+
+<pre><code class="r">## Joint frequencies
+jointFreqArt &lt;- artHistory/sum(artHistory)
+jointFreqArt
+</code></pre>
+
+<pre><code>##            fruit  flowers    mixed
+## early   0.171875 0.078125 0.015625
+## late    0.125000 0.093750 0.125000
+## Baroque 0.046875 0.156250 0.187500
+</code></pre>
+
+<pre><code class="r">## Marginal (column) frequencies
+margColArt &lt;- colSums(artHistory)/sum(artHistory)
+t(as.matrix(margColArt))
+</code></pre>
+
+<pre><code>##        fruit  flowers    mixed
+## [1,] 0.34375 0.328125 0.328125
+</code></pre>
+
+<pre><code class="r">## Marginal (row) frequencies
+margRowArt &lt;- rowSums(artHistory)/sum(artHistory)
+as.matrix(margRowArt)
+</code></pre>
+
+<pre><code>##             [,1]
+## early   0.265625
+## late    0.343750
+## Baroque 0.390625
+</code></pre>
+
+<pre><code class="r">## Expected frequencies = product of marginal frequencies
+expArtHistory &lt;- ( as.matrix(margRowArt) %*% t(as.matrix(margColArt)) ) * sum(artHistory)
+round(expArtHistory,1)
+</code></pre>
+
+<pre><code>##         fruit flowers mixed
+## early     5.8     5.6   5.6
+## late      7.6     7.2   7.2
+## Baroque   8.6     8.2   8.2
+</code></pre>
+
+<p>####<em>Chi-squared test for association</em><br/>
+The chi-squared statistic is then the sum over all cells of residual<sup>2</sup> / expected, which could also be formulated as sum over all cells of (observed - expected)<sup>2</sup> / expected.  </p>
+
+<p>The chi-squared statistics can then be assessed for its likelihood:  </p>
+
+<ul>
+<li>Test-statistic: sum over all cells of residual<sup>2/expected</sup><br/></li>
+<li>df = (nrow - 1) * (ncol - 1)<br/></li>
+<li>The mean of a chi-squared distribution with df=n will be n<br/></li>
+<li>The chi-squared is always greater than or equal to zero<br/></li>
+<li>pchisq(myStat, df=myDF, lower.tail=FALSE) brings back the odds of seeing &gt;= myStat given myDF<br/></li>
+</ul>
+
+<p>Note that we require n=5+ for each expected cell for this statistic to be reasonable.  </p>
+
+<pre><code class="r">## The residuals data frame
+resArtHistory &lt;- artHistory - expArtHistory
+resArtHistory
+</code></pre>
+
+<pre><code>##            fruit   flowers     mixed
+## early    5.15625 -0.578125 -4.578125
+## late     0.43750 -1.218750  0.781250
+## Baroque -5.59375  1.796875  3.796875
+</code></pre>
+
+<pre><code class="r">## Test Statistic method 1 -- residual^2 / expected
+testMatrix1 &lt;- resArtHistory^2 / expArtHistory
+testMatrix1
+</code></pre>
+
+<pre><code>##              fruit    flowers      mixed
+## early   4.54963235 0.05991772 3.75739671
+## late    0.02530992 0.20576299 0.08455087
+## Baroque 3.64102273 0.39360119 1.75741071
+</code></pre>
+
+<pre><code class="r">testStat1 &lt;- sum(testMatrix1)
+testStat1
+</code></pre>
+
+<pre><code>## [1] 14.47461
+</code></pre>
+
+<pre><code class="r">## Test statistics method 2 -- (observed/expected - 1)^2
+testMatrix2 &lt;- (artHistory - expArtHistory)^2 / expArtHistory
+testMatrix2
+</code></pre>
+
+<pre><code>##              fruit    flowers      mixed
+## early   4.54963235 0.05991772 3.75739671
+## late    0.02530992 0.20576299 0.08455087
+## Baroque 3.64102273 0.39360119 1.75741071
+</code></pre>
+
+<pre><code class="r">testStat2 &lt;- sum(testMatrix2)
+testStat2
+</code></pre>
+
+<pre><code>## [1] 14.47461
+</code></pre>
+
+<pre><code class="r">## Calculate df
+dfArt &lt;- (ncol(artHistory) - 1) * (nrow(artHistory) - 1)
+dfArt
+</code></pre>
+
+<pre><code>## [1] 4
+</code></pre>
+
+<pre><code class="r">## Report on pStatistic
+pStat &lt;- pchisq(testStat1, df=dfArt, lower.tail=FALSE)
+print(paste0(&quot;Chi-squared is &quot;,round(testStat1,2),&quot; on df=&quot;,dfArt,&quot; for p=&quot;,round(pStat,4)))
+</code></pre>
+
+<pre><code>## [1] &quot;Chi-squared is 14.47 on df=4 for p=0.0059&quot;
+</code></pre>
+
+<pre><code class="r">## No surprise that this matches R
+chisq.test(artHistory,correct=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  artHistory
+## X-squared = 14.475, df = 4, p-value = 0.005925
+</code></pre>
+
+<p>####<em>Interpretation of chi-squared</em><br/>
+There are two ways to help with interpreting chi-squared.  Recall that as df increases, you expect chi-squared to increase, so there is no specific meaning to &ldquo;this has chi-squared 6 while that has chi-squared 12&rdquo;.  </p>
+
+<ul>
+<li>Cramer&#39;s V is an attempt to standardize the chi-squared to within 0-1 where 0 means &ldquo;no association&rdquo; and 1 means &ldquo;perfect association&rdquo;.  The challenge is that V tends to increase no matter what as the matrix becomes less square, so it is still not a perfect test.<br/></li>
+<li>Standarized residuals give a sense for how far each cell in the observed matrix is from expected.  It is reported on either a Pearson basis or a residuals basis.<br/></li>
+</ul>
+
+<p>The calculation for Cramer&#39;s V is as follows:  </p>
+
+<ul>
+<li>V = sqrt(chi-squared / (n * m))<br/></li>
+<li>n = total cells in the matrix<br/></li>
+<li>m = lesser of # rows or # columns, then subtract 1<br/></li>
+</ul>
+
+<p>There are two means of calculating the standardized residuals:  </p>
+
+<ul>
+<li>Pearson - residual / sqrt(expected)<br/></li>
+<li>Standraized - resiudal / sqrt(V)<br/></li>
+<li>V for a given cell =  expNCell * (1 - Prow) * (1 - Pcol)<br/></li>
+<li>The standardized residuals follow a z-distribution<br/></li>
+</ul>
+
+<p>The code chunks below are copied from CheckChiSq_v001.Rmd:  </p>
+
+<pre><code class="r">testFrame &lt;- data.frame(colI = c(5, 34, 33), colII = c(6, 47, 32), 
+                        colIII = c(9, 48, 14), row.names=c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;)
+                        )
+testFrame
+</code></pre>
+
+<pre><code>##   colI colII colIII
+## A    5     6      9
+## B   34    47     48
+## C   33    32     14
+</code></pre>
+
+<pre><code class="r">expMatrix &lt;- as.matrix(rowSums(testFrame)) %*% t(as.matrix(colSums(testFrame)))
+expMatrix &lt;- expMatrix / sum(testFrame)
+round(expMatrix,1)
+</code></pre>
+
+<pre><code>##   colI colII colIII
+## A  6.3   7.5    6.2
+## B 40.7  48.1   40.2
+## C 24.9  29.5   24.6
+</code></pre>
+
+<pre><code class="r">resMatrix &lt;- testFrame - expMatrix
+round(resMatrix,1)
+</code></pre>
+
+<pre><code>##   colI colII colIII
+## A -1.3  -1.5    2.8
+## B -6.7  -1.1    7.8
+## C  8.1   2.5  -10.6
+</code></pre>
+
+<pre><code class="r">testChiSq &lt;- sum(resMatrix^2 / expMatrix)
+nR &lt;- nrow(resMatrix)
+nC &lt;- ncol(resMatrix)
+
+dfChiSq &lt;- (nR - 1) * (nC - 1)
+cramerV &lt;- sqrt(testChiSq / (nR * nC) / (min(nR, nC) - 1) )
+
+## Pearson residuals - (obs - exp) / sqrt(exp)
+prsMatrix &lt;- resMatrix / sqrt(expMatrix)
+
+## Standardized residuals - (obs - exp) / sqrt(V)
+## Vij = sqrt(Expij * (1 - pRow) * (1 - pCol))
+stdMatrix &lt;- resMatrix / 
+             sqrt(expMatrix * 
+                   (as.matrix(1 - rowSums(expMatrix)/sum(expMatrix)) 
+                    %*%             
+                    t(as.matrix(1-colSums(expMatrix)/sum(expMatrix)))
+                    )
+                  )
+
+print(paste0(&quot;Chi-squared is &quot;,round(testChiSq,2),&quot; with df=&quot;,dfChiSq,
+             &quot; (p=&quot;,
+             round(pchisq(testChiSq, df=dfChiSq, lower.tail=FALSE),4),
+             &quot;)&quot;
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Chi-squared is 11.84 with df=4 (p=0.0185)&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Cramer&#39;s V is: &quot;,round(cramerV,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;Cramer&#39;s V is: 0.811&quot;
+</code></pre>
+
+<pre><code class="r">## Pearson residuals - (obs - exp) / sqrt(exp)
+round(prsMatrix,2)
+</code></pre>
+
+<pre><code>##    colI colII colIII
+## A -0.52 -0.53   1.11
+## B -1.06 -0.16   1.24
+## C  1.61  0.47  -2.14
+</code></pre>
+
+<pre><code class="r">## Standardized residuals - (obs - exp) / sqrt(V)
+## Vij = sqrt(Expij * (1 - pRow) * (1 - pCol))
+round(stdMatrix,2)
+</code></pre>
+
+<pre><code>##    colI colII colIII
+## A -0.66 -0.70   1.40
+## B -1.94 -0.30   2.26
+## C  2.41  0.73  -3.19
+</code></pre>
+
+<pre><code class="r">testChi &lt;- chisq.test(testFrame)
+for (intCtr in 1:length(testChi)) {
+    print(testChi[intCtr])
+}
+</code></pre>
+
+<pre><code>## $statistic
+## X-squared 
+##  11.84471 
+## 
+## $parameter
+## df 
+##  4 
+## 
+## $p.value
+## [1] 0.01854417
+## 
+## $method
+## [1] &quot;Pearson&#39;s Chi-squared test&quot;
+## 
+## $data.name
+## [1] &quot;testFrame&quot;
+## 
+## $observed
+##   colI colII colIII
+## A    5     6      9
+## B   34    47     48
+## C   33    32     14
+## 
+## $expected
+##        colI    colII   colIII
+## A  6.315789  7.45614  6.22807
+## B 40.736842 48.09211 40.17105
+## C 24.947368 29.45175 24.60088
+## 
+## $residuals
+##         colI      colII    colIII
+## A -0.5235674 -0.5332688  1.110722
+## B -1.0555108 -0.1574808  1.235227
+## C  1.6122243  0.4695542 -2.137305
+## 
+## $stdres
+##         colI      colII    colIII
+## A -0.6626947 -0.7049874  1.401389
+## B -1.9365006 -0.3017705  2.258989
+## C  2.4110425  0.7334312 -3.186093
+</code></pre>
+
+<pre><code class="r">## Borrowed from http://www.r-bloggers.com/example-8-39-calculating-cramers-v/
+## With adaptations
+cv.test &lt;- function(x) {
+    CV &lt;- sqrt(chisq.test(x, correct=FALSE)$statistic /
+               (sum(!is.na(x)) * (min(nrow(x), ncol(x)) - 1) )
+               )
+
+    print.noquote(&quot;Cramér V / Phi:&quot;)
+
+    return(as.numeric(CV))
+}
+
+cv.test(testFrame)
+</code></pre>
+
+<pre><code>## [1] Cramér V / Phi:
+</code></pre>
+
+<pre><code>## [1] 0.8111964
+</code></pre>
+
+<p>The R functions (chisq.test and cv.test) match with the hand calculations as expected.  </p>
+
+<p>####<em>Running chi-squared as &ldquo;goodness of fit&rdquo;</em><br/>
+The chi-squared test can also be run to compare some actual observations against a theoretical distribution.  There are a few modest changes:  </p>
+
+<ul>
+<li>Ho: Observed does not differ from expected based on theory<br/></li>
+<li>Ha: Observed differs in at least some regard from expected based on theory<br/></li>
+<li>Test statistic chi-squared is sum-over-columns of (observed - expected)<sup>2</sup> / expected<br/></li>
+<li>df = N-1 where there are N columns explored<br/></li>
+<li>Requirement that expected be 5+ in each column<br/></li>
+</ul>
+
+<p>Expected is generally a vector of probabilities summing to 1, with expected for each column become T*expected where T is the sum across all of the observed elements.  </p>
+
+<p>An obvious but important caution is that this is absolutely NOT an appropriate way to compare two rows of observed data against each other!  This only works when you have a theoretical expectation prior to experimentation, and an observed dataset during your experiment plainly does not qualify!  </p>
+
+<p>See below for a very simple example:  </p>
+
+<pre><code class="r">myVector &lt;- c(5,20,10,35)
+myTheory &lt;- c(.2,.3,.1,.4)
+
+chiSqAssoc &lt;- (myVector - (sum(myVector) * myTheory) )^2 / ( sum(myVector) * myTheory) 
+chiSqAssoc
+</code></pre>
+
+<pre><code>## [1] 5.78571429 0.04761905 1.28571429 1.75000000
+</code></pre>
+
+<pre><code class="r">dfAssoc &lt;- length(chiSqAssoc) - 1
+pStat &lt;- pchisq(sum(chiSqAssoc), df=dfAssoc, lower.tail=FALSE)
+
+print(paste0(&quot;Chi-squared is &quot;, round(sum(chiSqAssoc),2),
+             &quot; with df=&quot;,dfAssoc,&quot; for p=&quot;,round(pStat,4)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Chi-squared is 8.87 with df=3 for p=0.0311&quot;
+</code></pre>
+
+<pre><code class="r">chisq.test(myVector, correct=FALSE,p=myTheory)
+</code></pre>
+
+<pre><code>## 
+##  Chi-squared test for given probabilities
+## 
+## data:  myVector
+## X-squared = 8.869, df = 3, p-value = 0.03108
+</code></pre>
+
+<p>As expected, the results from R functions match the hand calculations.  </p>
+
+<p>####<em>Side notes for chi-squared tests</em><br/>
+Sometimes, not all of the conditions for chi-squared testing are met.  To wit:  </p>
+
+<ul>
+<li>Data from a non-random sample (frequent error; make sure your experiment is properly randomized)<br/></li>
+<li>Categories are not exclusive (make sure you have a column for Both-A-and-B and do not count +1 in both the A and B columns)<br/></li>
+<li>Categories are not exhaustive (make sure everything can be placed somewhere, even if just All Other)<br/></li>
+<li>Sample too small; requires expected values of 5+ per call (aggregate as needed if not)<br/></li>
+<li>Interpreting chi-squared as goodness of association (no way - Cramer&#39;s V at least gets you in the right direction)<br/></li>
+<li>Interpreting a high p-value as &ldquo;support of theory&rdquo; (as with all hypothesis testing, all we will ever do is fail to reject the null hypothesis; we do not accept/confirm the null!)<br/></li>
+</ul>
+
+<p>####<em>Fisher&#39;s exact test</em><br/>
+The Fisher&#39;s exact test is the solution when you have a contained, small-n problem which precludes using chi-squared tests of association.  </p>
+
+<p>The test is generally designed for a 2x2 table as follows:  </p>
+
+<table><thead>
+<tr>
+<th>a</th>
+<th>b</th>
+<th>(a+b)</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>c</td>
+<td>d</td>
+<td>(c+d)</td>
+</tr>
+<tr>
+<td>(a+c)</td>
+<td>(b+d)</td>
+<td>(a+b+c+d)</td>
+</tr>
+</tbody></table>
+
+<p>Define n=(a+b+c+d).  This configuration can occur (a+c)! * (b+d)! * (a+b)! * (c+d)! / [n! * a! * b! * c! * d!] of the time.  So, if a were the critical value, you could test how likely (one-sided or two-sided) you are to get the specific or more extreme value for a.</p>
+
+<p>Recall that if you do not have a small-n problem, you use chi-squared!  This test is something of a mess.  See associated R code:  </p>
+
+<pre><code class="r">nTotal &lt;- 23
+nAplusB &lt;- 10
+nAplusC &lt;- 8
+
+fishStore &lt;- data.frame(a=0:min(nAplusB,nAplusC),probA=rep(-1,min(nAplusB,nAplusC)+1))
+
+for (intCtr in 1:(min(nAplusB,nAplusC)+1)) {
+    a &lt;- intCtr - 1
+    b &lt;- nAplusB - a
+    c &lt;- nAplusC - a
+    d &lt;- nTotal - a - b - c
+    numer1 &lt;- factorial(a+c) * factorial(b+d)
+    numer2 &lt;- factorial(a+b) * factorial(c+d)
+    denom1 &lt;- factorial(nTotal)
+    denom2 &lt;- factorial(a) * factorial(b) * factorial(c) * factorial(d)
+    fishStore[intCtr,&quot;probA&quot;] &lt;- (numer1/denom1) * (numer2/denom2)
+}
+
+fishStore
+</code></pre>
+
+<pre><code>##   a        probA
+## 1 0 2.624849e-03
+## 2 1 3.499798e-02
+## 3 2 1.574909e-01
+## 4 3 3.149818e-01
+## 5 4 3.062323e-01
+## 6 5 1.469915e-01
+## 7 6 3.340716e-02
+## 8 7 3.181635e-03
+## 9 8 9.177792e-05
+</code></pre>
+
+<pre><code class="r">sum(fishStore[c(0,8),&quot;probA&quot;])
+</code></pre>
+
+<pre><code>## [1] 0.003181635
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(0,10,8,5),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.002716626
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(1,9,7,6),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.07430341
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(2,8,6,7),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.3787858
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(3,7,5,8),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 1
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(4,6,4,9),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.6850182
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(5,5,3,10),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.2212949
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(6,4,2,11),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.03930542
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(7,3,1,12),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.005898261
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(8,2,0,13),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 9.177792e-05
+</code></pre>
+
+<p>These still do not match perfectly.  I get the sense this is a rarely used test, but time permitting it may be good to figure out the discrepancy.  </p>
+
+<h2>Module 3: Simple Regression</h2>
 
 </body>
 
