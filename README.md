@@ -10,3 +10,4 @@ This is a simple repository for some basic statistic checking.  Created mostly s
 ### Course Note Summaries:  
 * Added 13-MAR-2016 - v001 summarizes Module 1 (Comparing Two Groups)  
 * Added 13-MAR-2016 - v001 now also summarizes Module 2 (Categorical Association)  
+* Added 14-MAR-2016 - v002 now also summarizes Module 3 (Simple Regression)  
