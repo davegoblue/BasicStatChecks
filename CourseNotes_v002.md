@@ -318,11 +318,12 @@ Except for the use of chi-squared vs. z-statistic, the outputs are substantially
   
 ####_Two dependent means_  
 This test is much simpler to run since you have paired observations.  Essentially:  
+  
 * Test-statistic t = (x1-bar - x2-bar) / ( Sd / sqrt(n) )  
 * Sd is the standard deviation of the differences  
 * df = n-1  
 * CI = (x1-bar - x2-bar) +/- t(alpha/2) * Sd / sqrt(n)  
-
+  
 Below is an example for a random normal added to a random normal:  
 
 
@@ -472,12 +473,13 @@ round(expArtHistory,1)
 The chi-squared statistic is then the sum over all cells of residual^2 / expected, which could also be formulated as sum over all cells of (observed - expected)^2 / expected.  
 
 The chi-squared statistics can then be assessed for its likelihood:  
+  
 * Test-statistic: sum over all cells of residual^2/expected  
 * df = (nrow - 1) * (ncol - 1)  
 * The mean of a chi-squared distribution with df=n will be n  
 * The chi-squared is always greater than or equal to zero  
 * pchisq(myStat, df=myDF, lower.tail=FALSE) brings back the odds of seeing >= myStat given myDF  
-
+  
 Note that we require n=5+ for each expected cell for this statistic to be reasonable.  
 
 
@@ -1284,3 +1286,366 @@ summary(myNLS)
 The data from OLS on the linear transformation closely matches the approxiamtaion from R using NLS.  It is obviously not an appropriate fit given this data!  
 
 ## Module 4: Multiple Regression  
+Multiple regression expands simple regression by moving to two or more predictors.  These may be needed to increase explanatory power or to relieve confounders.  The assumptions are similar, although there is now a best-fit plane to describe the mean, still with the assumption that residuals all have the same sigma and are normally distributed.  
+
+The multiple regression equation can include:  
+  
+* Sample: y-hat(i) = a + b1 * x1(i) + b2 *x2(i) + . . . + bn * xn(i)  
+* Population: mu(y) = alpha + beta1 * x1 + beta2 * x2 + . . .+ betan * xn  
+  
+####_Multiple R and R-Squared_  
+Similar to simple regression, multiple regression can be described by both R and R^2.  These are:  
+  
+* R is the multiple correlation coefficient (always non-negative 0 <= R <= 1) that describes how strongly the response variable is related to the SET of predictor variables  
+* R^2 is the explained variation as a proportion, and is still Regression Sum-Squares / Total Sum-Squares  
+* Multiple-R is sqrt(R^2) and R^2 is (multiple-R)^2  
+  
+The multiple-R is based on several correlations.  For example, suppose you have response variable y with predictor variables x1, x2.  Define and use simple correlations as:  
+  
+* CorYX1 = cor(y, x1)  
+* CorYX2 = cor(y, x2)  
+* CorX1X2 = cor(x1, x2)  
+* R = sqrt[ (CorYX1^2 + CorYX2^2 - 2 * CorYX1 * CorYX2 * CorX1X2) / (1 - CorX1X2^2) ]  
+
+An example can be shown using the dataset mtcars, which will have something of a collinearity problem:  
+
+```r
+data(mtcars)
+myMulti <- mtcars[,c("mpg","cyl","wt")]
+pairs(myMulti)
+```
+
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png)
+
+```r
+corYX1<- cor(mtcars$mpg,mtcars$cyl)
+corYX2<- cor(mtcars$mpg,mtcars$wt)
+corX1X2<- cor(mtcars$wt,mtcars$cyl)
+
+multiR <- sqrt( (corYX1^2 + corYX2^2 - 2*corYX1*corYX2*corX1X2) / (1 - corX1X2^2) )
+
+print(paste0("Correlations include MPG-CYL: ",round(corYX1,3),
+             " MPG-WT: ",round(corYX2,3)," CYL-WT: ",round(corX1X2,3)
+             )
+      )
+```
+
+```
+## [1] "Correlations include MPG-CYL: -0.852 MPG-WT: -0.868 CYL-WT: 0.782"
+```
+
+```r
+print(paste0("Multiple R is ",round(multiR,4)," for R-squared ",round(multiR^2,4)))
+```
+
+```
+## [1] "Multiple R is 0.9112 for R-squared 0.8302"
+```
+
+```r
+summary(lm(mpg ~ cyl + wt, data=mtcars))
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  39.6863     1.7150  23.141  < 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302,	Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+```
+
+The hand calculation for two-variable R matches what we get from the linear model in R.  
+
+####_Overall Model Tests_  
+The null hypothesis is that Beta1 = Beta2 = . . . = Betan = 0.  The alternate hypothesis is that at least one of the Beta is non-zero, which is to say that the predictors, alone or in combination, have explanatory power.  
+There are several core assumptions required for running a multiple regression, including:  
+  
+* Linearity - as before, requires linear relationships of Y vs. Xi  
+* Normal residuals  
+* Homoscedastic residuals -- cannot grow/shrink as any of the Xi variables grow/shrink  
+* Independent residuals -- especially important in time-series and the like  
+* Observations > Predictors  
+  
+The overall hypothesis test is assessed using the F statistic.  This is calculated as:  
+  
+* MSReg (Regression Mean Sum Squares) = Regression Sum Squares / (k-1), where k is explanatory variables + 1  
+* MSRes (Residual Mean Sum Squares) = Residual Sum Squares / (n-k), where n is the total observations  
+* F = MSReg / MSRes with df1=(k-1) and df2=(n-k) where k is "explanatory variables + 1" and n is total observations  
+  
+So, continuing with the mtcars example, we have:  
+
+```r
+mtTSS <- sum( (mtcars$mpg - mean(mtcars$mpg) )^2 )
+mtRegSS <- multiR^2 * mtTSS
+mtResSS <- mtTSS - mtRegSS
+dfReg <- (2 + 1 - 1)  ## k-1 where k is explanatory + 1
+dfRes <- nrow(mtcars) - (2 + 1)  ## n-k where n is total and k is explanatory + 1
+
+print(paste0("We have Mean Regression SS: ",round(mtRegSS/dfReg,2),
+             " and Mean Resiudal SS: ",round(mtResSS/dfRes,2)
+             )
+      )
+```
+
+```
+## [1] "We have Mean Regression SS: 467.44 and Mean Resiudal SS: 6.59"
+```
+
+```r
+print(paste0("This gives F: ",round((mtRegSS/dfReg)/(mtResSS/dfRes),2),
+             " on df1=",dfReg," and df2=",dfRes," for p=",
+             round(pf((mtRegSS/dfReg)/(mtResSS/dfRes),df1=dfReg,df2=dfRes,lower.tail=FALSE),4)
+             )
+      )
+```
+
+```
+## [1] "This gives F: 70.91 on df1=2 and df2=29 for p=0"
+```
+
+```r
+summary(lm(mpg ~ cyl + wt, data=mtcars))
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  39.6863     1.7150  23.141  < 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302,	Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+```
+
+```r
+sum(resid(lm(mpg ~ cyl + wt, data=mtcars))^2) / (nrow(mtcars) - 3)
+```
+
+```
+## [1] 6.592137
+```
+
+And as before, the hand calculations match with what we see from the lm() function.  
+
+####_Individual Predictor Tests_  
+Individual t-tests help to explain whether any particular variable(s) have explanatory power, after controlling for the other variables.  The same assumptions as the overall model continue to apply.  
+
+The hypothesis testing is familiar:  
+  
+* Ho: Beta(i) = 0 after controlling for other factors  
+* Ha: Beta(i) <> 0 after controlling for other factors  
+* Test Stat t = Beta(i) / seBeta(i), df=n-k where n is total observations and k is "total predictors + 1"  
+* CI for Beta(i) = Beta(i) +/- critical-T * seBeta(i), using df=n-k  
+  
+Note that the power of an individual predictor may go up or down as other variables are added/subtracted from the overall model.  We can grab the CI and test-statistic directly from R:  
+
+
+```r
+myA <- lm(mpg ~ cyl + wt, data=mtcars)
+
+summary(myA)
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  39.6863     1.7150  23.141  < 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302,	Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+```
+
+```r
+myEst <- as.data.frame(summary(myA)$coefficients)$"Estimate"
+mySE <- as.data.frame(summary(myA)$coefficients)$"Std. Error"
+criticalT <- qt(.025, df=(nrow(mtcars)-(2+1)), lower.tail=FALSE)
+myLow <- myEst - criticalT*mySE
+myHigh <- myEst + criticalT*mySE
+
+myLow
+```
+
+```
+## [1] 36.178725 -2.355928 -4.739020
+```
+
+```r
+myHigh
+```
+
+```
+## [1] 43.1937976 -0.6596622 -1.6429245
+```
+
+```r
+confint.lm(myA)
+```
+
+```
+##                 2.5 %     97.5 %
+## (Intercept) 36.178725 43.1937976
+## cyl         -2.355928 -0.6596622
+## wt          -4.739020 -1.6429245
+```
+
+And we see that the hand calculations off the summary of the lm match the confidence interval as (much more conveniently) created by way of confint.lm().  
+
+####_Checking Assumptions_  
+The key assumptions are very similar to simple regression and include but are not limited to:  
+  
+* Linearity - for any combination of other x, we need x(i) and y to be linearly related  
+* Normal errors - eyeball test of residuals, fairly robust to violations for two-sided large-N  
+* Homoscedastic errors - eyeball the residuals, see if errors get skinnier/fatter with x(i)  
+* Independence of errors - generally controlled by good experiment design, particularly a problem for time series  
+* Sufficient observations - rule of thumb for n >= 10*m where m is the number of predictors  
+* Absaence of outliers - inspect any standardized residuals of greater than +/- 3  
+
+####_Categorical predictors and response variables_  
+The categorical predictor is a binary variable introduced to indicate yes/no.  It is typically used for things like male/female or smoker/nonsmoker.  If you have three things of interest, you use two categorical variables, where 1 0 is A, 0 1 is B, and 0 0 is C.  These need to be such that there is no case of 1 1.  The regression is run as per usual.  
+
+The categorical response variable leads to logistic regression (logit), and would typically be used if we are trying to determine the yes/no status of something.  For example, perhaps we are trying to predict what gets an entry selected as top-100 in a global competition.  Then, we will have an indicator variable that is 1 for selected and 0 for not selected.  
+
+A common functional form for the logit is exp(alpha + beta * x)/(1 + exp(alpha + beta * x)).  There are some features of note to this prediction:  
+  
+* When beta is positive, it slopes up  
+* When beta is negative, it slopes down  
+* When beta is high-magintude, it is a fast ramp  
+* The inflection point y=0.5 occurs at x = -alpha/beta  
+  
+To use this variable in regression, we first convert to odds and then take the natural logarithm.  For example:  
+  
+* Odds = P(win)/P(lose) = exp(alpha + beta*x)  
+* Log-odds = ln(odds) = alpha + beta*x  
+
+The results of a logit regression are reported in log-odds, with the estimates being "change in log-odds per change in unit of predictor variable".  The coefficients may be referred to as the "odds ratio".  The easiest way to get back to probability is to recall that p = odds / (1 + odds).  
+
+Software will also output a classification table showing predicted (cut point is typically p > 0.5) vs. actual.  There are a few key metrics:  
+
+* Specificity = Correct Model Reject / Total Real World Reject  
+* Sensitivity = Correct Model Accept / Total Real World Accept  
+* Overall Percentage = Correct Model / Total Real World  
+  
+Suppose that we modify the mtcars example a bit and explore:  
+
+```r
+data(mtcars)
+myMulti <- mtcars[,c("mpg","cyl","wt")]
+myMulti$mpgWin <- myMulti$mpg > 20
+pairs(myMulti)
+```
+
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
+
+```r
+myModel <- glm(mpgWin ~ wt + cyl, family=binomial(link="logit"), data=myMulti)
+summary(myModel)
+```
+
+```
+## 
+## Call:
+## glm(formula = mpgWin ~ wt + cyl, family = binomial(link = "logit"), 
+##     data = myMulti)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -1.62926  -0.00003   0.00000   0.00002   1.51381  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(>|z|)
+## (Intercept)    71.312  14650.124   0.005    0.996
+## wt             -4.005      2.956  -1.355    0.175
+## cyl            -9.866   2441.687  -0.004    0.997
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 43.860  on 31  degrees of freedom
+## Residual deviance:  7.199  on 29  degrees of freedom
+## AIC: 13.199
+## 
+## Number of Fisher Scoring iterations: 20
+```
+
+```r
+anova(myModel, test="Chisq")
+```
+
+```
+## Analysis of Deviance Table
+## 
+## Model: binomial, link: logit
+## 
+## Response: mpgWin
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##      Df Deviance Resid. Df Resid. Dev  Pr(>Chi)    
+## NULL                    31     43.860              
+## wt    1  30.1298        30     13.730 4.041e-08 ***
+## cyl   1   6.5313        29      7.199    0.0106 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+```r
+myFitted <- predict(myModel, newdata=myMulti, type="response")
+myFitted <- ifelse(myFitted>0.5,1,0)
+
+logitSens <- sum(myFitted*myMulti$mpgWin)/sum(myMulti$mpgWin)
+logitSpec <- sum((1-myFitted)*(1-myMulti$mpgWin))/sum(1-myMulti$mpgWin)
+logitAll <- sum(myFitted == myMulti$mpgWin)/length(myMulti$mpgWin)
+
+print(paste0("This logit has specificity ",round(logitSpec,3)," and sensitivity ",
+             round(logitSens,3)," for total percentage ",round(logitAll,3)
+             )
+      )
+```
+
+```
+## [1] "This logit has specificity 0.944 and sensitivity 0.929 for total percentage 0.938"
+```
+
+Given the friendly inputs, the logit does quite well with the predictions.  
+
+## Module 5: Analysis of Variance (ANOVA)  
+  

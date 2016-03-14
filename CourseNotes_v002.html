@@ -1399,6 +1399,358 @@ summary(myNLS)
 
 <h2>Module 4: Multiple Regression</h2>
 
+<p>Multiple regression expands simple regression by moving to two or more predictors.  These may be needed to increase explanatory power or to relieve confounders.  The assumptions are similar, although there is now a best-fit plane to describe the mean, still with the assumption that residuals all have the same sigma and are normally distributed.  </p>
+
+<p>The multiple regression equation can include:  </p>
+
+<ul>
+<li>Sample: y-hat(i) = a + b1 * x1(i) + b2 *x2(i) + &hellip; + bn * xn(i)<br/></li>
+<li>Population: mu(y) = alpha + beta1 * x1 + beta2 * x2 + &hellip;+ betan * xn<br/></li>
+</ul>
+
+<p>####<em>Multiple R and R-Squared</em><br/>
+Similar to simple regression, multiple regression can be described by both R and R<sup>2.</sup>  These are:  </p>
+
+<ul>
+<li>R is the multiple correlation coefficient (always non-negative 0 &lt;= R &lt;= 1) that describes how strongly the response variable is related to the SET of predictor variables<br/></li>
+<li>R<sup>2</sup> is the explained variation as a proportion, and is still Regression Sum-Squares / Total Sum-Squares<br/></li>
+<li>Multiple-R is sqrt(R<sup>2)</sup> and R<sup>2</sup> is (multiple-R)<sup>2</sup><br/></li>
+</ul>
+
+<p>The multiple-R is based on several correlations.  For example, suppose you have response variable y with predictor variables x1, x2.  Define and use simple correlations as:  </p>
+
+<ul>
+<li>CorYX1 = cor(y, x1)<br/></li>
+<li>CorYX2 = cor(y, x2)<br/></li>
+<li>CorX1X2 = cor(x1, x2)<br/></li>
+<li>R = sqrt[ (CorYX1<sup>2</sup> + CorYX2<sup>2</sup> - 2 * CorYX1 * CorYX2 * CorX1X2) / (1 - CorX1X2<sup>2)</sup> ]<br/></li>
+</ul>
+
+<p>An example can be shown using the dataset mtcars, which will have something of a collinearity problem:  </p>
+
+<pre><code class="r">data(mtcars)
+myMulti &lt;- mtcars[,c(&quot;mpg&quot;,&quot;cyl&quot;,&quot;wt&quot;)]
+pairs(myMulti)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-13"/></p>
+
+<pre><code class="r">corYX1&lt;- cor(mtcars$mpg,mtcars$cyl)
+corYX2&lt;- cor(mtcars$mpg,mtcars$wt)
+corX1X2&lt;- cor(mtcars$wt,mtcars$cyl)
+
+multiR &lt;- sqrt( (corYX1^2 + corYX2^2 - 2*corYX1*corYX2*corX1X2) / (1 - corX1X2^2) )
+
+print(paste0(&quot;Correlations include MPG-CYL: &quot;,round(corYX1,3),
+             &quot; MPG-WT: &quot;,round(corYX2,3),&quot; CYL-WT: &quot;,round(corX1X2,3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Correlations include MPG-CYL: -0.852 MPG-WT: -0.868 CYL-WT: 0.782&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Multiple R is &quot;,round(multiR,4),&quot; for R-squared &quot;,round(multiR^2,4)))
+</code></pre>
+
+<pre><code>## [1] &quot;Multiple R is 0.9112 for R-squared 0.8302&quot;
+</code></pre>
+
+<pre><code class="r">summary(lm(mpg ~ cyl + wt, data=mtcars))
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  39.6863     1.7150  23.141  &lt; 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302, Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+</code></pre>
+
+<p>The hand calculation for two-variable R matches what we get from the linear model in R.  </p>
+
+<p>####<em>Overall Model Tests</em><br/>
+The null hypothesis is that Beta1 = Beta2 = &hellip; = Betan = 0.  The alternate hypothesis is that at least one of the Beta is non-zero, which is to say that the predictors, alone or in combination, have explanatory power.<br/>
+There are several core assumptions required for running a multiple regression, including:  </p>
+
+<ul>
+<li>Linearity - as before, requires linear relationships of Y vs. Xi<br/></li>
+<li>Normal residuals<br/></li>
+<li>Homoscedastic residuals &ndash; cannot grow/shrink as any of the Xi variables grow/shrink<br/></li>
+<li>Independent residuals &ndash; especially important in time-series and the like<br/></li>
+<li>Observations &gt; Predictors<br/></li>
+</ul>
+
+<p>The overall hypothesis test is assessed using the F statistic.  This is calculated as:  </p>
+
+<ul>
+<li>MSReg (Regression Mean Sum Squares) = Regression Sum Squares / (k-1), where k is explanatory variables + 1<br/></li>
+<li>MSRes (Residual Mean Sum Squares) = Residual Sum Squares / (n-k), where n is the total observations<br/></li>
+<li>F = MSReg / MSRes with df1=(k-1) and df2=(n-k) where k is &ldquo;explanatory variables + 1&rdquo; and n is total observations<br/></li>
+</ul>
+
+<p>So, continuing with the mtcars example, we have:  </p>
+
+<pre><code class="r">mtTSS &lt;- sum( (mtcars$mpg - mean(mtcars$mpg) )^2 )
+mtRegSS &lt;- multiR^2 * mtTSS
+mtResSS &lt;- mtTSS - mtRegSS
+dfReg &lt;- (2 + 1 - 1)  ## k-1 where k is explanatory + 1
+dfRes &lt;- nrow(mtcars) - (2 + 1)  ## n-k where n is total and k is explanatory + 1
+
+print(paste0(&quot;We have Mean Regression SS: &quot;,round(mtRegSS/dfReg,2),
+             &quot; and Mean Resiudal SS: &quot;,round(mtResSS/dfRes,2)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;We have Mean Regression SS: 467.44 and Mean Resiudal SS: 6.59&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;This gives F: &quot;,round((mtRegSS/dfReg)/(mtResSS/dfRes),2),
+             &quot; on df1=&quot;,dfReg,&quot; and df2=&quot;,dfRes,&quot; for p=&quot;,
+             round(pf((mtRegSS/dfReg)/(mtResSS/dfRes),df1=dfReg,df2=dfRes,lower.tail=FALSE),4)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;This gives F: 70.91 on df1=2 and df2=29 for p=0&quot;
+</code></pre>
+
+<pre><code class="r">summary(lm(mpg ~ cyl + wt, data=mtcars))
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  39.6863     1.7150  23.141  &lt; 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302, Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+</code></pre>
+
+<pre><code class="r">sum(resid(lm(mpg ~ cyl + wt, data=mtcars))^2) / (nrow(mtcars) - 3)
+</code></pre>
+
+<pre><code>## [1] 6.592137
+</code></pre>
+
+<p>And as before, the hand calculations match with what we see from the lm() function.  </p>
+
+<p>####<em>Individual Predictor Tests</em><br/>
+Individual t-tests help to explain whether any particular variable(s) have explanatory power, after controlling for the other variables.  The same assumptions as the overall model continue to apply.  </p>
+
+<p>The hypothesis testing is familiar:  </p>
+
+<ul>
+<li>Ho: Beta(i) = 0 after controlling for other factors<br/></li>
+<li>Ha: Beta(i) &lt;&gt; 0 after controlling for other factors<br/></li>
+<li>Test Stat t = Beta(i) / seBeta(i), df=n-k where n is total observations and k is &ldquo;total predictors + 1&rdquo;<br/></li>
+<li>CI for Beta(i) = Beta(i) +/- critical-T * seBeta(i), using df=n-k<br/></li>
+</ul>
+
+<p>Note that the power of an individual predictor may go up or down as other variables are added/subtracted from the overall model.  We can grab the CI and test-statistic directly from R:  </p>
+
+<pre><code class="r">myA &lt;- lm(mpg ~ cyl + wt, data=mtcars)
+
+summary(myA)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  39.6863     1.7150  23.141  &lt; 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302, Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+</code></pre>
+
+<pre><code class="r">myEst &lt;- as.data.frame(summary(myA)$coefficients)$&quot;Estimate&quot;
+mySE &lt;- as.data.frame(summary(myA)$coefficients)$&quot;Std. Error&quot;
+criticalT &lt;- qt(.025, df=(nrow(mtcars)-(2+1)), lower.tail=FALSE)
+myLow &lt;- myEst - criticalT*mySE
+myHigh &lt;- myEst + criticalT*mySE
+
+myLow
+</code></pre>
+
+<pre><code>## [1] 36.178725 -2.355928 -4.739020
+</code></pre>
+
+<pre><code class="r">myHigh
+</code></pre>
+
+<pre><code>## [1] 43.1937976 -0.6596622 -1.6429245
+</code></pre>
+
+<pre><code class="r">confint.lm(myA)
+</code></pre>
+
+<pre><code>##                 2.5 %     97.5 %
+## (Intercept) 36.178725 43.1937976
+## cyl         -2.355928 -0.6596622
+## wt          -4.739020 -1.6429245
+</code></pre>
+
+<p>And we see that the hand calculations off the summary of the lm match the confidence interval as (much more conveniently) created by way of confint.lm().  </p>
+
+<p>####<em>Checking Assumptions</em><br/>
+The key assumptions are very similar to simple regression and include but are not limited to:  </p>
+
+<ul>
+<li>Linearity - for any combination of other x, we need x(i) and y to be linearly related<br/></li>
+<li>Normal errors - eyeball test of residuals, fairly robust to violations for two-sided large-N<br/></li>
+<li>Homoscedastic errors - eyeball the residuals, see if errors get skinnier/fatter with x(i)<br/></li>
+<li>Independence of errors - generally controlled by good experiment design, particularly a problem for time series<br/></li>
+<li>Sufficient observations - rule of thumb for n &gt;= 10*m where m is the number of predictors<br/></li>
+<li>Absaence of outliers - inspect any standardized residuals of greater than +/- 3<br/></li>
+</ul>
+
+<p>####<em>Categorical predictors and response variables</em><br/>
+The categorical predictor is a binary variable introduced to indicate yes/no.  It is typically used for things like male/female or smoker/nonsmoker.  If you have three things of interest, you use two categorical variables, where 1 0 is A, 0 1 is B, and 0 0 is C.  These need to be such that there is no case of 1 1.  The regression is run as per usual.  </p>
+
+<p>The categorical response variable leads to logistic regression (logit), and would typically be used if we are trying to determine the yes/no status of something.  For example, perhaps we are trying to predict what gets an entry selected as top-100 in a global competition.  Then, we will have an indicator variable that is 1 for selected and 0 for not selected.  </p>
+
+<p>A common functional form for the logit is exp(alpha + beta * x)/(1 + exp(alpha + beta * x)).  There are some features of note to this prediction:  </p>
+
+<ul>
+<li>When beta is positive, it slopes up<br/></li>
+<li>When beta is negative, it slopes down<br/></li>
+<li>When beta is high-magintude, it is a fast ramp<br/></li>
+<li>The inflection point y=0.5 occurs at x = -alpha/beta<br/></li>
+</ul>
+
+<p>To use this variable in regression, we first convert to odds and then take the natural logarithm.  For example:  </p>
+
+<ul>
+<li>Odds = P(win)/P(lose) = exp(alpha + beta*x)<br/></li>
+<li>Log-odds = ln(odds) = alpha + beta*x<br/></li>
+</ul>
+
+<p>The results of a logit regression are reported in log-odds, with the estimates being &ldquo;change in log-odds per change in unit of predictor variable&rdquo;.  The coefficients may be referred to as the &ldquo;odds ratio&rdquo;.  The easiest way to get back to probability is to recall that p = odds / (1 + odds).  </p>
+
+<p>Software will also output a classification table showing predicted (cut point is typically p &gt; 0.5) vs. actual.  There are a few key metrics:  </p>
+
+<ul>
+<li>Specificity = Correct Model Reject / Total Real World Reject<br/></li>
+<li>Sensitivity = Correct Model Accept / Total Real World Accept<br/></li>
+<li>Overall Percentage = Correct Model / Total Real World<br/></li>
+</ul>
+
+<p>Suppose that we modify the mtcars example a bit and explore:  </p>
+
+<pre><code class="r">data(mtcars)
+myMulti &lt;- mtcars[,c(&quot;mpg&quot;,&quot;cyl&quot;,&quot;wt&quot;)]
+myMulti$mpgWin &lt;- myMulti$mpg &gt; 20
+pairs(myMulti)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-16"/></p>
+
+<pre><code class="r">myModel &lt;- glm(mpgWin ~ wt + cyl, family=binomial(link=&quot;logit&quot;), data=myMulti)
+summary(myModel)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## glm(formula = mpgWin ~ wt + cyl, family = binomial(link = &quot;logit&quot;), 
+##     data = myMulti)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -1.62926  -0.00003   0.00000   0.00002   1.51381  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)    71.312  14650.124   0.005    0.996
+## wt             -4.005      2.956  -1.355    0.175
+## cyl            -9.866   2441.687  -0.004    0.997
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 43.860  on 31  degrees of freedom
+## Residual deviance:  7.199  on 29  degrees of freedom
+## AIC: 13.199
+## 
+## Number of Fisher Scoring iterations: 20
+</code></pre>
+
+<pre><code class="r">anova(myModel, test=&quot;Chisq&quot;)
+</code></pre>
+
+<pre><code>## Analysis of Deviance Table
+## 
+## Model: binomial, link: logit
+## 
+## Response: mpgWin
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##      Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+## NULL                    31     43.860              
+## wt    1  30.1298        30     13.730 4.041e-08 ***
+## cyl   1   6.5313        29      7.199    0.0106 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+<pre><code class="r">myFitted &lt;- predict(myModel, newdata=myMulti, type=&quot;response&quot;)
+myFitted &lt;- ifelse(myFitted&gt;0.5,1,0)
+
+logitSens &lt;- sum(myFitted*myMulti$mpgWin)/sum(myMulti$mpgWin)
+logitSpec &lt;- sum((1-myFitted)*(1-myMulti$mpgWin))/sum(1-myMulti$mpgWin)
+logitAll &lt;- sum(myFitted == myMulti$mpgWin)/length(myMulti$mpgWin)
+
+print(paste0(&quot;This logit has specificity &quot;,round(logitSpec,3),&quot; and sensitivity &quot;,
+             round(logitSens,3),&quot; for total percentage &quot;,round(logitAll,3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;This logit has specificity 0.944 and sensitivity 0.929 for total percentage 0.938&quot;
+</code></pre>
+
+<p>Given the friendly inputs, the logit does quite well with the predictions.  </p>
+
+<h2>Module 5: Analysis of Variance (ANOVA)</h2>
+
 </body>
 
 </html>
