@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Synopsis and Overview</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Synopsis and Overview</h1>
+
+<p>This document contains some of the key concepts, statistics, and R formulae from the UvA Inferential Statistics course.  It is intended as a helpful reference sheet for future use.  </p>
+
+<h2>Module 1: Comparing Two Groups</h2>
+
+<p>There are two schools of thought, frequentist (more common) and Bayesian (growing):  </p>
+
+<ul>
+<li>Frequentist - what are the odds of observing X given my hypothesized population?<br/></li>
+<li>Bayesian - what are the odds of a hypothesized population given that I observed X?<br/></li>
+</ul>
+
+<p>There are a few good cautions raised about significance and confidence levels:  </p>
+
+<ul>
+<li>Statistical Significance - The x% confidence interval is constructed such that if we run the experiment infinite times, x% of our intervals would contain the true population mean<br/></li>
+<li>Practical Significance - does it actually matter that Ho: P=0 is rejected?  The confidence interval helps to assess effect magnitude<br/></li>
+</ul>
+
+<p>Recall that there are two key error types:  </p>
+
+<ul>
+<li>Type I (reject a true null) - happens (1 - alpha), where alpha is pre-set<br/></li>
+<li>Type II (fail to reject a false null) &ndash; happend beta, so (1 - beta) is the test power<br/></li>
+<li>Power is increased by better instruments, more homogenous samples, larger N, larger effect, one-sided tests, parametric tests (for sufficiently large N)<br/></li>
+</ul>
+
+<p>####<em>Two indepedent proportions</em><br/>
+The main metric is a z-test, and it generally requires at least 10 positive and 10 negative per group for one-sided tests, and at least 5 positive and 5 negative per group for two-sided tests:  </p>
+
+<p>The test statistic is designed to follow a z-distribution, specifically:  </p>
+
+<ul>
+<li>Since null is equality, the test stastic starts as (p1-hat - p2-hat)<br/></li>
+<li>Standard error is then sqrt(p-hat * (1 - p-hat) * (1/n1 + 1/n2))<br/></li>
+<li>P-hat is the pooled proportion, or (n1 * p1-hat + n2 * p2-hat) / (n1 + n2)<br/></li>
+<li>CI (after the fact) can no longer use the pooled proportion since null is no longer assumed<br/></li>
+<li>(p1-hat - p2-hat) +/- z(alpha/2) * sqrt(p-hat1 * (1-p-hat1) / n1 + p-hat2 * (1-p-hat2) / n2)<br/></li>
+</ul>
+
+<p>This can also be expressed as a relative risk, or p1/p2, with its own assumed confidence intervals.  </p>
+
+<p>See below for an example from two random normal distributions:  </p>
+
+<pre><code class="r">set.seed(0313160758)
+norm1 &lt;- rnorm(100,mean=2,sd=1)
+norm2 &lt;- rnorm(120,mean=2.5,sd=1.5)
+p1Norm &lt;- norm1 &gt; 2
+p2Norm &lt;- norm2 &gt; 2
+p1Hat &lt;- mean(p1Norm)
+p2Hat &lt;- mean(p2Norm)
+n1 &lt;- length(p1Norm)
+n2 &lt;- length(p2Norm)
+
+## Calculate means, difference, pooled proportion, standard error
+print(paste0(&quot;Means of the data are P1: &quot;,p1Hat,&quot; and P2: &quot;,p2Hat))
+</code></pre>
+
+<pre><code>## [1] &quot;Means of the data are P1: 0.6 and P2: 0.55&quot;
+</code></pre>
+
+<pre><code class="r">poolProp &lt;- (n1*p1Hat + n2*p2Hat) / (n1 + n2)
+stdError &lt;- sqrt(poolProp * (1-poolProp) * (1/n1 + 1/n2))
+print(paste0(&quot;Pooled proportion is: &quot;,round(poolProp,3),&quot; with stderr: &quot;,round(stdError,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;Pooled proportion is: 0.573 with stderr: 0.067&quot;
+</code></pre>
+
+<pre><code class="r">## Calculate test statistic and p-value
+zTestStat &lt;- (p1Hat - p2Hat) / stdError
+pTwoSided &lt;- 1 - 2 * abs((pnorm(zTestStat) - 0.5))
+print(paste0(&quot;The z-stat of: &quot;,round(zTestStat,3),&quot; which has z^2: &quot;,round(zTestStat^2,3),
+             &quot; has two-sided significance: &quot;,round(pTwoSided,3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The z-stat of: 0.746 which has z^2: 0.557 has two-sided significance: 0.455&quot;
+</code></pre>
+
+<pre><code class="r">## Calculate post-hoc CI
+newStdErr &lt;- sqrt(p1Hat * (1 - p1Hat) / n1 + p2Hat * (1 - p2Hat) / n2)
+critZ &lt;- qnorm(.05/2, lower.tail=FALSE)
+print(paste0(&quot;Post-hoc 95% CI for difference in proportions is &quot;,
+             paste(round(p1Hat - p2Hat + c(-1,1) * critZ * newStdErr, 3), collapse=&quot; , &quot;)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Post-hoc 95% CI for difference in proportions is -0.081 , 0.181&quot;
+</code></pre>
+
+<pre><code class="r">## Comparison to R -- note that R uses chi-squared which is directly related to N(0.1)
+prop.test(x=c(sum(p1Norm),sum(p2Norm)) , n=c(n1, n2) , correct=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  2-sample test for equality of proportions without continuity
+##  correction
+## 
+## data:  c(sum(p1Norm), sum(p2Norm)) out of c(n1, n2)
+## X-squared = 0.55724, df = 1, p-value = 0.4554
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.08092941  0.18092941
+## sample estimates:
+## prop 1 prop 2 
+##   0.60   0.55
+</code></pre>
+
+<p>And, we observe that the findings from R match the hand calculations, with the exception that R runs a chi-squared test and the hand calculations are a z-test.  If x~N(0,1) then x<sup>2</sup> ~ chi-squared df=1, so these are functionally the same approach and outcome.  </p>
+
+<p>####<em>Two indepedent means</em><br/>
+For two indepednent means, the t-test is applied.  This requires independence of samples, roughly normal population distributions (though t is robust against this), and a &ldquo;large enough&rdquo; (N ~30) sample:  </p>
+
+<p>The test statistic is designed to follow a t-distribution, specifically:  </p>
+
+<p>#####<em>Unequal variance</em>  </p>
+
+<ul>
+<li>Since null is equality, the test stastic starts as (x1-hat - x2-hat)<br/></li>
+<li>Pooled standard error is then unPSE = sqrt(s1<sup>2/n1</sup> + s2<sup>2/n2)</sup><br/></li>
+<li>df is a cluster - (s1<sup>2/n1</sup> + s2<sup>2/n2)<sup>2</sup></sup> / [ (s1<sup>2/n1)<sup>2</sup></sup> / (n1 - 1) + (s2<sup>2/n2)<sup>2</sup></sup> / (n2 - 1) ]<br/></li>
+<li>Test-statistic is (x1-hat - x2-hat) / unPSE, following t with df<br/></li>
+<li>Post-hoc CI is (x1-bar - x2-bar) +/- t(alpha/2) * unPSE </li>
+</ul>
+
+<p>#####<em>Assume equal variance</em>  </p>
+
+<ul>
+<li>Pooled standard error is then eqPSE = sqrt( [ (n1-1) * s1<sup>2</sup> + (n2-1) * s2<sup>2</sup> ] / [ (n1 - 1) + (n2 - 1) ]<br/></li>
+<li>df is easy - n1 + n2 - 2<br/></li>
+<li>Test-statistic is (x1-hat - x2-hat) / eqPSE, following t with df<br/></li>
+</ul>
+
+<p>Note that the unequal variances approach is greatly preferred, as the equal variances approach can be sensitive to violations of normality.  </p>
+
+<p>See below for an example from two random normal distributions (we will keep the norm1 and norm2 as originally drawn, but without any conversions for &ldquo;greater than 2&rdquo;:  </p>
+
+<pre><code class="r">x1Hat &lt;- mean(norm1)
+x2Hat &lt;- mean(norm2)
+s1 &lt;- sd(norm1)
+s2 &lt;- sd(norm2)
+n1 &lt;- length(p1Norm)
+n2 &lt;- length(p2Norm)
+
+## Report on individual means, standard deviations, and sample sizes
+print(paste0(&quot;Distribution 1 has mean: &quot;,round(x1Hat,2),&quot; with std &quot;,round(s1,2),&quot; on n=&quot;,n1))
+</code></pre>
+
+<pre><code>## [1] &quot;Distribution 1 has mean: 2.19 with std 1.09 on n=100&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Distribution 2 has mean: &quot;,round(x2Hat,2),&quot; with std &quot;,round(s2,2),&quot; on n=&quot;,n2))
+</code></pre>
+
+<pre><code>## [1] &quot;Distribution 2 has mean: 2.44 with std 1.59 on n=120&quot;
+</code></pre>
+
+<pre><code class="r">## Run this as an unequal variance approach
+unPSE &lt;- sqrt(s1^2/n1 + s2^2/n2)
+unDF &lt;- (s1^2/n1 + s2^2/n2)^2 / ((s1^2/n1)^2 / (n1-1) + (s2^2/n2)^2 / (n2-1))
+print(paste0(&quot;Assuming unequal variance, we have difference: &quot;,round(x1Hat - x2Hat,2),
+             &quot; with pooled SE: &quot;,round(unPSE,2),&quot; and df = &quot;,round(unDF,1)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Assuming unequal variance, we have difference: -0.26 with pooled SE: 0.18 and df = 210.3&quot;
+</code></pre>
+
+<pre><code class="r">unTest &lt;- (x1Hat - x2Hat) / unPSE
+unPTwoSided &lt;- 1 - 2 * abs(pt(unTest,df=unDF) - 0.5)
+print(paste0(&quot;The t-statistic &quot;,round(unTest,3),&quot; has two-sided significance &quot;,round(unPTwoSided,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;The t-statistic -1.416 has two-sided significance 0.158&quot;
+</code></pre>
+
+<pre><code class="r">critT &lt;- qt(.05/2,df=unDF,lower.tail=FALSE)
+print(paste0(&quot;The 95% CI for difference in means is &quot;,
+             paste(round(x1Hat - x2Hat + c(-1,1) * critT * unPSE, 3), collapse=&quot; , &quot;)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The 95% CI for difference in means is -0.615 , 0.101&quot;
+</code></pre>
+
+<pre><code class="r">## Comparison to the R results
+t.test(norm1,norm2,paired=FALSE,var.equal=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  norm1 and norm2
+## t = -1.4156, df = 210.29, p-value = 0.1584
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.6149437  0.1009042
+## sample estimates:
+## mean of x mean of y 
+##  2.187555  2.444575
+</code></pre>
+
+<pre><code class="r">## Run this as an equal variance approach
+eqS &lt;- sqrt( ( (n1-1) * s1^2 + (n2-1) * s2^2 ) / ( (n1 - 1) + (n2 - 1) ) )
+eqPSE &lt;- eqS * sqrt(1/n1 + 1/n2)
+eqDF &lt;- n1 + n2 - 2
+print(paste0(&quot;Assuming equal variance, we have difference: &quot;,round(x1Hat - x2Hat,2),
+             &quot; with S: &quot;,round(eqS,2),&quot; and pooled SE: &quot;,round(eqPSE,2),&quot; with df = &quot;,round(eqDF,1)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Assuming equal variance, we have difference: -0.26 with S: 1.39 and pooled SE: 0.19 with df = 218&quot;
+</code></pre>
+
+<pre><code class="r">eqTest &lt;- (x1Hat - x2Hat) / eqPSE
+eqPTwoSided &lt;- 1 - 2 * abs(pt(eqTest,df=eqDF) - 0.5)
+print(paste0(&quot;The t-statistic &quot;,round(eqTest,3),&quot; has two-sided significance &quot;,round(eqPTwoSided,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;The t-statistic -1.369 has two-sided significance 0.172&quot;
+</code></pre>
+
+<pre><code class="r">critT &lt;- qt(.05/2,df=eqDF,lower.tail=FALSE)
+print(paste0(&quot;The 95% CI for difference in means is &quot;,
+             paste(round(x1Hat - x2Hat + c(-1,1) * critT * eqPSE, 3), collapse=&quot; , &quot;)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The 95% CI for difference in means is -0.627 , 0.113&quot;
+</code></pre>
+
+<pre><code class="r">## Comparison to the R results
+t.test(norm1,norm2,paired=FALSE,var.equal=TRUE)
+</code></pre>
+
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  norm1 and norm2
+## t = -1.3693, df = 218, p-value = 0.1723
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.6269680  0.1129285
+## sample estimates:
+## mean of x mean of y 
+##  2.187555  2.444575
+</code></pre>
+
+<p>And, we observe that the findings from R match the hand calculations.  </p>
+
+<p>####<em>Two dependent proportions</em><br/>
+With two dependent proportions, you have a McNemar test.  Note that R will run this as a chi-squared (worry about the direction for one-sided in interpretation) while UvA runs this as a z-test (worry about the direction in the statistic set-up).  </p>
+
+<p>Essentially, there are four things that can happen:  Good -&gt; Good, Good -&gt; Bad, Bad -&gt; Good, and Bad -&gt; Bad.  We are only actually interested in Good -&gt; Bad (GB) and Bad -&gt; Good (BG).  </p>
+
+<ul>
+<li>z = (BG - GB) / sqrt(BG + GB)<br/></li>
+<li>chiSq = (BG - GB)<sup>2</sup> / (BG + GB)<br/></li>
+</ul>
+
+<p>Suppose we have a grid of 311, 34 (BG), 17 (GB), 14.  We only care about the 34 and the 17:  </p>
+
+<pre><code class="r">zTest &lt;- (34 - 17) / sqrt(34 + 17)
+zPStat &lt;- 1 - 2 * abs(pnorm(zTest) - 0.5)
+print(paste0(&quot;Using z-test, we have z: &quot;,round(zTest,3),&quot; with two-sided p: &quot;,round(zPStat,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;Using z-test, we have z: 2.38 with two-sided p: 0.017&quot;
+</code></pre>
+
+<pre><code class="r">## Compare to R
+mcnemar.test(x=matrix(data=c(311,34,17,14),nrow=2,byrow=TRUE),correct=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  McNemar&#39;s Chi-squared test
+## 
+## data:  matrix(data = c(311, 34, 17, 14), nrow = 2, byrow = TRUE)
+## McNemar&#39;s chi-squared = 5.6667, df = 1, p-value = 0.01729
+</code></pre>
+
+<p>Except for the use of chi-squared vs. z-statistic, the outputs are substantially the same.  </p>
+
+<p>####<em>Two dependent means</em><br/>
+This test is much simpler to run since you have paired observations.  Essentially:  </p>
+
+<ul>
+<li>Test-statistic t = (x1-bar - x2-bar) / ( Sd / sqrt(n) )<br/></li>
+<li>Sd is the standard deviation of the differences<br/></li>
+<li>df = n-1<br/></li>
+<li>CI = (x1-bar - x2-bar) +/- t(alpha/2) * Sd / sqrt(n)<br/></li>
+</ul>
+
+<p>Below is an example for a random normal added to a random normal:  </p>
+
+<pre><code class="r">myVar1 &lt;- norm1
+myVar2 &lt;- norm1 + rnorm(100,mean=0.5,sd=5)
+myDiff &lt;- myVar1 - myVar2
+
+muDiff &lt;- mean(myDiff)
+sDiff &lt;- sd(myDiff)
+nDiff &lt;- length(myDiff)
+seDiff &lt;- sDiff / sqrt(nDiff)
+dfDiff &lt;- nDiff - 1
+
+tStatDiff &lt;- muDiff / seDiff
+pStatDiff &lt;- 1 - 2 * abs(pnorm(tStatDiff) - 0.5)
+
+print(paste0(&quot;The difference in means is: &quot;,round(muDiff,2),&quot; with standard error: &quot;,round(seDiff,2)))
+</code></pre>
+
+<pre><code>## [1] &quot;The difference in means is: -1.55 with standard error: 0.49&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;The t-statistic &quot;,round(tStatDiff,2),&quot; with df = &quot;,dfDiff,
+             &quot; has two-sided significance &quot;,round(pStatDiff,3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The t-statistic -3.16 with df = 99 has two-sided significance 0.002&quot;
+</code></pre>
+
+<pre><code class="r">tCritical &lt;- qt(.05/2,lower.tail=FALSE,df=dfDiff)
+print(paste0(&quot;The 95% CI for difference in means is: &quot;,
+             paste(round(muDiff + c(-1,1) * seDiff * tCritical,3),collapse=&quot; , &quot;)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;The 95% CI for difference in means is: -2.515 , -0.576&quot;
+</code></pre>
+
+<pre><code class="r">## Compare with R
+t.test(myVar1,myVar2,paired=TRUE)
+</code></pre>
+
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  myVar1 and myVar2
+## t = -3.1638, df = 99, p-value = 0.002069
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.5150923 -0.5762888
+## sample estimates:
+## mean of the differences 
+##               -1.545691
+</code></pre>
+
+<p>As expected, the results from R match the associated hand calculations.  </p>
+
+<h2>Module 2: Categorical Association</h2>
+
+<p>Tests for categorical association check relative frequencies for two or more categories.  The typical test statistic is chi-squared.  Comparisons are made against an &ldquo;expected frequency&rdquo; which can be a theoretical frequency or the frequency that would be obtained by multiplying out row/column frequencies.  </p>
+
+<p>The general approach to a test matrix is to put the explanatory variables in the rows and the response variable in the columns.  There is, of course, no actual meaningful correlation statistic since the column orders are arbitrary.  So, the general framing would be:</p>
+
+<ul>
+<li>Ho: The variables are all independent, which is to say P(row, column) = P(row) * P(column)<br/></li>
+<li>Ha: There are one or more dependencies<br/></li>
+<li>Approach:  Create a new table (expected) that is P(row) * P(column)<br/></li>
+</ul>
+
+<p>The example from the UvA course is used a few times in this module:  </p>
+
+<pre><code class="r">artHistory &lt;- data.frame(fruit=c(11,8,3), flowers=c(5,6,10),mixed=c(1,8,12),
+                         row.names=c(&quot;early&quot;,&quot;late&quot;,&quot;Baroque&quot;)
+                         )
+## Raw data frame
+artHistory
+</code></pre>
+
+<pre><code>##         fruit flowers mixed
+## early      11       5     1
+## late        8       6     8
+## Baroque     3      10    12
+</code></pre>
+
+<pre><code class="r">## Joint frequencies
+jointFreqArt &lt;- artHistory/sum(artHistory)
+jointFreqArt
+</code></pre>
+
+<pre><code>##            fruit  flowers    mixed
+## early   0.171875 0.078125 0.015625
+## late    0.125000 0.093750 0.125000
+## Baroque 0.046875 0.156250 0.187500
+</code></pre>
+
+<pre><code class="r">## Marginal (column) frequencies
+margColArt &lt;- colSums(artHistory)/sum(artHistory)
+t(as.matrix(margColArt))
+</code></pre>
+
+<pre><code>##        fruit  flowers    mixed
+## [1,] 0.34375 0.328125 0.328125
+</code></pre>
+
+<pre><code class="r">## Marginal (row) frequencies
+margRowArt &lt;- rowSums(artHistory)/sum(artHistory)
+as.matrix(margRowArt)
+</code></pre>
+
+<pre><code>##             [,1]
+## early   0.265625
+## late    0.343750
+## Baroque 0.390625
+</code></pre>
+
+<pre><code class="r">## Expected frequencies = product of marginal frequencies
+expArtHistory &lt;- ( as.matrix(margRowArt) %*% t(as.matrix(margColArt)) ) * sum(artHistory)
+round(expArtHistory,1)
+</code></pre>
+
+<pre><code>##         fruit flowers mixed
+## early     5.8     5.6   5.6
+## late      7.6     7.2   7.2
+## Baroque   8.6     8.2   8.2
+</code></pre>
+
+<p>####<em>Chi-squared test for association</em><br/>
+The chi-squared statistic is then the sum over all cells of residual<sup>2</sup> / expected, which could also be formulated as sum over all cells of (observed - expected)<sup>2</sup> / expected.  </p>
+
+<p>The chi-squared statistics can then be assessed for its likelihood:  </p>
+
+<ul>
+<li>Test-statistic: sum over all cells of residual<sup>2/expected</sup><br/></li>
+<li>df = (nrow - 1) * (ncol - 1)<br/></li>
+<li>The mean of a chi-squared distribution with df=n will be n<br/></li>
+<li>The chi-squared is always greater than or equal to zero<br/></li>
+<li>pchisq(myStat, df=myDF, lower.tail=FALSE) brings back the odds of seeing &gt;= myStat given myDF<br/></li>
+</ul>
+
+<p>Note that we require n=5+ for each expected cell for this statistic to be reasonable.  </p>
+
+<pre><code class="r">## The residuals data frame
+resArtHistory &lt;- artHistory - expArtHistory
+resArtHistory
+</code></pre>
+
+<pre><code>##            fruit   flowers     mixed
+## early    5.15625 -0.578125 -4.578125
+## late     0.43750 -1.218750  0.781250
+## Baroque -5.59375  1.796875  3.796875
+</code></pre>
+
+<pre><code class="r">## Test Statistic method 1 -- residual^2 / expected
+testMatrix1 &lt;- resArtHistory^2 / expArtHistory
+testMatrix1
+</code></pre>
+
+<pre><code>##              fruit    flowers      mixed
+## early   4.54963235 0.05991772 3.75739671
+## late    0.02530992 0.20576299 0.08455087
+## Baroque 3.64102273 0.39360119 1.75741071
+</code></pre>
+
+<pre><code class="r">testStat1 &lt;- sum(testMatrix1)
+testStat1
+</code></pre>
+
+<pre><code>## [1] 14.47461
+</code></pre>
+
+<pre><code class="r">## Test statistics method 2 -- (observed/expected - 1)^2
+testMatrix2 &lt;- (artHistory - expArtHistory)^2 / expArtHistory
+testMatrix2
+</code></pre>
+
+<pre><code>##              fruit    flowers      mixed
+## early   4.54963235 0.05991772 3.75739671
+## late    0.02530992 0.20576299 0.08455087
+## Baroque 3.64102273 0.39360119 1.75741071
+</code></pre>
+
+<pre><code class="r">testStat2 &lt;- sum(testMatrix2)
+testStat2
+</code></pre>
+
+<pre><code>## [1] 14.47461
+</code></pre>
+
+<pre><code class="r">## Calculate df
+dfArt &lt;- (ncol(artHistory) - 1) * (nrow(artHistory) - 1)
+dfArt
+</code></pre>
+
+<pre><code>## [1] 4
+</code></pre>
+
+<pre><code class="r">## Report on pStatistic
+pStat &lt;- pchisq(testStat1, df=dfArt, lower.tail=FALSE)
+print(paste0(&quot;Chi-squared is &quot;,round(testStat1,2),&quot; on df=&quot;,dfArt,&quot; for p=&quot;,round(pStat,4)))
+</code></pre>
+
+<pre><code>## [1] &quot;Chi-squared is 14.47 on df=4 for p=0.0059&quot;
+</code></pre>
+
+<pre><code class="r">## No surprise that this matches R
+chisq.test(artHistory,correct=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  artHistory
+## X-squared = 14.475, df = 4, p-value = 0.005925
+</code></pre>
+
+<p>####<em>Interpretation of chi-squared</em><br/>
+There are two ways to help with interpreting chi-squared.  Recall that as df increases, you expect chi-squared to increase, so there is no specific meaning to &ldquo;this has chi-squared 6 while that has chi-squared 12&rdquo;.  </p>
+
+<ul>
+<li>Cramer&#39;s V is an attempt to standardize the chi-squared to within 0-1 where 0 means &ldquo;no association&rdquo; and 1 means &ldquo;perfect association&rdquo;.  The challenge is that V tends to increase no matter what as the matrix becomes less square, so it is still not a perfect test.<br/></li>
+<li>Standarized residuals give a sense for how far each cell in the observed matrix is from expected.  It is reported on either a Pearson basis or a residuals basis.<br/></li>
+</ul>
+
+<p>The calculation for Cramer&#39;s V is as follows:  </p>
+
+<ul>
+<li>V = sqrt(chi-squared / (n * m))<br/></li>
+<li>n = total cells in the matrix<br/></li>
+<li>m = lesser of # rows or # columns, then subtract 1<br/></li>
+</ul>
+
+<p>There are two means of calculating the standardized residuals:  </p>
+
+<ul>
+<li>Pearson - residual / sqrt(expected)<br/></li>
+<li>Standraized - resiudal / sqrt(V)<br/></li>
+<li>V for a given cell =  expNCell * (1 - Prow) * (1 - Pcol)<br/></li>
+<li>The standardized residuals follow a z-distribution<br/></li>
+</ul>
+
+<p>The code chunks below are copied from CheckChiSq_v001.Rmd:  </p>
+
+<pre><code class="r">testFrame &lt;- data.frame(colI = c(5, 34, 33), colII = c(6, 47, 32), 
+                        colIII = c(9, 48, 14), row.names=c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;)
+                        )
+testFrame
+</code></pre>
+
+<pre><code>##   colI colII colIII
+## A    5     6      9
+## B   34    47     48
+## C   33    32     14
+</code></pre>
+
+<pre><code class="r">expMatrix &lt;- as.matrix(rowSums(testFrame)) %*% t(as.matrix(colSums(testFrame)))
+expMatrix &lt;- expMatrix / sum(testFrame)
+round(expMatrix,1)
+</code></pre>
+
+<pre><code>##   colI colII colIII
+## A  6.3   7.5    6.2
+## B 40.7  48.1   40.2
+## C 24.9  29.5   24.6
+</code></pre>
+
+<pre><code class="r">resMatrix &lt;- testFrame - expMatrix
+round(resMatrix,1)
+</code></pre>
+
+<pre><code>##   colI colII colIII
+## A -1.3  -1.5    2.8
+## B -6.7  -1.1    7.8
+## C  8.1   2.5  -10.6
+</code></pre>
+
+<pre><code class="r">testChiSq &lt;- sum(resMatrix^2 / expMatrix)
+nR &lt;- nrow(resMatrix)
+nC &lt;- ncol(resMatrix)
+
+dfChiSq &lt;- (nR - 1) * (nC - 1)
+cramerV &lt;- sqrt(testChiSq / (nR * nC) / (min(nR, nC) - 1) )
+
+## Pearson residuals - (obs - exp) / sqrt(exp)
+prsMatrix &lt;- resMatrix / sqrt(expMatrix)
+
+## Standardized residuals - (obs - exp) / sqrt(V)
+## Vij = sqrt(Expij * (1 - pRow) * (1 - pCol))
+stdMatrix &lt;- resMatrix / 
+             sqrt(expMatrix * 
+                   (as.matrix(1 - rowSums(expMatrix)/sum(expMatrix)) 
+                    %*%             
+                    t(as.matrix(1-colSums(expMatrix)/sum(expMatrix)))
+                    )
+                  )
+
+print(paste0(&quot;Chi-squared is &quot;,round(testChiSq,2),&quot; with df=&quot;,dfChiSq,
+             &quot; (p=&quot;,
+             round(pchisq(testChiSq, df=dfChiSq, lower.tail=FALSE),4),
+             &quot;)&quot;
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Chi-squared is 11.84 with df=4 (p=0.0185)&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Cramer&#39;s V is: &quot;,round(cramerV,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;Cramer&#39;s V is: 0.811&quot;
+</code></pre>
+
+<pre><code class="r">## Pearson residuals - (obs - exp) / sqrt(exp)
+round(prsMatrix,2)
+</code></pre>
+
+<pre><code>##    colI colII colIII
+## A -0.52 -0.53   1.11
+## B -1.06 -0.16   1.24
+## C  1.61  0.47  -2.14
+</code></pre>
+
+<pre><code class="r">## Standardized residuals - (obs - exp) / sqrt(V)
+## Vij = sqrt(Expij * (1 - pRow) * (1 - pCol))
+round(stdMatrix,2)
+</code></pre>
+
+<pre><code>##    colI colII colIII
+## A -0.66 -0.70   1.40
+## B -1.94 -0.30   2.26
+## C  2.41  0.73  -3.19
+</code></pre>
+
+<pre><code class="r">testChi &lt;- chisq.test(testFrame)
+for (intCtr in 1:length(testChi)) {
+    print(testChi[intCtr])
+}
+</code></pre>
+
+<pre><code>## $statistic
+## X-squared 
+##  11.84471 
+## 
+## $parameter
+## df 
+##  4 
+## 
+## $p.value
+## [1] 0.01854417
+## 
+## $method
+## [1] &quot;Pearson&#39;s Chi-squared test&quot;
+## 
+## $data.name
+## [1] &quot;testFrame&quot;
+## 
+## $observed
+##   colI colII colIII
+## A    5     6      9
+## B   34    47     48
+## C   33    32     14
+## 
+## $expected
+##        colI    colII   colIII
+## A  6.315789  7.45614  6.22807
+## B 40.736842 48.09211 40.17105
+## C 24.947368 29.45175 24.60088
+## 
+## $residuals
+##         colI      colII    colIII
+## A -0.5235674 -0.5332688  1.110722
+## B -1.0555108 -0.1574808  1.235227
+## C  1.6122243  0.4695542 -2.137305
+## 
+## $stdres
+##         colI      colII    colIII
+## A -0.6626947 -0.7049874  1.401389
+## B -1.9365006 -0.3017705  2.258989
+## C  2.4110425  0.7334312 -3.186093
+</code></pre>
+
+<pre><code class="r">## Borrowed from http://www.r-bloggers.com/example-8-39-calculating-cramers-v/
+## With adaptations
+cv.test &lt;- function(x) {
+    CV &lt;- sqrt(chisq.test(x, correct=FALSE)$statistic /
+               (sum(!is.na(x)) * (min(nrow(x), ncol(x)) - 1) )
+               )
+
+    print.noquote(&quot;Cramér V / Phi:&quot;)
+
+    return(as.numeric(CV))
+}
+
+cv.test(testFrame)
+</code></pre>
+
+<pre><code>## [1] Cramér V / Phi:
+</code></pre>
+
+<pre><code>## [1] 0.8111964
+</code></pre>
+
+<p>The R functions (chisq.test and cv.test) match with the hand calculations as expected.  </p>
+
+<p>####<em>Running chi-squared as &ldquo;goodness of fit&rdquo;</em><br/>
+The chi-squared test can also be run to compare some actual observations against a theoretical distribution.  There are a few modest changes:  </p>
+
+<ul>
+<li>Ho: Observed does not differ from expected based on theory<br/></li>
+<li>Ha: Observed differs in at least some regard from expected based on theory<br/></li>
+<li>Test statistic chi-squared is sum-over-columns of (observed - expected)<sup>2</sup> / expected<br/></li>
+<li>df = N-1 where there are N columns explored<br/></li>
+<li>Requirement that expected be 5+ in each column<br/></li>
+</ul>
+
+<p>Expected is generally a vector of probabilities summing to 1, with expected for each column become T*expected where T is the sum across all of the observed elements.  </p>
+
+<p>An obvious but important caution is that this is absolutely NOT an appropriate way to compare two rows of observed data against each other!  This only works when you have a theoretical expectation prior to experimentation, and an observed dataset during your experiment plainly does not qualify!  </p>
+
+<p>See below for a very simple example:  </p>
+
+<pre><code class="r">myVector &lt;- c(5,20,10,35)
+myTheory &lt;- c(.2,.3,.1,.4)
+
+chiSqAssoc &lt;- (myVector - (sum(myVector) * myTheory) )^2 / ( sum(myVector) * myTheory) 
+chiSqAssoc
+</code></pre>
+
+<pre><code>## [1] 5.78571429 0.04761905 1.28571429 1.75000000
+</code></pre>
+
+<pre><code class="r">dfAssoc &lt;- length(chiSqAssoc) - 1
+pStat &lt;- pchisq(sum(chiSqAssoc), df=dfAssoc, lower.tail=FALSE)
+
+print(paste0(&quot;Chi-squared is &quot;, round(sum(chiSqAssoc),2),
+             &quot; with df=&quot;,dfAssoc,&quot; for p=&quot;,round(pStat,4)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Chi-squared is 8.87 with df=3 for p=0.0311&quot;
+</code></pre>
+
+<pre><code class="r">chisq.test(myVector, correct=FALSE,p=myTheory)
+</code></pre>
+
+<pre><code>## 
+##  Chi-squared test for given probabilities
+## 
+## data:  myVector
+## X-squared = 8.869, df = 3, p-value = 0.03108
+</code></pre>
+
+<p>As expected, the results from R functions match the hand calculations.  </p>
+
+<p>####<em>Side notes for chi-squared tests</em><br/>
+Sometimes, not all of the conditions for chi-squared testing are met.  To wit:  </p>
+
+<ul>
+<li>Data from a non-random sample (frequent error; make sure your experiment is properly randomized)<br/></li>
+<li>Categories are not exclusive (make sure you have a column for Both-A-and-B and do not count +1 in both the A and B columns)<br/></li>
+<li>Categories are not exhaustive (make sure everything can be placed somewhere, even if just All Other)<br/></li>
+<li>Sample too small; requires expected values of 5+ per call (aggregate as needed if not)<br/></li>
+<li>Interpreting chi-squared as goodness of association (no way - Cramer&#39;s V at least gets you in the right direction)<br/></li>
+<li>Interpreting a high p-value as &ldquo;support of theory&rdquo; (as with all hypothesis testing, all we will ever do is fail to reject the null hypothesis; we do not accept/confirm the null!)<br/></li>
+</ul>
+
+<p>####<em>Fisher&#39;s exact test</em><br/>
+The Fisher&#39;s exact test is the solution when you have a contained, small-n problem which precludes using chi-squared tests of association.  </p>
+
+<p>The test is generally designed for a 2x2 table as follows:  </p>
+
+<table><thead>
+<tr>
+<th>a</th>
+<th>b</th>
+<th>(a+b)</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>c</td>
+<td>d</td>
+<td>(c+d)</td>
+</tr>
+<tr>
+<td>(a+c)</td>
+<td>(b+d)</td>
+<td>(a+b+c+d)</td>
+</tr>
+</tbody></table>
+
+<p>Define n=(a+b+c+d).  This configuration can occur (a+c)! * (b+d)! * (a+b)! * (c+d)! / [n! * a! * b! * c! * d!] of the time.  So, if a were the critical value, you could test how likely (one-sided or two-sided) you are to get the specific or more extreme value for a.</p>
+
+<p>Recall that if you do not have a small-n problem, you use chi-squared!  This test is something of a mess.  See associated R code:  </p>
+
+<pre><code class="r">nTotal &lt;- 23
+nAplusB &lt;- 10
+nAplusC &lt;- 8
+
+fishStore &lt;- data.frame(a=0:min(nAplusB,nAplusC),probA=rep(-1,min(nAplusB,nAplusC)+1))
+
+for (intCtr in 1:(min(nAplusB,nAplusC)+1)) {
+    a &lt;- intCtr - 1
+    b &lt;- nAplusB - a
+    c &lt;- nAplusC - a
+    d &lt;- nTotal - a - b - c
+    numer1 &lt;- factorial(a+c) * factorial(b+d)
+    numer2 &lt;- factorial(a+b) * factorial(c+d)
+    denom1 &lt;- factorial(nTotal)
+    denom2 &lt;- factorial(a) * factorial(b) * factorial(c) * factorial(d)
+    fishStore[intCtr,&quot;probA&quot;] &lt;- (numer1/denom1) * (numer2/denom2)
+}
+
+fishStore
+</code></pre>
+
+<pre><code>##   a        probA
+## 1 0 2.624849e-03
+## 2 1 3.499798e-02
+## 3 2 1.574909e-01
+## 4 3 3.149818e-01
+## 5 4 3.062323e-01
+## 6 5 1.469915e-01
+## 7 6 3.340716e-02
+## 8 7 3.181635e-03
+## 9 8 9.177792e-05
+</code></pre>
+
+<pre><code class="r">sum(fishStore[c(0,8),&quot;probA&quot;])
+</code></pre>
+
+<pre><code>## [1] 0.003181635
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(0,10,8,5),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.002716626
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(1,9,7,6),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.07430341
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(2,8,6,7),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.3787858
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(3,7,5,8),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 1
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(4,6,4,9),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.6850182
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(5,5,3,10),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.2212949
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(6,4,2,11),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.03930542
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(7,3,1,12),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 0.005898261
+</code></pre>
+
+<pre><code class="r">fisher.test(matrix(data=c(8,2,0,13),nrow=2,byrow=TRUE))$p.value
+</code></pre>
+
+<pre><code>## [1] 9.177792e-05
+</code></pre>
+
+<p>These still do not match perfectly.  I get the sense this is a rarely used test, but time permitting it may be good to figure out the discrepancy.  </p>
+
+<h2>Module 3: Simple Regression</h2>
+
+<p>Simple Linear Regression ultimately reduces (perhaps after transformations) to y-hat(i) = a + b * x-hat(i).  The lingo is such that x is the &ldquo;predictor&rdquo; variable and y is the &ldquo;response&rdquo; variable.  </p>
+
+<p>####<em>Regression equation</em><br/>
+The goal is to use Ordinary Least Squares (OLS) to minimize the sum-squared distance of the residuals (errors).  Specifically, a few of the key calculations include:  </p>
+
+<ul>
+<li>min( [y(i) - y-hat(i)]<sup>2</sup> )<br/></li>
+<li>df/da ( [y(i) - (a + b * x(i))]<sup>2</sup> ) = 0</li>
+<li>df/db ( [y(i) - (a + b * x(i))]<sup>2</sup> ) = 0<br/></li>
+</ul>
+
+<p>Ultimately, these equations reduce to the following:  </p>
+
+<ul>
+<li>b = r * Sy / Sx, where r is the Pearson correlation and Sy/Sx are the respective standard deviations<br/></li>
+<li>a = y-bar - b * x-bar<br/></li>
+<li>r is considered small at 0.3, medium at 0.5, and large at 0.8<br/></li>
+</ul>
+
+<p>Once you have created OLS on your sample, you infer that it applies to a broader population, allowing you to make predictions.  At this point, we move back to Greek (population) letters, and assume that the population has normally distributed y, centered on predicted mu(y), for each x.  </p>
+
+<p>There are two ways to express this:  </p>
+
+<ul>
+<li>mu(y) = alpha + Beta * x  &ndash; with constant sigma<br/></li>
+<li>y(i) = alpha + beta * x(i) + epsilon(i) &ndash; epsilon(i) having mean zero and sd sigma<br/></li>
+</ul>
+
+<p>####<em>Predictive power (Sum of Squares)</em><br/>
+The predictive power r<sup>2</sup> is derived by squaring the Pearson correlation.  This can be interpreted as the proportion of explained variance.  The typical approach is Sum of Squares, as follows:  </p>
+
+<ul>
+<li>Total Sum of Squares = sum-over-i-of ( y(i) - y-bar )<sup>2,</sup> or the total variability in y from its mean<br/></li>
+<li>Residual Sum of Squares = sum-over-i-of ( y(i) - y-hat(i) )<sup>2,</sup> or the total variability in y from its best-fit regression line estimate<br/></li>
+<li>Regression Sum of Squares = Total Sum of Squares - Residual Sum of Squares<br/></li>
+<li>r<sup>2</sup> = Resgression Sum of Squares / Total Sum of Squares<br/></li>
+</ul>
+
+<p>So, when r<sup>2=1,</sup> the regression explains everything, and when r<sup>2=0,</sup> the regression explains nothing.  </p>
+
+<p>See below for an example from the R dataset airquality:  </p>
+
+<pre><code class="r">data(airquality)
+myData &lt;- airquality[,c(&quot;Ozone&quot;,&quot;Temp&quot;,&quot;Month&quot;)]
+myData &lt;- myData[complete.cases(myData),]
+
+pairs(myData) ## Many issues with the data -- using just as an example
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-10"/></p>
+
+<pre><code class="r">estBeta &lt;- cor(myData$Ozone, myData$Temp) * sd(myData$Ozone) / sd(myData$Temp)
+estAlpha &lt;- mean(myData$Ozone) - estBeta * mean(myData$Temp)
+
+estTSS &lt;- sum( (myData$Ozone - mean(myData$Ozone))^2 )
+estResSS &lt;- sum( (myData$Ozone - (estAlpha + estBeta * myData$Temp))^2 )
+estRegSS &lt;- estTSS - estResSS
+estR2 &lt;- estRegSS / estTSS
+
+dfReg &lt;- 1 ## 1 predictor
+dfRes &lt;- length(myData$Ozone) - 2 ## 1 for mean, 1 for single predictor
+
+meanResSS &lt;- estResSS / dfRes
+meanRegSS &lt;- estRegSS / dfReg
+stdResSS &lt;- sqrt(meanResSS)
+
+print(paste0(&quot;Estimated regression is Ozone = &quot;,round(estAlpha,1),&quot; + &quot;,
+             round(estBeta,2),&quot; * Temp, constant sigma&quot;
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Estimated regression is Ozone = -147 + 2.43 * Temp, constant sigma&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;TSS: &quot;,round(estTSS,1),&quot; ResSS: &quot;,round(estResSS,1),
+             &quot; RegSS: &quot;,round(estRegSS,1),&quot; r^2: &quot;,round(estR2,3),
+             &quot; Standard Residual &quot;,round(stdResSS,2),&quot; on df=&quot;,dfRes
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;TSS: 125143.1 ResSS: 64109.9 RegSS: 61033.2 r^2: 0.488 Standard Residual 23.71 on df=114&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Mean Residual SS: &quot;,round(meanResSS,2),
+             &quot; and Mean Regression SS: &quot;,round(meanRegSS,2),
+             &quot; for F=&quot;,round(meanRegSS/meanResSS,1),&quot; on df &quot;,
+             dfReg,&quot; , &quot;,dfRes
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Mean Residual SS: 562.37 and Mean Regression SS: 61033.17 for F=108.5 on df 1 , 114&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Associated p-value is: &quot;,
+             round(pf(meanRegSS/meanResSS,df1=dfReg, df2=dfRes,lower.tail=FALSE),3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Associated p-value is: 0&quot;
+</code></pre>
+
+<pre><code class="r">## Comparison to running this in R
+regR &lt;- lm(Ozone ~ Temp, data=myData)
+summary(regR)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Ozone ~ Temp, data = myData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -40.729 -17.409  -0.587  11.306 118.271 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -146.9955    18.2872  -8.038 9.37e-13 ***
+## Temp           2.4287     0.2331  10.418  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 23.71 on 114 degrees of freedom
+## Multiple R-squared:  0.4877, Adjusted R-squared:  0.4832 
+## F-statistic: 108.5 on 1 and 114 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+<pre><code class="r">sum(regR$residuals^2)
+</code></pre>
+
+<pre><code>## [1] 64109.89
+</code></pre>
+
+<pre><code class="r">## Graph this
+plot(x=myData$Temp,y=myData$Ozone,pch=20,col=&quot;blue&quot;)
+lines(x=myData$Temp,y=regR$fitted.values,col=&quot;dark green&quot;,lwd=4)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-10"/></p>
+
+<p>As expected, the call to lm() in R produces the same outputs as the hand calculations.  </p>
+
+<p>####<em>Potential Pitfalls in Regression</em><br/>
+There are many potential problems that can throw off the OLS approach, including but not limited to:  </p>
+
+<ul>
+<li>Nonlinearity - as in the Ozone example above, where Ozone is ~0 for all low-ish temperatures<br/></li>
+<li>Outliers - especially problematic for small-n regression or large deviation on x/y from regression line<br/></li>
+<li>Intepreting correlation as causality - this is just a model that y ~ x, not (necessarily) that x causes y<br/></li>
+<li>Inappropriate extrapolation - for example, above only has temperatures 60-90, cannot predict 30 or 120<br/></li>
+<li>Ecological fallacy - drawing conclusions about individuals after running a group model (for example, if aggregating students by state, drawing conclusions about a specific student in state X based on the model)<br/></li>
+<li>Restriction of range &ndash; sample contains a very limited range of predictors (x variables)<br/></li>
+</ul>
+
+<p>In addition, there are many assumptions that we should investigate/validate during the regression process:  </p>
+
+<ul>
+<li>Linearity of response and predictor relationships - eyeball test on scatterplot<br/></li>
+<li>Normality can be assessed by examining the residuals - eyeball test<br/></li>
+<li>Outliers can be investigates using standardized residuals, where &ldquo;more extreme than +/- 3 is a concern&rdquo;</li>
+<li>Homoscedasticity can be assessed by graphing residuals vs. predictors to see if they have equal dispersion for all values of predictor<br/></li>
+<li>Independence of errors means they are not related to each other; particularly an issue for time series<br/></li>
+</ul>
+
+<p>The key theme is to look at a scatterplot.  The pairs() function showed that we have some issues in the regression run above which we would need to address if we wanted to take action based on this regression.  </p>
+
+<p>####<em>Testing the model, including PI and CI</em><br/>
+We can run hypothesis tests on whether our model beta is significant:  </p>
+
+<ul>
+<li>Ho: Beta = 0<br/></li>
+<li>Ha: Beta &lt;&gt; 0<br/></li>
+<li>Test statistic: t = Beta / seBeta , df = n-2 where n is total observations<br/></li>
+<li>CI = Beta +/- critical-t * seBeta<br/></li>
+</ul>
+
+<p>Further, we can calculate some key statistics about the quality of our predictions:  </p>
+
+<ul>
+<li>Prediction Interval (PI) for predicted individual response<br/></li>
+<li><p>Confidence Interval (CI) for predicted population means  </p></li>
+<li><p>CI of the mean: CI for mu(y) = y-hat +/- t-critical * S(Res) / sqrt(n)  </p></li>
+<li><p>PI of an individual: PI for y(i) = y-hat +/- t-critical * S(Res)  </p></li>
+<li><p>S(Res) is the SE of the residual, defines as sqrt(Residual SS / (n-2))  </p></li>
+<li><p>n is the total number of observations  </p></li>
+</ul>
+
+<p>We can take a look at some residuals and the above statistics for our previous Ozone ~ Temp call:  </p>
+
+<pre><code class="r">## Re-print for convenience
+print(paste0(&quot;TSS: &quot;,round(estTSS,1),&quot; ResSS: &quot;,round(estResSS,1),
+             &quot; RegSS: &quot;,round(estRegSS,1),&quot; r^2: &quot;,round(estR2,3),
+             &quot; Standard Residual &quot;,round(stdResSS,2),&quot; on df=&quot;,dfRes
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;TSS: 125143.1 ResSS: 64109.9 RegSS: 61033.2 r^2: 0.488 Standard Residual 23.71 on df=114&quot;
+</code></pre>
+
+<pre><code class="r">summary(regR)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Ozone ~ Temp, data = myData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -40.729 -17.409  -0.587  11.306 118.271 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -146.9955    18.2872  -8.038 9.37e-13 ***
+## Temp           2.4287     0.2331  10.418  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 23.71 on 114 degrees of freedom
+## Multiple R-squared:  0.4877, Adjusted R-squared:  0.4832 
+## F-statistic: 108.5 on 1 and 114 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+<pre><code class="r">plot(x=myData$Temp,y=regR$residuals)
+abline(h=0)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-11"/></p>
+
+<pre><code class="r">plot(x=myData$Ozone,y=regR$residuals)
+abline(h=0)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-11"/></p>
+
+<p>As before, we match the outputs from R.  The residuals are plausibly OK when plotted against temperature, but clearly flawed when plotted against Ozone.  This is likely due to the non-linearity observed in the original dataset, and signals that we would need to clean the data or explore a different model before proceeding.  </p>
+
+<p>####<em>Exponential Regression</em><br/>
+While there are many types of nonlinear regression, the exponential form is especially nice since it reduces easily to the linear form.  The regression can be expressed as:  </p>
+
+<ul>
+<li>y = a * b<sup>x</sup><br/></li>
+<li>mu(y) = alpha * Beta<sup>x</sup><br/></li>
+<li>These are commonly time regressions, so mu(y) = alpha * Beta<sup>t</sup> is common to see<br/></li>
+</ul>
+
+<p>This formulation can easily be reduced to a linear form:  </p>
+
+<ul>
+<li>ln( y-hat ) = ln(alpha) + x * ln(beta)<br/></li>
+<li>ln( y-hat ) = A + B * x , where A = ln(alpha) and B=ln(beta)<br/></li>
+</ul>
+
+<p>An example with the airquality dataset:  </p>
+
+<pre><code class="r">myLNData &lt;- myData
+myLNData$Ozone &lt;- log(myData$Ozone)
+
+regLNR &lt;- lm(Ozone ~ Temp , data=myLNData)
+
+alphaLN &lt;- exp(regLNR$coefficients[[1]])
+betaLN &lt;- exp(regLNR$coefficients[[2]])
+
+print(paste0(&quot;We predict alpha: &quot;,round(alphaLN,3),&quot; and beta: &quot;,round(betaLN,3)))
+</code></pre>
+
+<pre><code>## [1] &quot;We predict alpha: 0.159 and beta: 1.07&quot;
+</code></pre>
+
+<pre><code class="r">plot(myData$Temp, myData$Ozone, pch=20, col=&quot;blue&quot;)
+lines(x=60:90,y=alphaLN*(60:90)^betaLN,lwd=4,col=&quot;dark green&quot;)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-12"/></p>
+
+<pre><code class="r">## R nonlinear least squares outputs
+myNLS &lt;- nls(Ozone ~ a * b^Temp, data=myData, start=list(a=1, b=1))
+summary(myNLS)
+</code></pre>
+
+<pre><code>## 
+## Formula: Ozone ~ a * b^Temp
+## 
+## Parameters:
+##   Estimate Std. Error t value Pr(&gt;|t|)    
+## a 0.298900   0.158536   1.885   0.0619 .  
+## b 1.063533   0.006498 163.672   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 22.66 on 114 degrees of freedom
+## 
+## Number of iterations to convergence: 14 
+## Achieved convergence tolerance: 2.988e-07
+</code></pre>
+
+<p>The data from OLS on the linear transformation closely matches the approxiamtaion from R using NLS.  It is obviously not an appropriate fit given this data!  </p>
+
+<h2>Module 4: Multiple Regression</h2>
+
+<p>Multiple regression expands simple regression by moving to two or more predictors.  These may be needed to increase explanatory power or to relieve confounders.  The assumptions are similar, although there is now a best-fit plane to describe the mean, still with the assumption that residuals all have the same sigma and are normally distributed.  </p>
+
+<p>The multiple regression equation can include:  </p>
+
+<ul>
+<li>Sample: y-hat(i) = a + b1 * x1(i) + b2 *x2(i) + &hellip; + bn * xn(i)<br/></li>
+<li>Population: mu(y) = alpha + beta1 * x1 + beta2 * x2 + &hellip;+ betan * xn<br/></li>
+</ul>
+
+<p>####<em>Multiple R and R-Squared</em><br/>
+Similar to simple regression, multiple regression can be described by both R and R<sup>2.</sup>  These are:  </p>
+
+<ul>
+<li>R is the multiple correlation coefficient (always non-negative 0 &lt;= R &lt;= 1) that describes how strongly the response variable is related to the SET of predictor variables<br/></li>
+<li>R<sup>2</sup> is the explained variation as a proportion, and is still Regression Sum-Squares / Total Sum-Squares<br/></li>
+<li>Multiple-R is sqrt(R<sup>2)</sup> and R<sup>2</sup> is (multiple-R)<sup>2</sup><br/></li>
+</ul>
+
+<p>The multiple-R is based on several correlations.  For example, suppose you have response variable y with predictor variables x1, x2.  Define and use simple correlations as:  </p>
+
+<ul>
+<li>CorYX1 = cor(y, x1)<br/></li>
+<li>CorYX2 = cor(y, x2)<br/></li>
+<li>CorX1X2 = cor(x1, x2)<br/></li>
+<li>R = sqrt[ (CorYX1<sup>2</sup> + CorYX2<sup>2</sup> - 2 * CorYX1 * CorYX2 * CorX1X2) / (1 - CorX1X2<sup>2)</sup> ]<br/></li>
+</ul>
+
+<p>An example can be shown using the dataset mtcars, which will have something of a collinearity problem:  </p>
+
+<pre><code class="r">data(mtcars)
+myMulti &lt;- mtcars[,c(&quot;mpg&quot;,&quot;cyl&quot;,&quot;wt&quot;)]
+pairs(myMulti)
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAn1BMVEUAAAAAADoAAGYAOjoAOpAAZrY6AAA6ADo6AGY6OgA6Ojo6OmY6OpA6ZmY6ZrY6kLY6kNtmAABmADpmAGZmOpBmZgBmZmZmZrZmkJBmtrZmtv+QOgCQOjqQOmaQZmaQZpCQkGaQtpCQ27aQ29uQ2/+2ZgC2Zjq2Zma2kDq2kJC2tma2///bkDrb29vb/7bb////tmb/25D//7b//9v////nJiWOAAAACXBIWXMAAAsSAAALEgHS3X78AAATb0lEQVR4nO2dC3viyJmFZW/bPZvLrN3pTSeeSWazgU52TcaA9f9/WyQDBmSpEKo6+l6pvveZC491VBzOMaWLESpKJ0sKawOODV58pnjxmeLFZ4oXnylefKZ48ZnixWeKF58pXnymePGZ4sVnihefKV58pnjxmeLFZ4oXnylefKZ48ZnixWeKF58pXnymePGZ4sVnihefKdMu/vUvz4Glm/viaejSclkUd+GxHy6YYzPt4te3oeLXoWLL74sLg69Cq6+eXn95uTAAmkkX//rLX0PFr4qb7nJff/7PwNKK7bfgcy/Da+OZdPHrp3+Eig+W9/rzIlxt8A1fLp/Cmxk8ky5+Fd4Ofw9WG15aluHfqe+L6jcnaA7OpIu/0M7mPjQdh5eWFzbhvnPnTBMvPlO8+Ezx4jPFi88ULz5TJl78BfvhxVErzzw5Ol78UOZt34vvZN72vfhOrrBfIHA7ITTF95fqKFoeGYK1YyTVgU0aZsdIquM86WvmNgldxRsZy6X4wtxUR/FWxrz4sfDix8Kn+hDZFG8O1o6RVAc2aZgdI6kObNIwO0ZSHdikYXaMpDomsnN3KhnRYy7FYw/nzhXjefTix8KLHwuf6kNkU7w5WDtGUh3YpGF2jKQ6sEnD7BhJdWCThtkxkurAJg2zYyTVgU0aZsdIqgObNMyOkVQH+ji+smPr6PTJl/Wnbru/MGTSxcPO3Nk7Onnu7deX4NfBefFRePFj4VN9iFymentodk6uplkVvw99d6cXHwXWTj3Vf18EvhXMi48Ca2e3jffiVWDtVFP9Q7Wd7/4uPi8+CqwdI6kObNIwO0ZSHdikYXaMpDqwScPsGEl1YJOG2TGS6sAmDbNjJNWBTRpmx0iqA5s0zI6RVAf6jzTniwy85VI87M+yzSXje/Pix8KLHwuf6kNkU7w5WDtGUh3YpGF2jKQ6sEnD7BhJdUxnG7//8agOcymevFf//tMxHXrxY+HFj4VP9SFOnmz79WVV+KdsVWDtVMX/+s0/bCkDa8eL14K1s7tbtn/KVgXNztmVNLfPfu2civjik76E85277Ze/z7R4/uFcnwESvoTz4svXn3/rxWvgFl+u7qrt/A/zLN6n+uZg1lIdtL2plkeGePFjgbVjJNWBTRpmx0iqA5s0zI6RVMc0d+66faZ9BZjiN/d/fiyKh819/Xeizee/Vf9/O4m4LIqb/7lZXD/gNA/nun0mfgWg4qt263OH5er2eVN/F8+6/kvhsvrBuvDi51z8w/t/nt7+X64+vVSPqwfL+OJ9qm+OZi098Fbx4T+7vtc3i/Xt8+7B9QNy96ZgdoykB86L/1w3XfW98uJFwIv3d7wKaPFv2/jlYRu/ymgbv1PozVKLr6pOu1dfxISZoogrij/uwJ8/ccrfB2rxf7rff+6zOo6//f/bzj8Z9jIReziX5EhqSPHnT5z0gA5T/Bm7Gf6ddYLiY97xcdNFm52LT7j/9+25T9bLpvi3B9vH7g8C9jIRu40fvfjyfZYqTtue5VR/xvEdv65D7/6sfz8TsXbGnupPn1N1ypFZfBISHj+NvHN39pyiPfzTUf1GBUqwdmZ+axJzsHa8eC1YOz7VB4Yy2MYne+KukTO5kiZypNH36tM9cefQB2Z9JU3cSHHH8cXhuOxqO+3Fn5kZ6qyxjZ/tlTRxI8Wd6N+fQRpip+15i8ZYw6ydrjXrK2kiRzIq/qKbJMWbSHVgdu6GT/U93CSY6m2kOijHT9J3fMwotlIdXvyFUWylOmY81XvxISg7dx9MwOwYSXVQDuc+mEiwc+fFB5hr8WnuPO/F9xvJ5szdBTeRp5VspTooO3ep9+qPH9GIGcqLl5O8+MbAg1e2leqgFJ/8cK4x8MB1raU6MMXvwNoxkurAJC17x394jmtWsJbqoBQv28Z/fI7r1rCV6vDiL6xhK9VBKT7ZVB+azn2qP0IpPtU7Pskp+iEmvPhh7E/4Ji0+/qTtyQB+TxoNqYo/uajq/Xdg+C/AWfF+axIFyYo/rl4c9xsG/xYdH3rxGhTF7/8ym6Z4vyeNhtTF7/8eX+wfXr3u0VXPlb34YSQvfjfosNXen/10qn+sLXZ/64gXPwx88aErZZvSy+PbM+fiB2/cj1P9VU8mkOrAFC84ZRt/MseL16P461z0GRwvfiywdoykOjBJS/8e79fOfYBSvGIb3xx80Iq2Uh1e/IUVbaU6KMX7VD8ymOJ3YO0YSXVgk4bZMZLqwCYNs2Mk1YFNGmbHSKoDmzTMjpFUBzZpmB0jqQ5s0jA7RlId2KRhdoykOrBJw+wYSXVgk4bZMZLqwCYNs2Mk1YFJeozLpK8x0rBzeTWJVAcg6cOz6/46d72RD3b8DhUi8MX7PWlE0Kd6L14K1o5P9VpodvwSqpHA2kl6CRUCtxPipK50l1A5c8KLzxQvPlO8+Ezx4jPFi88ULz5TvPhM8eIzxc/cxUG1k7T4/lId2JPjMDtGUh3YpGF2YqSr4s+PxcO5tDGZHD4E8D7TvH0Tb3FYmOIeeg2wSQ+1c0xrf3vZkzm7V3671BN+5m77rf4K3JNvwT1+wqf5k2PvO7N7E0numtnpdx7FH9M6NFgekmymHRqg5TN3l9fr4K34w9/29r+FXnyDORbvU30P5jjVx0h1zK74pHjxY4G1YyTVgU0aZsdIqgObNMyOkVQHNmmYHSOpDmzSMDtGUh3YpGF2jKQ6sEnD7BhJdWCThtkxkurAJg2zYyTVgU0aZsdIqgObNMyOkVQHNmmYHSOpDmzSMDtGUh3YpGF2jKQ6sEnD7BhJdWCThtkxkurAJg2zYyTVgU0aZsdIqgObNMyOkVQHNmmYHSOpDmzSMDtGUh3YpGF2jKQ6sEnD7BhJdWCThtkxkurAJg2zYyTVgU0aZsdIqgObNMxOhHT7WDwNHVUHNmmYnQjp9uvL8v17r6/8ghUd2KRhdiKkb/e2GDiqDmzSMDtGUh3YpGF2jKQ6sEnD7BhJdWCThtkxkurAJg2zYyTVgU0aZsdIqgObNMyOkVQHNmmYHSOpDmzSMDtGUh3YpGF2jKQ6sEnD7BhJdWCThtkxkurAJg2zYyTVgU0aZsdIqgObNMyOkVQHNmmYHSOpDmzSMDtGUh3YpGF2jKQ6sEnD7BhJdWCThtkxkurAJg2zYyTVgU0aZsdIqgObNMyOkVRH+qS3j0+XRV148WPhxYfw4q/Ai08o1ZEk6VVRFHfl8q5+eOfFN1k9VAE99ZJ+GPVw08Ty/Z6JiS69S5H06mZRvc8f1rfP5etPT6MW34jl/UdlmSSgJMVvv/769aVxU+Heg+5uklru/ynT3Wc2QfFV5/v/P5Wbz4sxi3+L4xjL+4+avwzxdiKkr7+8/N978dddLcsufnO/b7qa61efXrz4Jpv7YpZTffUu3z2o5vrlw7g7d1OY6mOkOlK+47df/vfLwvfqU0p1JNzGV3t2v/n04sWnlOpItVf/+tNdfVj34MfxSaU6Eh7H77f2XnxCqY6kSW9+93JZFMSLH4ukSa8eYkfw4sciYdKb+0+xb3gvfjSwScPsGEl1YJOG2TGS6sAmDbNjJNWBTRpmx0iqA5s0zI6RVAc2aZgdI6kObNIwO0ZSHdikYXaMpDqwScPsGEl1YJOG2TGS6sAmDbNjJNWBTRpmx0iqA5s0zI6RVAc2aZgdI6kObNIwO0ZSHdikYXaMpDqwScPsGEl1YJOG2TGS6sAmDbNjJNWBTRpmJ0K6/foy+DJpHdikYXYipNuvv34rh10mLQSbNMxOhPSseL+pcDtYOzHSzf3NYvnQSzoe2KRhdoykOrBJw+wYSXVgk4bZMZLqwCYNs2Mk1YFNGmbHSKoDmzTMjpFUBzZpmB0jqQ5s0jA7RlId2KRhdoykOrBJw+wYSXVgk4bZMZLqwCYNs2Mk1YFNGmbHSKoDmzTMjpFUBzZpmB0jqQ5s0jA7RlId2KRhdoykOrBJw+wYSXVgk4bZMZLqwCYNs2Mk1YFNGmbHSKoDmzTMjpFUBzZpmB0jqQ5s0jA7RlId2KRhdoykOrBJw+wYSXVgk4bZMZLqwCYNsxMp3fw4bNS2JypO/3d80Px5Y3FTgU26fnR6S9WD37eLTQ93Fi0PC4+rJb0WNUnx28fa9G2iy6SLfTSHYQ4Pmj8/l39UkIsvGmbf/tn/ChQfX/rb4yT3Em6xEyWtqr87yGIvk/biJ1T8cGnb2j7VT2Sqj5HqQBdvjhc/Flg7RlId2KRhdpJKEbidEJLinTnhxWeKF58pXnymePGZ4sVnihefKV58pnjxmeJn7uKg2klafH+pDuzJcZgdI6kObNIwO6ml5ncrwCQN/1xIYmnzE1LjQ0ma/kmwxNKu4sebCChJ7/ekKHb2jD3VjzgRUJLOrfjOJdkVn9dU3zWn5zfV+87dyFCSzuwd78WfPHtOxftx/PHps5rq7cEmDbNjJNWBTRpmx0iqA5s0zI6RVAc2aZgdI6kObNIwO+X268uqKJ76SK8Y1Q5s0jA753eBD0uvGNUObNIMO8dP4XjxUrB2ynJzf7NYPvSSXjGqGdikYXaMpDqwScPsGEl1YJOG2TGS6sAmDbNjJNWBTRpmx0iqA5s0zI6RVAc2aZgdI6kObNIwO0ZSHdikYXaMpDqwScPsGEl1YJOG2TGS6sAmDbNjJNWBTRpmx0iqA5s0zI6RVAc2aZgdI6kObNIwO0ZSHdikYXaMpDqwScPsGEl1YJOG2TGS6sAmDbNjJNWBTRpmx0iqA5s0zI6RVAc2aZgdI6kObNIwO0ZSHdikYXbGlsq/MQOTtH8jRkMiDoCS9P6VUuzs8eLlTKL4zY+9pVeM2q7xqd6SExPbx/rK2Vu/WlYDzc7pzQqq6u8C0itGjbGUClrSLY8M8cO5scDaEUsvbNIFW3xM0vRtvFR6YSdesY9PSXoSe/Uy6UmzbW/uWRef9/fVv9fd3vGMp/rMiz9d9r5YeixPSdqLPywsTmTCEChJe/FtshyKz3rnrkOXw1Sf9+GcAdikYXZGkVa//KPduQKTtL/j95u7kV44JWnRNn7d/XXTfTApfpw3PaZ4yV799nFKxe+m+sabXvVrkDDpKIte/GHhWfHFbgpAn7mLs5eu+Nef7qopvr6lwLIe9NPLcFNGZ+5OQ6gngd1/EpOw+KghEr7jV1XXq+Ku+g14mN47/jzF/SYfXnzcOz7dzt36ZlEu//jpZfN5Mb3iGxvM3buBPdVH7oakO5yr2t5++dsPz+vb5wkWPxaUvfo9SewsHza/+/XLYnk3xZ27sZhj8atP/7wrl//105MX380ci9/88N8P5eo/Pi9mWXyi7T1mG980ETHY9rHavVvXB3Lbx+67B11nx0jauvL5+gNjP086wX55HGl+D5e3z+Xmvu58ObXj+J0goDjEfNAMjf0s6ajjhsji/Y80p8tDzRdnmjTFR56DGb6u6o80kRCLb2pSTPWSMwW9fXjx74Ieg8U2lW4bH4lP9eOCTRpmx0iqA5s0zE5Zrorf3/ttxFVg7dT3j/++8LtJq6DZOb2NeH1CwIsXgbVTTfUP9Z9/ekmvGPVaku1+z/GUbTpwO3dJTo82TMQOCDplmwwvvt9IXnxq6clK+zO0qc6xJTyB41N9eunpOnHn5rtNxJ6r93e8QHq6jhc/HpziT74zw6d6PaDiU4NNGmbHSPpxXT+OHwNc8X44Nw5efL+RvPjU0o/r+lQ/Brzik4FNGmbHSNq2Nu5wLgVefI+VYSdwkuDF91jZi5cDLN6n+jEgFn8YJHIULz4Et/joydmn+hBe/Fh48b0H8aleCLj4AZy168WHmFXx5/O5T/UhplT8xTdtqHi7q2WPJj48MmRCxfd403ZP9V58g3kV32HCp/qPTKj4a/fPfOcuxJSKvxJs0jA79WXSt8+vf/GLJjVg7dRXy26//J1ffN9J26f6EI3LpF9//i29+N67ab5zF+Jsqr+rvzPTi9cALt5Eej0+1adggsX3ePri3IQX/5E5Fr+f1n2qD+HFj4UXr8en+svMsvgd2KRhdoykOrBJw+wYSXVgk4bZMZLG07X19m18iOkX37m/7nv1Ibz4sfDiU+NT/RCmX7y/4wfhxY+FF58an+qHMIPiu8AmDbNjJNWBTRpmx0iqA5s0zE5SKQK3E0JSfFAdGGfISoj3TzQXXsWlFxm5esq1vfir8OJTDjchvPiUw02I+RTvzAYvPlO8+Ezx4jPFi88ULz5TvPhMuaL47bdy+1g8tS/Z3Lcu2dzfLNpXqpe0r7QuutaZFvUrDCyuX2Zw/cD3mLyNHpdQ/+I393fl6ml3P/qPS9btLr4v1nftK9VL2lf6VzVY+zrTon6FgcX/6srswPo2VPyFlS9y3Tv+H8/1P21LVl2/v+unjpXqettXql5x1zrTIlxOuNjy9Ze/hpZ3Bt6TVMXv/5Nmpc2Psyi+/cUd2fwYWvr2jokZPsx1xXfMwNWS74tWH9s/PHesVC9pX6n+6Rym+voVBuhI7J1VUYS2FJdWv0S6nbvWmWdZuW9fqV7SvlL3DuG0WIabu7DvVxF8x19ePYwfzmWKF58pXnymePGZ4sVnihefKV58pnjxmeLFZ4oXnylefKZ48ZnixWeKF58pXnymePGZ4sVnihefKV58pnjxmeLFZ4oXnylefKZ48ZnixWfKvwFFETTTH4A6bQAAAABJRU5ErkJggg==" alt="plot of chunk unnamed-chunk-13"/></p>
+
+<pre><code class="r">corYX1&lt;- cor(mtcars$mpg,mtcars$cyl)
+corYX2&lt;- cor(mtcars$mpg,mtcars$wt)
+corX1X2&lt;- cor(mtcars$wt,mtcars$cyl)
+
+multiR &lt;- sqrt( (corYX1^2 + corYX2^2 - 2*corYX1*corYX2*corX1X2) / (1 - corX1X2^2) )
+
+print(paste0(&quot;Correlations include MPG-CYL: &quot;,round(corYX1,3),
+             &quot; MPG-WT: &quot;,round(corYX2,3),&quot; CYL-WT: &quot;,round(corX1X2,3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Correlations include MPG-CYL: -0.852 MPG-WT: -0.868 CYL-WT: 0.782&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Multiple R is &quot;,round(multiR,4),&quot; for R-squared &quot;,round(multiR^2,4)))
+</code></pre>
+
+<pre><code>## [1] &quot;Multiple R is 0.9112 for R-squared 0.8302&quot;
+</code></pre>
+
+<pre><code class="r">summary(lm(mpg ~ cyl + wt, data=mtcars))
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  39.6863     1.7150  23.141  &lt; 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302, Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+</code></pre>
+
+<p>The hand calculation for two-variable R matches what we get from the linear model in R.  </p>
+
+<p>####<em>Overall Model Tests</em><br/>
+The null hypothesis is that Beta1 = Beta2 = &hellip; = Betan = 0.  The alternate hypothesis is that at least one of the Beta is non-zero, which is to say that the predictors, alone or in combination, have explanatory power.<br/>
+There are several core assumptions required for running a multiple regression, including:  </p>
+
+<ul>
+<li>Linearity - as before, requires linear relationships of Y vs. Xi<br/></li>
+<li>Normal residuals<br/></li>
+<li>Homoscedastic residuals &ndash; cannot grow/shrink as any of the Xi variables grow/shrink<br/></li>
+<li>Independent residuals &ndash; especially important in time-series and the like<br/></li>
+<li>Observations &gt; Predictors<br/></li>
+</ul>
+
+<p>The overall hypothesis test is assessed using the F statistic.  This is calculated as:  </p>
+
+<ul>
+<li>MSReg (Regression Mean Sum Squares) = Regression Sum Squares / (k-1), where k is explanatory variables + 1<br/></li>
+<li>MSRes (Residual Mean Sum Squares) = Residual Sum Squares / (n-k), where n is the total observations<br/></li>
+<li>F = MSReg / MSRes with df1=(k-1) and df2=(n-k) where k is &ldquo;explanatory variables + 1&rdquo; and n is total observations<br/></li>
+</ul>
+
+<p>So, continuing with the mtcars example, we have:  </p>
+
+<pre><code class="r">mtTSS &lt;- sum( (mtcars$mpg - mean(mtcars$mpg) )^2 )
+mtRegSS &lt;- multiR^2 * mtTSS
+mtResSS &lt;- mtTSS - mtRegSS
+dfReg &lt;- (2 + 1 - 1)  ## k-1 where k is explanatory + 1
+dfRes &lt;- nrow(mtcars) - (2 + 1)  ## n-k where n is total and k is explanatory + 1
+
+print(paste0(&quot;We have Mean Regression SS: &quot;,round(mtRegSS/dfReg,2),
+             &quot; and Mean Resiudal SS: &quot;,round(mtResSS/dfRes,2)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;We have Mean Regression SS: 467.44 and Mean Resiudal SS: 6.59&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;This gives F: &quot;,round((mtRegSS/dfReg)/(mtResSS/dfRes),2),
+             &quot; on df1=&quot;,dfReg,&quot; and df2=&quot;,dfRes,&quot; for p=&quot;,
+             round(pf((mtRegSS/dfReg)/(mtResSS/dfRes),df1=dfReg,df2=dfRes,lower.tail=FALSE),4)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;This gives F: 70.91 on df1=2 and df2=29 for p=0&quot;
+</code></pre>
+
+<pre><code class="r">summary(lm(mpg ~ cyl + wt, data=mtcars))
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  39.6863     1.7150  23.141  &lt; 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302, Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+</code></pre>
+
+<pre><code class="r">sum(resid(lm(mpg ~ cyl + wt, data=mtcars))^2) / (nrow(mtcars) - 3)
+</code></pre>
+
+<pre><code>## [1] 6.592137
+</code></pre>
+
+<p>And as before, the hand calculations match with what we see from the lm() function.  </p>
+
+<p>####<em>Individual Predictor Tests</em><br/>
+Individual t-tests help to explain whether any particular variable(s) have explanatory power, after controlling for the other variables.  The same assumptions as the overall model continue to apply.  </p>
+
+<p>The hypothesis testing is familiar:  </p>
+
+<ul>
+<li>Ho: Beta(i) = 0 after controlling for other factors<br/></li>
+<li>Ha: Beta(i) &lt;&gt; 0 after controlling for other factors<br/></li>
+<li>Test Stat t = Beta(i) / seBeta(i), df=n-k where n is total observations and k is &ldquo;total predictors + 1&rdquo;<br/></li>
+<li>CI for Beta(i) = Beta(i) +/- critical-T * seBeta(i), using df=n-k<br/></li>
+</ul>
+
+<p>Note that the power of an individual predictor may go up or down as other variables are added/subtracted from the overall model.  We can grab the CI and test-statistic directly from R:  </p>
+
+<pre><code class="r">myA &lt;- lm(mpg ~ cyl + wt, data=mtcars)
+
+summary(myA)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2893 -1.5512 -0.4684  1.5743  6.1004 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  39.6863     1.7150  23.141  &lt; 2e-16 ***
+## cyl          -1.5078     0.4147  -3.636 0.001064 ** 
+## wt           -3.1910     0.7569  -4.216 0.000222 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.568 on 29 degrees of freedom
+## Multiple R-squared:  0.8302, Adjusted R-squared:  0.8185 
+## F-statistic: 70.91 on 2 and 29 DF,  p-value: 6.809e-12
+</code></pre>
+
+<pre><code class="r">myEst &lt;- as.data.frame(summary(myA)$coefficients)$&quot;Estimate&quot;
+mySE &lt;- as.data.frame(summary(myA)$coefficients)$&quot;Std. Error&quot;
+criticalT &lt;- qt(.025, df=(nrow(mtcars)-(2+1)), lower.tail=FALSE)
+myLow &lt;- myEst - criticalT*mySE
+myHigh &lt;- myEst + criticalT*mySE
+
+myLow
+</code></pre>
+
+<pre><code>## [1] 36.178725 -2.355928 -4.739020
+</code></pre>
+
+<pre><code class="r">myHigh
+</code></pre>
+
+<pre><code>## [1] 43.1937976 -0.6596622 -1.6429245
+</code></pre>
+
+<pre><code class="r">confint.lm(myA)
+</code></pre>
+
+<pre><code>##                 2.5 %     97.5 %
+## (Intercept) 36.178725 43.1937976
+## cyl         -2.355928 -0.6596622
+## wt          -4.739020 -1.6429245
+</code></pre>
+
+<p>And we see that the hand calculations off the summary of the lm match the confidence interval as (much more conveniently) created by way of confint.lm().  </p>
+
+<p>####<em>Checking Assumptions</em><br/>
+The key assumptions are very similar to simple regression and include but are not limited to:  </p>
+
+<ul>
+<li>Linearity - for any combination of other x, we need x(i) and y to be linearly related<br/></li>
+<li>Normal errors - eyeball test of residuals, fairly robust to violations for two-sided large-N<br/></li>
+<li>Homoscedastic errors - eyeball the residuals, see if errors get skinnier/fatter with x(i)<br/></li>
+<li>Independence of errors - generally controlled by good experiment design, particularly a problem for time series<br/></li>
+<li>Sufficient observations - rule of thumb for n &gt;= 10*m where m is the number of predictors<br/></li>
+<li>Absaence of outliers - inspect any standardized residuals of greater than +/- 3<br/></li>
+</ul>
+
+<p>####<em>Categorical predictors and response variables</em><br/>
+The categorical predictor is a binary variable introduced to indicate yes/no.  It is typically used for things like male/female or smoker/nonsmoker.  If you have three things of interest, you use two categorical variables, where 1 0 is A, 0 1 is B, and 0 0 is C.  These need to be such that there is no case of 1 1.  The regression is run as per usual.  </p>
+
+<p>The categorical response variable leads to logistic regression (logit), and would typically be used if we are trying to determine the yes/no status of something.  For example, perhaps we are trying to predict what gets an entry selected as top-100 in a global competition.  Then, we will have an indicator variable that is 1 for selected and 0 for not selected.  </p>
+
+<p>A common functional form for the logit is exp(alpha + beta * x)/(1 + exp(alpha + beta * x)).  There are some features of note to this prediction:  </p>
+
+<ul>
+<li>When beta is positive, it slopes up<br/></li>
+<li>When beta is negative, it slopes down<br/></li>
+<li>When beta is high-magintude, it is a fast ramp<br/></li>
+<li>The inflection point y=0.5 occurs at x = -alpha/beta<br/></li>
+</ul>
+
+<p>To use this variable in regression, we first convert to odds and then take the natural logarithm.  For example:  </p>
+
+<ul>
+<li>Odds = P(win)/P(lose) = exp(alpha + beta*x)<br/></li>
+<li>Log-odds = ln(odds) = alpha + beta*x<br/></li>
+</ul>
+
+<p>The results of a logit regression are reported in log-odds, with the estimates being &ldquo;change in log-odds per change in unit of predictor variable&rdquo;.  The coefficients may be referred to as the &ldquo;odds ratio&rdquo;.  The easiest way to get back to probability is to recall that p = odds / (1 + odds).  </p>
+
+<p>Software will also output a classification table showing predicted (cut point is typically p &gt; 0.5) vs. actual.  There are a few key metrics:  </p>
+
+<ul>
+<li>Specificity = Correct Model Reject / Total Real World Reject<br/></li>
+<li>Sensitivity = Correct Model Accept / Total Real World Accept<br/></li>
+<li>Overall Percentage = Correct Model / Total Real World<br/></li>
+</ul>
+
+<p>Suppose that we modify the mtcars example a bit and explore:  </p>
+
+<pre><code class="r">data(mtcars)
+myMulti &lt;- mtcars[,c(&quot;mpg&quot;,&quot;cyl&quot;,&quot;wt&quot;)]
+myMulti$mpgWin &lt;- myMulti$mpg &gt; 20
+pairs(myMulti)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-16"/></p>
+
+<pre><code class="r">myModel &lt;- glm(mpgWin ~ wt + cyl, family=binomial(link=&quot;logit&quot;), data=myMulti)
+summary(myModel)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## glm(formula = mpgWin ~ wt + cyl, family = binomial(link = &quot;logit&quot;), 
+##     data = myMulti)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -1.62926  -0.00003   0.00000   0.00002   1.51381  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)    71.312  14650.124   0.005    0.996
+## wt             -4.005      2.956  -1.355    0.175
+## cyl            -9.866   2441.687  -0.004    0.997
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 43.860  on 31  degrees of freedom
+## Residual deviance:  7.199  on 29  degrees of freedom
+## AIC: 13.199
+## 
+## Number of Fisher Scoring iterations: 20
+</code></pre>
+
+<pre><code class="r">anova(myModel, test=&quot;Chisq&quot;)
+</code></pre>
+
+<pre><code>## Analysis of Deviance Table
+## 
+## Model: binomial, link: logit
+## 
+## Response: mpgWin
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##      Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+## NULL                    31     43.860              
+## wt    1  30.1298        30     13.730 4.041e-08 ***
+## cyl   1   6.5313        29      7.199    0.0106 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+<pre><code class="r">myFitted &lt;- predict(myModel, newdata=myMulti, type=&quot;response&quot;)
+myFitted &lt;- ifelse(myFitted&gt;0.5,1,0)
+
+logitSens &lt;- sum(myFitted*myMulti$mpgWin)/sum(myMulti$mpgWin)
+logitSpec &lt;- sum((1-myFitted)*(1-myMulti$mpgWin))/sum(1-myMulti$mpgWin)
+logitAll &lt;- sum(myFitted == myMulti$mpgWin)/length(myMulti$mpgWin)
+
+print(paste0(&quot;This logit has specificity &quot;,round(logitSpec,3),&quot; and sensitivity &quot;,
+             round(logitSens,3),&quot; for total percentage &quot;,round(logitAll,3)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;This logit has specificity 0.944 and sensitivity 0.929 for total percentage 0.938&quot;
+</code></pre>
+
+<p>Given the friendly inputs, the logit does quite well with the predictions.  </p>
+
+<h2>Module 5: Analysis of Variance (ANOVA)</h2>
+
+<p>ANOVA means ANalysis Of VAriance and is a means for assessing whether multiple groups all come from the same population.  The primary idea is to compare variance between groups and variance within groups.  An advantage of ANOVA vs. multiple t-tests is that ANOVA keeps Familywise Error Rate (FEWR) at alpha while multiple t-tests require alpha correction to avoid high rates of false detection.  </p>
+
+<p>####<em>Hypotheses, test statistics, calculations, assumptions</em>  </p>
+
+<ul>
+<li>Ho is that all groups are from the same population (loosely, have the same means)<br/></li>
+<li>Ha is that one or more of the groups are from a different population (loosely have different means)<br/></li>
+<li>Test Statistic F = MSBetween / MSWithin, df1=(g-1), df2=(n-g)<br/></li>
+<li>Definition of n is number of total observations and definition of g is total number of groups<br/></li>
+<li>Broadly, Ho reduces to F=1 and Ha is that F&gt;1<br/></li>
+</ul>
+
+<p>The calculation of the key ANOVA statistics is very similar to (and highly related to) multiple regression.  For example, the key metrics come from:  </p>
+
+<ul>
+<li>Within each group k, calculate the group mean y-bar(k)<br/></li>
+<li>Across groups, calculate the grand mean y-bar-grand<br/></li>
+<li>For each group k, SSWithin(k) = sum-over-i-of ( y(i) - y-bar(k) )<sup>2</sup><br/></li>
+<li>SSWithin = sum-over-all-groups of SSWithin(k)<br/></li>
+<li>MSWithin = SSWithin / (n-g) where n is total observations and g is total groups<br/></li>
+<li>SSBetween = sum-over-all-groups-of ( n-group * (y-bar-group - y-bar-grand)<sup>2</sup> )<br/></li>
+<li>MSBetween = SSBetween / (g-1) where g is the number of groups<br/></li>
+</ul>
+
+<p>The assumptions for ANOVA are broadly the same as for multiple regression.  In partiuclar, look at:  </p>
+
+<ul>
+<li>Independence of observations &ndash; if dependenet by design, need to use &ldquo;repeated measures ANOVA&rdquo;<br/></li>
+<li>Normally distributed data (though robust to violations) &ndash; prefer n &gt;= 10, otherwise go non-parametric<br/></li>
+<li>Homogeneity of variances within groups (though robust and generally OK if maxSD &lt;= 2*minSD)<br/></li>
+</ul>
+
+<p>####<em>Post-hoc t-tests</em><br/>
+If and only if ANOVA comes back significant, post-hoc t-tests can be run.  There is a need to decide on how strictly to treat alpha in this case, recalling that ANOVA already restricted the overall model to alpha.  So, we know something is significantly different and need to decide how strict we will be in allowing post-hoc Type 1 errors in identifying those something.  </p>
+
+<p>One approach is to use Fisher Least Significant Differences.  This approach uses the pooled standard error available from the ANOVA as follows:  </p>
+
+<ul>
+<li>Suppose we will conmpare groups j and k which have means y-bar-j and y-bar-k with counts nj and nk<br/></li>
+<li>SE = sqrt( SSWithin / (n-g) ) * sqrt( 1/nj + 1/nk )<br/></li>
+<li>This reduces to SE = sqrt( MSWithin )  * sqrt( 1/nj + 1/nk )<br/></li>
+<li>If the groups are j and k, t = (y-bar-j minus y-bar-k) / SE, df=(n-g)<br/></li>
+<li>CI = (y-bar-j minus y-bar-k) +/- critical-t * SE, df=(n-g)<br/></li>
+</ul>
+
+<p>Other approaches try to make some adjustments for FamilyWise Error Rate (FWER).  These include Bonferroni (divide alpha by the number of post-hoc comparisons) or Tukey&#39;s HSD (tries to keep FWER around alpha).  </p>
+
+<p>The example below is borrowed liberally from seperate code I wrote to test ANOVA (see QuickLookANOVA_v001.Rmd for a more thorough explanation of the code).  </p>
+
+<pre><code class="r">dummyData &lt;- data.frame(groupA=c(12,12,16,17,18), groupB=c(22,24,25,26,28), groupC=c(6,8,9,12,15))
+boxplot(dummyData)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-17"/></p>
+
+<pre><code class="r">sampleStats &lt;- data.frame(means=rep(0,ncol(dummyData)),stdevs=rep(0,ncol(dummyData)))
+
+for (intCtr in 1:ncol(dummyData)) {
+    sampleStats$means[intCtr] &lt;- mean(dummyData[,intCtr])
+    sampleStats$stdevs[intCtr] &lt;- sd(dummyData[,intCtr])
+}
+
+rownames(sampleStats) &lt;- names(dummyData)
+
+print(&quot;Means and Standard Deviations&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;Means and Standard Deviations&quot;
+</code></pre>
+
+<pre><code class="r">sampleStats
+</code></pre>
+
+<pre><code>##        means   stdevs
+## groupA    15 2.828427
+## groupB    25 2.236068
+## groupC    10 3.535534
+</code></pre>
+
+<pre><code class="r">summary(dummyData)
+</code></pre>
+
+<pre><code>##      groupA       groupB       groupC  
+##  Min.   :12   Min.   :22   Min.   : 6  
+##  1st Qu.:12   1st Qu.:24   1st Qu.: 8  
+##  Median :16   Median :25   Median : 9  
+##  Mean   :15   Mean   :25   Mean   :10  
+##  3rd Qu.:17   3rd Qu.:26   3rd Qu.:12  
+##  Max.   :18   Max.   :28   Max.   :15
+</code></pre>
+
+<pre><code class="r">## Calculate MSWithin
+ssWithinGroups &lt;- rep(0,ncol(dummyData))
+
+for (intCtr in 1:ncol(dummyData)) {
+    for (intCtr2 in 1:nrow(dummyData)) {
+        ssWithinGroups[intCtr] &lt;- ssWithinGroups[intCtr] + 
+                                  (dummyData[intCtr2,intCtr] - mean(dummyData[,intCtr]))^2
+    }
+}
+
+ssWithinGroups
+</code></pre>
+
+<pre><code>## [1] 32 20 50
+</code></pre>
+
+<pre><code class="r">dfWithin &lt;- ncol(dummyData) * nrow(dummyData) - ncol(dummyData)
+msWithin &lt;- sum(ssWithinGroups) / dfWithin
+print(paste0(&quot;MS Within: &quot;,msWithin,&quot; with df=&quot;,dfWithin))
+</code></pre>
+
+<pre><code>## [1] &quot;MS Within: 8.5 with df=12&quot;
+</code></pre>
+
+<pre><code class="r">## Calculate MSBetween
+ssBetweenGroups &lt;- rep(0,ncol(dummyData))
+grandMean &lt;- mean(as.matrix(dummyData))
+
+for (intCtr in 1:ncol(dummyData)) {
+    ssBetweenGroups[intCtr] &lt;- length(dummyData[,intCtr]) * (mean(dummyData[,intCtr]) - grandMean)^2
+}
+
+ssBetweenGroups
+</code></pre>
+
+<pre><code>## [1]  13.88889 347.22222 222.22222
+</code></pre>
+
+<pre><code class="r">dfBetween &lt;- ncol(dummyData) - 1
+msBetween &lt;- sum(ssBetweenGroups) / dfBetween
+print(paste0(&quot;MS Between: &quot;,round(msBetween,2),&quot; with df=&quot;,dfBetween))
+</code></pre>
+
+<pre><code>## [1] &quot;MS Between: 291.67 with df=2&quot;
+</code></pre>
+
+<pre><code class="r">myFStat &lt;- msBetween / msWithin
+myPValue &lt;- pf(myFStat,df1=msBetween,df2=msWithin,lower.tail=FALSE)
+
+print(paste0(&quot;F-statistic: &quot;,round(myFStat,2),&quot; with df1=&quot;,dfBetween,&quot; and df2=&quot;,dfWithin))
+</code></pre>
+
+<pre><code>## [1] &quot;F-statistic: 34.31 with df1=2 and df2=12&quot;
+</code></pre>
+
+<pre><code class="r">print(paste0(&quot;Relevant p-value is: &quot;,round(myPValue,4)))
+</code></pre>
+
+<pre><code>## [1] &quot;Relevant p-value is: 0&quot;
+</code></pre>
+
+<pre><code class="r">nCompare &lt;- 0.5 * (ncol(dummyData) * (ncol(dummyData)-1))
+
+myFisherLSD &lt;- data.frame(compType=rep(&quot;&quot;,nCompare),diffLow=rep(0,nCompare),diffHigh=rep(0,nCompare),
+                          stringsAsFactors = FALSE)
+
+## Run for alpha=0.05 two-sided and df=dfWithin
+tCritical &lt;- qt(0.025,df=dfWithin,lower.tail=FALSE)
+
+nCompare &lt;- 1 ## Recycling the variable
+
+for (intCtr in 1:(ncol(dummyData)-1)) {
+    for (intCtr2 in (intCtr+1):ncol(dummyData)) {
+        myFisherLSD$compType[nCompare] &lt;- paste0(names(dummyData)[intCtr],&quot; vs. &quot;,names(dummyData)[intCtr2])
+
+        diffMean &lt;- mean(dummyData[,intCtr]) - mean(dummyData[,intCtr2])
+        mySE &lt;- sqrt(msWithin) * sqrt(1/length(dummyData[,intCtr]) + 1/length(dummyData[,intCtr2]))
+
+        myFisherLSD$diffLow[nCompare] &lt;- diffMean - tCritical*mySE
+        myFisherLSD$diffHigh[nCompare] &lt;- diffMean + tCritical*mySE
+
+        nCompare &lt;- nCompare + 1
+    }
+}
+
+print(&quot;Below are the 95% hand-calculated CI for differences in mean using Fisher LSD&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;Below are the 95% hand-calculated CI for differences in mean using Fisher LSD&quot;
+</code></pre>
+
+<pre><code class="r">myFisherLSD
+</code></pre>
+
+<pre><code>##            compType     diffLow  diffHigh
+## 1 groupA vs. groupB -14.0175323 -5.982468
+## 2 groupA vs. groupC   0.9824677  9.017532
+## 3 groupB vs. groupC  10.9824677 19.017532
+</code></pre>
+
+<pre><code class="r">myFactorFrame &lt;- data.frame(keyGroup=rep(&quot;&quot;,nrow(dummyData)*ncol(dummyData)),
+                            indValue=rep(0,nrow(dummyData)*ncol(dummyData)),
+                            stringsAsFactors = FALSE
+                            )
+
+nCompare &lt;- 1 ## Reccylcing the variable
+
+for (intCtr in 1:ncol(dummyData)) {
+    for (intCtr2 in 1:nrow(dummyData)) {
+        myFactorFrame$keyGroup[nCompare] &lt;- names(dummyData)[intCtr]
+        myFactorFrame$indValue[nCompare] &lt;- dummyData[intCtr2,intCtr]
+        nCompare &lt;- nCompare + 1
+    }
+}
+
+myFactorFrame
+</code></pre>
+
+<pre><code>##    keyGroup indValue
+## 1    groupA       12
+## 2    groupA       12
+## 3    groupA       16
+## 4    groupA       17
+## 5    groupA       18
+## 6    groupB       22
+## 7    groupB       24
+## 8    groupB       25
+## 9    groupB       26
+## 10   groupB       28
+## 11   groupC        6
+## 12   groupC        8
+## 13   groupC        9
+## 14   groupC       12
+## 15   groupC       15
+</code></pre>
+
+<pre><code class="r">myFactorFrame$aovFactor &lt;- factor(myFactorFrame$keyGroup,levels=c(&quot;groupC&quot;,&quot;groupA&quot;,&quot;groupB&quot;))
+aovFromR &lt;- aov(indValue ~ aovFactor , data=myFactorFrame)
+summary(aovFromR)
+</code></pre>
+
+<pre><code>##             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## aovFactor    2  583.3   291.7   34.31 1.09e-05 ***
+## Residuals   12  102.0     8.5                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+<pre><code class="r">confint(aovFromR)
+</code></pre>
+
+<pre><code>##                      2.5 %    97.5 %
+## (Intercept)      7.1591756 12.840824
+## aovFactorgroupA  0.9824677  9.017532
+## aovFactorgroupB 10.9824677 19.017532
+</code></pre>
+
+<pre><code class="r">## Run the Tukey HSD
+TukeyHSD(aovFromR)
+</code></pre>
+
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = indValue ~ aovFactor, data = myFactorFrame)
+## 
+## $aovFactor
+##               diff         lwr       upr     p adj
+## groupA-groupC    5  0.08070249  9.919298 0.0462914
+## groupB-groupC   15 10.08070249 19.919298 0.0000088
+## groupB-groupA   10  5.08070249 14.919298 0.0004187
+</code></pre>
+
+<pre><code class="r">## Run standard pairwise t-tests
+pairwise.t.test(x=myFactorFrame$indValue , g=myFactorFrame$keyGroup , p.adjust.method = &quot;none&quot;)
+</code></pre>
+
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  myFactorFrame$indValue and myFactorFrame$keyGroup 
+## 
+##        groupA  groupB 
+## groupB 0.00015 -      
+## groupC 0.01890 3.2e-06
+## 
+## P value adjustment method: none
+</code></pre>
+
+<pre><code class="r">## Run Bonferroni pairwise t-tests
+pairwise.t.test(x=myFactorFrame$indValue , g=myFactorFrame$keyGroup , p.adjust.method = &quot;bonferroni&quot;)
+</code></pre>
+
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  myFactorFrame$indValue and myFactorFrame$keyGroup 
+## 
+##        groupA  groupB 
+## groupB 0.00046 -      
+## groupC 0.05669 9.5e-06
+## 
+## P value adjustment method: bonferroni
+</code></pre>
+
+<pre><code class="r">## Run Holm pairwise t-tests
+pairwise.t.test(x=myFactorFrame$indValue , g=myFactorFrame$keyGroup , p.adjust.method = &quot;holm&quot;)
+</code></pre>
+
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  myFactorFrame$indValue and myFactorFrame$keyGroup 
+## 
+##        groupA  groupB 
+## groupB 0.00031 -      
+## groupC 0.01890 9.5e-06
+## 
+## P value adjustment method: holm
+</code></pre>
+
+<p>The hand calculations match the aov outputs observed from R.  The post-hoc confidence intervals vary depending on the metric that we choose to use.  </p>
+
+<p>####<em>ANOVA and Multiple Regression</em><br/>
+Further, ANOVA is a very close parallel to multiple regression.  </p>
+
+<ul>
+<li>MSResidual from regression will be MSWithin (within group variance) in ANOVA<br/></li>
+<li>MSRegression from regression will be MSBetween (between group variance) in ANOVA<br/></li>
+<li>F = MSRegression / MSResidual from regression will match F = MSBetween / MSWithin from ANOVA<br/></li>
+<li>p-value is pf(F, df1=(g-1), df2=(n-g), lower.tail=FALSE) in either case<br/></li>
+</ul>
+
+<pre><code class="r">myFactorFrame$dummyA &lt;- ifelse(myFactorFrame$keyGroup==&quot;groupA&quot;,1,0)
+myFactorFrame$dummyB &lt;- ifelse(myFactorFrame$keyGroup==&quot;groupB&quot;,1,0)
+
+myLMDummy &lt;- lm(indValue ~ dummyA + dummyB, data=myFactorFrame)
+summary(myLMDummy)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = indValue ~ dummyA + dummyB, data = myFactorFrame)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+##   -4.0   -2.5    0.0    2.0    5.0 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   10.000      1.304   7.670 5.77e-06 ***
+## dummyA         5.000      1.844   2.712   0.0189 *  
+## dummyB        15.000      1.844   8.135 3.17e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.915 on 12 degrees of freedom
+## Multiple R-squared:  0.8512, Adjusted R-squared:  0.8264 
+## F-statistic: 34.31 on 2 and 12 DF,  p-value: 1.087e-05
+</code></pre>
+
+<pre><code class="r">confint(myLMDummy)
+</code></pre>
+
+<pre><code>##                  2.5 %    97.5 %
+## (Intercept)  7.1591756 12.840824
+## dummyA       0.9824677  9.017532
+## dummyB      10.9824677 19.017532
+</code></pre>
+
+<p>As expected, the F-statistic is identical in the multivariate regression with dummy (factor) variables.  Further, the confidence intervals match those provided by aov().  </p>
+
+<p>####<em>Factorial ANOVA</em><br/>
+There is no particular reason that there needs to be just one factor variable.  Factorial ANOVA is run when you have two or more factors and one depedent variable.  An example would be when you have a 2x2x3 experiment frame and want to understand the potential differences.  </p>
+
+<p>As a first approach, you can always collapse down to a single dimension and run ANOVA to look for the &ldquo;main effect&rdquo; of that specific variable.  </p>
+
+<p>There can also be value to looking for the interaction effects.  TO BE CONTINUED.  </p>
+
+</body>
+
+</html>
