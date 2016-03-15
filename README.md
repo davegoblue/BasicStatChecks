@@ -12,3 +12,5 @@ This is a simple repository for some basic statistic checking.  Created mostly s
 * Added 13-MAR-2016 - v001 now also summarizes Module 2 (Categorical Association)  
 * Added 14-MAR-2016 - v002 now also summarizes Module 3 (Simple Regression)  
 * Added 14-MAR-2016 - v002 now also summarizes Module 4 (Multiple Regression)  
+* Added 15-MAR-2016 - v003 now also summarizes half of Module 5 (ANOVA)  
+  
