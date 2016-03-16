@@ -2051,3 +2051,215 @@ There is no particular reason that there needs to be just one factor variable.  
 As a first approach, you can always collapse down to a single dimension and run ANOVA to look for the "main effect" of that specific variable.  
 
 There can also be value to looking for the interaction effects.  TO BE CONTINUED.  
+
+
+## Module 6: Nonparametric tests  
+Non-parametric tests allow for drawing inferences even when the population paremeters are unknown or known to violate one or more conditions for the associated parametric test.  Broadly, the non-parametric tests are often comparable to a related parametric test.  
+
+Common reasons for using a nonparametric test include:  
+  
+* Requires fewer assumptions than a parametric test  
+* Allows for ordinal data, such as ranking on a scale of 1-5  
+* Frequently robust to violations of assumptions (tend not to be terribly wrong)  
+* Manages small sample sizes better  
+  
+The tradeoff is that while nonparametric tests tend to be more robust, parametric tests tend to have better power.  As and when sample sizes and assumptions allow, the parametric test is preferred.  
+  
+####_Sign test_  
+The non-parametric sign test is the rough equivalent to the one-sided t-test.  It is typically used for sample sized smaller than 30-35, with the t-test (assumptions of normality) becoming good enough beyond that.  
+
+Essentially, this is a voting system which is then evaluated based on the associated binomial distribution.  For example, suppose you wonder whether candy A or candy B tastes better.  You would gather in some votes, ignore the ties, and then see what the binomial distribution says.  
+
+Ho: P(x > y) = p, frequently, though not necessarily, 50%  
+Ha: P(x > y) <> p, frequently, though not necessarily, one-sided  
+test statisttic: binomial distribution of w wins in n trials  
+
+Suppose that we sample from a distribution that has 60% favor A, 10% favor neither, and 30% favor B.  We take 20 pulls from the population and run the sign test.  See for example:  
+
+```r
+set.seed(0316160710)
+
+randPulls <- runif(20,0,1)
+nWin <- sum(randPulls <= 0.6)
+nLose <- sum(randPulls >= 0.7)
+nTie <- sum(randPulls > 0.6 & randPulls < 0.7)
+
+print(paste0("The sample has ",nWin," wins, ",nLose," losses, and ",nTie," ties"))
+```
+
+```
+## [1] "The sample has 13 wins, 5 losses, and 2 ties"
+```
+
+```r
+## Interested only in the wins and losses and the binomial test
+binTest <- binom.test(x=nWin, n=(nWin+nLose), p=0.5, alternative="two.sided")
+binTest ## fail to reject due to p=0.096
+```
+
+```
+## 
+## 	Exact binomial test
+## 
+## data:  nWin and (nWin + nLose)
+## number of successes = 13, number of trials = 18, p-value = 0.09625
+## alternative hypothesis: true probability of success is not equal to 0.5
+## 95 percent confidence interval:
+##  0.4651980 0.9030508
+## sample estimates:
+## probability of success 
+##              0.7222222
+```
+
+```r
+## Can be run as one-sided
+binTest <- binom.test(x=nWin, n=(nWin+nLose), p=0.5, alternative="greater")
+binTest ## reject based on p=0.048
+```
+
+```
+## 
+## 	Exact binomial test
+## 
+## data:  nWin and (nWin + nLose)
+## number of successes = 13, number of trials = 18, p-value = 0.04813
+## alternative hypothesis: true probability of success is greater than 0.5
+## 95 percent confidence interval:
+##  0.5021718 1.0000000
+## sample estimates:
+## probability of success 
+##              0.7222222
+```
+
+```r
+## The key cutoffs
+qbinom(0.95,18,0.5) + 1  ## Cutoff for one-sided with 18 tries
+```
+
+```
+## [1] 13
+```
+
+```r
+qbinom(0.975,18,0.5) + 1  ## Cutoff for two-sided with 18 tries
+```
+
+```
+## [1] 14
+```
+
+####_One-sample Wilcoxon signed ranks_  
+This is roughly the equivalent to the one-sample t-test, and it expands on the sign test by treating different magnitudes of responses as having meaning.  The test looks at the median for its central tendency, and requires only that the sampling by independent and from a roughly symmetric population.  
+
+This test frequently arises when you ask people to rate two items on a scale of 1-5 and want to test whether the first or second item is more popular.  The sign test would allow you to do this also, but the signed ranks test has the advantage of seeing 4-1 as different than 3-2 (where the sign test would see both as "win").
+
+The table of paired responses is lined up, and any ties are deleted prior to running the test.  Next, new columns are created for 1) absolute value of score difference, and 2) sign of score difference.  The absolute value of score differences is ranked - IMPORTANT that everyone with a tied absolute score difference be given the average rank of their tied group - and the ranks are summed for both the positive (win) and negative (lose) categories.  A lookup table can then give you P(W > w), and care should be taken that you use the appropriate alpha depending on one-sided vs. two-sided.  
+
+Ho: The medians of both groups are the same  
+Ha: The medians of the groups are different (one-sided or two-sided as appropriate)  
+Test statistic: W, the sum of ranks for the positive group  
+
+Suppose for example that you ask 15 people to each rate two pastries.  See below for R code:
+
+```r
+v1 <- round(5*runif(15,0,1),0)
+v2 <- round(5*runif(15,0,1)^2,0)
+
+myFrame <- data.frame(v1=v1, v2=v2, absdiff=abs(v1-v2), type=sign(v1-v2), absRank=0)
+myFrame
+```
+
+```
+##    v1 v2 absdiff type absRank
+## 1   4  0       4    1       0
+## 2   1  2       1   -1       0
+## 3   1  1       0    0       0
+## 4   3  1       2    1       0
+## 5   3  2       1    1       0
+## 6   4  2       2    1       0
+## 7   0  0       0    0       0
+## 8   4  0       4    1       0
+## 9   4  1       3    1       0
+## 10  3  4       1   -1       0
+## 11  4  2       2    1       0
+## 12  1  1       0    0       0
+## 13  1  2       1   -1       0
+## 14  5  2       3    1       0
+## 15  3  3       0    0       0
+```
+
+```r
+## Filter out ties
+myFrame <- myFrame[myFrame$absdiff!=0,]
+
+## Rank the absolute values
+myFrame$absRank <- rank(myFrame$absdiff,ties.method="average")
+myFrame
+```
+
+```
+##    v1 v2 absdiff type absRank
+## 1   4  0       4    1    10.5
+## 2   1  2       1   -1     2.5
+## 4   3  1       2    1     6.0
+## 5   3  2       1    1     2.5
+## 6   4  2       2    1     6.0
+## 8   4  0       4    1    10.5
+## 9   4  1       3    1     8.5
+## 10  3  4       1   -1     2.5
+## 11  4  2       2    1     6.0
+## 13  1  2       1   -1     2.5
+## 14  5  2       3    1     8.5
+```
+
+```r
+## Calculate test statistic
+testW <- sum(subset(myFrame,type==1)$absRank)
+nW <- length(subset(myFrame,type==1)$absRank)
+testL <- sum(subset(myFrame,type==-1)$absRank)
+nL <- length(subset(myFrame,type==-1)$absRank)
+
+print(paste0("The positive ranks sum to ",testW," of ",testW+testL,
+             " with ",nW," positive of ",nW+nL," total"
+             )
+      )
+```
+
+```
+## [1] "The positive ranks sum to 58.5 of 66 with 8 positive of 11 total"
+```
+
+```r
+## Wilcoxon signed rank test (one-sided)
+psignrank(testW,(nW+nL),lower.tail=FALSE)
+```
+
+```
+## [1] 0.006835937
+```
+
+```r
+## Standard binomial test
+binTest <- binom.test(x=nW, n=(nW+nL), p=0.5, alternative="greater")
+binTest
+```
+
+```
+## 
+## 	Exact binomial test
+## 
+## data:  nW and (nW + nL)
+## number of successes = 8, number of trials = 11, p-value = 0.1133
+## alternative hypothesis: true probability of success is greater than 0.5
+## 95 percent confidence interval:
+##  0.4356258 1.0000000
+## sample estimates:
+## probability of success 
+##              0.7272727
+```
+
+Note in this case how the signed-rank test easily spots the difference in median while the sign (binomial) test cannot draw the same inference.  This is because while v2 has chances to beat v1, they will tend to be small ones.  On the other hand, v1 is both more likely to beat v2 and also more likely to win big.
+
+The Wilcoxon signed rank test can also be used by plugging the theoretical median in to column 2 if you have Ho: median=m.  
+
+####_Two-samples Wilcoxon / Mann-Whitney_  
