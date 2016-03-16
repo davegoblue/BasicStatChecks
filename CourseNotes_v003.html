@@ -2285,10 +2285,10 @@ print(paste0(&quot;The positive ranks sum to &quot;,testW,&quot; of &quot;,testW
 </code></pre>
 
 <pre><code class="r">## Wilcoxon signed rank test (one-sided)
-psignrank(testW,(nW+nL),lower.tail=FALSE)
+psignrank(floor(testW),(nW+nL),lower.tail=FALSE) ## 0.5s not in psignrank
 </code></pre>
 
-<pre><code>## [1] 0.006835937
+<pre><code>## [1] 0.009277344
 </code></pre>
 
 <pre><code class="r">## Standard binomial test
@@ -2313,7 +2313,78 @@ binTest
 
 <p>The Wilcoxon signed rank test can also be used by plugging the theoretical median in to column 2 if you have Ho: median=m.  </p>
 
-<p>####<em>Two-samples Wilcoxon / Mann-Whitney</em>  </p>
+<p>####<em>Two-samples Wilcoxon / Mann-Whitney</em><br/>
+The Wilcoxon (or Mann-Whitney) test is the nonparametric version of comparing differences in means for two samples.  The nonparamentric version looks at mean ranks, similar to the signed-rank test.  </p>
+
+<p>The Wilcoxon test would be created by taking the data for type A and type B, combining it as appropriate and running the below:  </p>
+
+<ul>
+<li>Ho: mean rank sales in A and B are equal<br/></li>
+<li>Ha: mean rank sales in A and B are unequal (usually two-sided, but could be one-sided)<br/></li>
+<li>Test statistic Wx is the sum of ranks of one of the groups<br/></li>
+<li>Assign ranks to the elements of the combined data, giving tied elements the average rank<br/></li>
+<li>Then, sum the ranks for both A and B<br/></li>
+<li>Look up the critical values in a table, and assess significance<br/></li>
+</ul>
+
+<p>Typically, if group sizes are greater than 10, you have enough data for the z-test.  Suppose you have:  </p>
+
+<ul>
+<li>Ranks x1, x2, &hellip; , xm<br/></li>
+<li>Ranks y1, y2, &hellip; , yn<br/></li>
+<li>Expected rank sum for X will be 0.5 * m * (m + n + 1), or substitute in N = m + n<br/></li>
+<li>Expected standard deviation of rank sum is sqrt( m * n * (m + n + 1) / 12 )<br/></li>
+<li>(Wx - mu(Wx)) / sigma(Wx) will roughly follow a z-distribution<br/></li>
+</ul>
+
+<p>The Wilcoxon test is often the most suitable test for measuring central tendency.  You can use oridnal or numeric data, it is almost as powerful as the parametric test, and requires only indpendence of data.  </p>
+
+<p>See below for an example:  </p>
+
+<pre><code class="r">set.seed(0316161754)
+rand1 &lt;- rnorm(20,mean=1)
+rand2 &lt;- rnorm(15,mean=1.5)
+
+randAll &lt;- rbind(data.frame(rand=rand1,type=&quot;A&quot;),
+                 data.frame(rand=rand2,type=&quot;B&quot;)
+                 )
+randAll$rank &lt;- rank(randAll$rand, ties.method=&quot;average&quot;)
+
+m &lt;- length(rand1)
+n &lt;- length(rand2)
+
+expMuW &lt;- 0.5 * m * (m + n + 1)
+expSigmaW &lt;- sqrt( m * n * (m + n + 1) / 12 )
+
+testW &lt;- sum(randAll[randAll$type==&quot;A&quot;,]$rank)
+
+zStat &lt;- (testW - expMuW) / expSigmaW
+pStat &lt;- 1 - 2 * abs(pnorm(zStat) - 0.5)
+
+print(paste0(&quot;Rank sum for A is &quot;,testW,&quot; where mean is &quot;,expMuW,
+             &quot; and sigma is &quot;,expSigmaW,&quot; for z=&quot;,round(zStat,2),
+             &quot; with two-tailed p=&quot;,round(pStat,4)
+             )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Rank sum for A is 280 where mean is 360 and sigma is 30 for z=-2.67 with two-tailed p=0.0077&quot;
+</code></pre>
+
+<pre><code class="r">wilcox.test(rand1, rand2,correct=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  Wilcoxon rank sum test
+## 
+## data:  rand1 and rand2
+## W = 70, p-value = 0.006848
+## alternative hypothesis: true location shift is not equal to 0
+</code></pre>
+
+<p>While these tests give similar results, there are some differences since n=15 and n=20 are still a distance from CLT holding perfectly.  </p>
+
+<p>####<em>Kruskal-Willis</em>  </p>
 
 </body>
 

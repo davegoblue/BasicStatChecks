@@ -1119,7 +1119,7 @@ print(paste0("The positive ranks sum to ",testW," of ",testW+testL,
       )
 
 ## Wilcoxon signed rank test (one-sided)
-psignrank(testW,(nW+nL),lower.tail=FALSE)
+psignrank(floor(testW),(nW+nL),lower.tail=FALSE) ## 0.5s not in psignrank
 
 ## Standard binomial test
 binTest <- binom.test(x=nW, n=(nW+nL), p=0.5, alternative="greater")
@@ -1131,3 +1131,58 @@ Note in this case how the signed-rank test easily spots the difference in median
 The Wilcoxon signed rank test can also be used by plugging the theoretical median in to column 2 if you have Ho: median=m.  
 
 ####_Two-samples Wilcoxon / Mann-Whitney_  
+The Wilcoxon (or Mann-Whitney) test is the nonparametric version of comparing differences in means for two samples.  The nonparamentric version looks at mean ranks, similar to the signed-rank test.  
+
+The Wilcoxon test would be created by taking the data for type A and type B, combining it as appropriate and running the below:  
+  
+* Ho: mean rank sales in A and B are equal  
+* Ha: mean rank sales in A and B are unequal (usually two-sided, but could be one-sided)  
+* Test statistic Wx is the sum of ranks of one of the groups  
+* Assign ranks to the elements of the combined data, giving tied elements the average rank  
+* Then, sum the ranks for both A and B  
+* Look up the critical values in a table, and assess significance  
+  
+Typically, if group sizes are greater than 10, you have enough data for the z-test.  Suppose you have:  
+  
+* Ranks x1, x2, . . . , xm  
+* Ranks y1, y2, . . . , yn  
+* Expected rank sum for X will be 0.5 * m * (m + n + 1), or substitute in N = m + n  
+* Expected standard deviation of rank sum is sqrt( m * n * (m + n + 1) / 12 )  
+* (Wx - mu(Wx)) / sigma(Wx) will roughly follow a z-distribution  
+  
+The Wilcoxon test is often the most suitable test for measuring central tendency.  You can use oridnal or numeric data, it is almost as powerful as the parametric test, and requires only indpendence of data.  
+
+See below for an example:  
+```{r}
+set.seed(0316161754)
+rand1 <- rnorm(20,mean=1)
+rand2 <- rnorm(15,mean=1.5)
+
+randAll <- rbind(data.frame(rand=rand1,type="A"),
+                 data.frame(rand=rand2,type="B")
+                 )
+randAll$rank <- rank(randAll$rand, ties.method="average")
+
+m <- length(rand1)
+n <- length(rand2)
+
+expMuW <- 0.5 * m * (m + n + 1)
+expSigmaW <- sqrt( m * n * (m + n + 1) / 12 )
+
+testW <- sum(randAll[randAll$type=="A",]$rank)
+
+zStat <- (testW - expMuW) / expSigmaW
+pStat <- 1 - 2 * abs(pnorm(zStat) - 0.5)
+
+print(paste0("Rank sum for A is ",testW," where mean is ",expMuW,
+             " and sigma is ",expSigmaW," for z=",round(zStat,2),
+             " with two-tailed p=",round(pStat,4)
+             )
+      )
+
+wilcox.test(rand1, rand2,correct=FALSE)
+```
+
+While these tests give similar results, there are some differences since n=15 and n=20 are still a distance from CLT holding perfectly.  
+
+####_Kruskal-Willis_  
