@@ -2334,3 +2334,198 @@ wilcox.test(rand1, rand2,correct=FALSE)
 While these tests give similar results, there are some differences since n=15 and n=20 are still a distance from CLT holding perfectly.  
 
 ####_Kruskal-Willis_  
+Mean rank testing can be expanded to 3+ groups, similar to the concept with ANOVA.  The Kruskal-Willis test is the broad non-parametric equivalent of the one-way ANOVA.  
+  
+Ho: The groups all have the same mean rank  
+Ha: At least one of the groups have different mean rank  
+Test statistic: H with follow chi-squared df=(g-1) where g is the number of groups  
+
+The general approach to the Kruskal-Willis test should be familiar:  
+  
+1.  Take all of the data and rank the observations (give average tied rank to everyone in the tied group)  
+2.  Calculate the overall mean R-bar, as well as the mean of each group, R-bar-k  
+3.  H = [ 12 / ( N * (N + 1) ) ] * sum-over-k-of nk * (R-bar-k - R-bar)^2, N being total observations  
+4.  Assess H as chi-squared df=(g-1), with g being the number of groups  
+  
+Similar to ANOVA, a significant H does not tell you how the groups differ from each other, merely that there is at least one meaningful difference.  Compared to ANOVA:  
+  
+* ANOVA requires normally distribiuted, non-skewed, populations with homogenous variance, using quantitative variables  
+* KW can use quantitative or oridnal variables, and in small-n environments, and where ANOVA assumptions fail to hold  
+  
+See below for an example:  
+
+```r
+fr <- c(65,68,72,83,84,91,94,97)
+ch <- c(25,37,49,54,59,81,82)
+sp <- c(13,41,49,52,55,82)
+
+myFrame <- rbind(data.frame(dat=fr,type="fr"), data.frame(dat=ch,type="ch"),
+                 data.frame(dat=sp,type="sp")
+                 )
+
+myFrame$rank = rank(myFrame$dat,ties.method="average")
+myFrame
+```
+
+```
+##    dat type rank
+## 1   65   fr 11.0
+## 2   68   fr 12.0
+## 3   72   fr 13.0
+## 4   83   fr 17.0
+## 5   84   fr 18.0
+## 6   91   fr 19.0
+## 7   94   fr 20.0
+## 8   97   fr 21.0
+## 9   25   ch  2.0
+## 10  37   ch  3.0
+## 11  49   ch  5.5
+## 12  54   ch  8.0
+## 13  59   ch 10.0
+## 14  81   ch 14.0
+## 15  82   ch 15.5
+## 16  13   sp  1.0
+## 17  41   sp  4.0
+## 18  49   sp  5.5
+## 19  52   sp  7.0
+## 20  55   sp  9.0
+## 21  82   sp 15.5
+```
+
+```r
+rBar <- mean(myFrame$rank)
+overallN <- length(myFrame$rank)
+
+rBarGroup <- tapply(myFrame$rank,myFrame$type,FUN=mean)
+rBarN <- tapply(myFrame$rank,myFrame$type,FUN=length)
+
+statH <- ( sum(rBarN * (rBarGroup - rBar)^2 ) ) * 
+         (12 / (overallN * (overallN + 1) ) )
+
+print(paste0("The K-W stat is ",round(statH,2)," on df=",length(rBarN)-1,
+             " for p=",round(pchisq(statH, df=(length(rBarN)-1),lower.tail=FALSE),4)
+             )
+      )
+```
+
+```
+## [1] "The K-W stat is 9.84 on df=2 for p=0.0073"
+```
+
+```r
+kruskal.test(dat ~ type, data=myFrame)
+```
+
+```
+## 
+## 	Kruskal-Wallis rank sum test
+## 
+## data:  dat by type
+## Kruskal-Wallis chi-squared = 9.8491, df = 2, p-value = 0.007266
+```
+
+The results of the hand calculation and the R function are very close, but not quite the same.  I am not sure what drives the very small difference in chi-squared statistic.  
+
+####_Spearman correlation (monotonicity)_  
+The Pearson correlation is the most commonly used test for linear association between two quantitative variables.  It does require that the variables be bivariate normally distributed, and is sensitive to both outliers and skew of the underlying data.  
+
+The Spearman correlation meansure the monotonic association between two variables, and is especially valuable when working with ordinal variables, non-linear relationships, outliers, non-normal distributions, and small-n.  
+
+The Spearman correlation (rank correlation) measure the strength of monotonic association between the data, and varies between -1 and 1 just like a regular correlation.  
+
+The Spearman correlation works by assigning a rank within each of the columns of interest, then running Pearson's correlation on the ranks.  Recall that all tied values should get the group tied average rank.  
+
+See below for an example:  
+
+```r
+colA <- c(3 , 4 , 4 , 5 , 7 , 7 , 10 , 12 , 13)
+colB <- c(2 , 3 , 4.5 , 4 , 5.4 , 5.5 , 6.5 , 6 , 6.25)
+
+rksA <- rank(colA,ties.method="average")
+rksB <- rank(colB,ties.method="average")
+
+print(paste0("The Pearson correlation is ",round(cor(colA,colB),3),
+             " with Spearman correlation of ",round(cor(rksA,rksB),3)
+             )
+      )
+```
+
+```
+## [1] "The Pearson correlation is 0.859 with Spearman correlation of 0.916"
+```
+
+```r
+cor(colA,colB,method="pearson")
+```
+
+```
+## [1] 0.8586753
+```
+
+```r
+cor(colA,colB,method="spearman")
+```
+
+```
+## [1] 0.9159987
+```
+
+As expected, the correlation from method="spearman" matches using default (Pearson) correlation on the ranked dataset.  
+
+####_Runs test_  
+The runs test examines the number of runs in a dataset.  This requires a means of classifying each element as one of two types.  For example, it could be Heads/Tails or Above/Below Average or Rising/Falling.  Within the data, a run is considered to occur every time there is a change from type 1 to type 2 or vice versa.  Importantly, the first element of the group is always the first run, and the first appearance of the other element is always the second run.  
+
+If there are very few runs, then it suggests there is bunching of some type.  If there are very many runs, then it suggests systemic fluctuations are present.  In either case, the data are decidedly non-random.  
+
+Suppose that you have some data and count the runs:  
+  
+* m = total elements of type 1  
+* n = total elements of type 2  
+* N = (m+n) = total elements  
+* runs = total number of runs  
+
+If you are working in the small-n (m,n less than 10) world, these are lookups against a table.  As the world gets larger, you can start to use z-tests assuming:  
+  
+* mu(runs) = (2 * m * n / N) + 1 where N = m+n is the total number of elements  
+* sigma(runs) = sqrt( (2 * m * n * (2 * m * n - N) ) / ( N^2 * (N - 1) ) )  
+
+See below for an example calculation:  
+
+```r
+myRun <- c(0,1,1,1,0,1,0,0,1,0,1,0,1,0,1,0,1,0,1,1,0,0,1)
+
+m <- sum(myRun==0)
+n <- sum(myRun==1)
+bigN <- sum(m,n)
+
+nRuns <- 1
+for (intCtr in 2:bigN) {
+    nRuns <- nRuns + (myRun[intCtr] != myRun[intCtr-1])
+}
+
+print(paste0("There are ",nRuns," runs on ",bigN," elements split m=",m," and n=",n))
+```
+
+```
+## [1] "There are 18 runs on 23 elements split m=11 and n=12"
+```
+
+```r
+muRuns <- (2 * m * n / bigN) + 1
+sigmaRuns <- sqrt( (2 * m * n * (2 * m * n - bigN) ) / 
+                   ( bigN^2 * (bigN - 1) ) 
+                  )
+zStat <- (nRuns - muRuns) / sigmaRuns
+pStat <- 1 - 2 * abs(pnorm(zStat) - 0.5)
+
+print(paste0("With expected mu ",round(muRuns,2)," and sigma ",round(sigmaRuns,2),
+             " , z-stat is ",round(zStat,3)," for two-tailed p=",round(pStat,4)
+             )
+      )
+```
+
+```
+## [1] "With expected mu 12.48 and sigma 2.34 , z-stat is 2.362 for two-tailed p=0.0182"
+```
+
+This can be handy for assessing whether or not trends observed in data are consistent with randomness.
