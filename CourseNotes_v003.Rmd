@@ -1033,7 +1033,77 @@ There is no particular reason that there needs to be just one factor variable.  
 
 As a first approach, you can always collapse down to a single dimension and run ANOVA to look for the "main effect" of that specific variable.  
 
-There can also be value to looking for the interaction effects.  TO BE CONTINUED.  
+There can also be value to looking for the interaction effects.  Broadly speaking:
+  
+* 1 dependent, 1 independent - one-way ANOVA  
+* 1 dependent, 2+ independent - factorial ANOVA  
+* 2+ dependent, 1 independent - Multiple ANOVAs  
+* 2+ dependent, 2+ independent - MANOVA  
+
+Suppose for this example that you have three levels on variable A and two levels on variables B and have the mean, standard deviation, and N for each of the AxB buckets.  You also have the marginals for A and B.  
+
+The key terms are then (Within=Overall, DueA/DueB on marginals, DueAB on joints):  
+  
+* SSWithin = sum-over-k-of ( (nk-1) * sdk^2 ), dfWithin = N - g [N total observations in g groups]  
+* SSDueA = sum-over-j-of ( nj * (mean-in-j - grand-mean)^2 ), df = g(a) - 1 [g(a)=groups of a]  
+* SSDueB = sum-over-m-of ( nm * (mean-in-m - grand-mean)^2 ), df = g(b) - 1 [g(b)=groups of b]  
+* SSDueAB = sum-over-z-of ( nz * (mean-in-z - row-mean - col-mean + grand-mean)^2 ), df=(g(a) - 1) * (g(b) - 1), where g(a) is the number of groups of type A and g(b) is the number of groups of type B.  
+
+That is confusing!  An example may be helpful.  
+
+```{r}
+## Create an example grid with n, mu, and sd
+factFrame <- data.frame(typeA=c(rep("1",3),rep("2",3),rep("3",3),rep("Total",3)),
+                        typeB=rep(c("1","2","Total"),4),
+                        groupN=c(20,22,42,15,32,47,18,21,39,53,75,128),
+                        groupMean=c(5.35,5.73,5.55,5,5.34,5.23,5.72,5.10,5.38,5.38,5.39,5.38),
+                        groupSD=c(1.21,1.17,1.19,1.14,1.10,1.12,1.06,1.15,1.11,1.13,1.14,1.14)
+                        )
+
+withinFrame <- subset(factFrame, typeA != "Total" & typeB != "Total")
+gA <- sum(table(withinFrame$typeA)>0)
+gB <- sum(table(withinFrame$typeB)>0)
+overallN <- sum(withinFrame$groupN)
+grandMean <- sum(withinFrame$groupMean * withinFrame$groupN) / overallN
+
+ssWithin <- sum( (withinFrame$groupN - 1) * withinFrame$groupSD^2 )
+dfWithin <- overallN - gA * gB
+
+dueAFrame <- subset(factFrame, typeA != "Total" & typeB == "Total")
+ssDueA <- sum( dueAFrame$groupN * ( dueAFrame$groupMean - grandMean )^2 )
+dfDueA <- gA - 1
+
+dueBFrame <- subset(factFrame, typeA == "Total" & typeB != "Total")
+ssDueB <- sum( dueBFrame$groupN * ( dueBFrame$groupMean - grandMean )^2 )
+dfDueB <- gB - 1
+
+dueABFrame <- withinFrame
+dueABFrame$meanA <- dueAFrame[match(withinFrame$typeA,dueAFrame$typeA),"groupMean"]
+dueABFrame$meanB <- dueBFrame[match(withinFrame$typeB,dueBFrame$typeB),"groupMean"]
+ssDueAB <- sum( dueABFrame$groupN * ( dueABFrame$groupMean - dueABFrame$meanA - dueABFrame$meanB + grandMean)^2 )
+dfDueAB <- (gA - 1) * (gB - 1)
+
+fDueA <- (ssDueA / dfDueA) / (ssWithin / dfWithin)
+pDueA <- pf(fDueA, dfDueA, dfWithin, lower.tail=FALSE)
+dueAFrame
+print(paste0("Due A Marginal: F=",round(fDueA,2)," with p=",round(pDueA,4)))
+
+fDueB <- (ssDueB / dfDueB) / (ssWithin / dfWithin)
+pDueB <- pf(fDueB, dfDueB, dfWithin, lower.tail=FALSE)
+dueBFrame
+print(paste0("Due B Marginal: F=",round(fDueB,2)," with p=",round(pDueB,4)))
+
+fDueAB <- (ssDueAB / dfDueAB) / (ssWithin / dfWithin)
+pDueAB <- pf(fDueAB, dfDueAB, dfWithin, lower.tail=FALSE)
+dueABFrame
+print(paste0("Due AB Marginal: F=",round(fDueAB,2)," with p=",round(pDueAB,4)))
+
+## An example from the Tooth Growth Data -- much easier to use R!
+data(ToothGrowth)
+summary(aov(len ~ dose * supp, data=ToothGrowth))
+```
+
+So, while this can be calculated by hand, if you have the raw data, then it is a lot easier to use the interaction term for aov() in R.  
 
 
 ## Module 6: Nonparametric tests  
