@@ -16,3 +16,4 @@ This is a simple repository for some basic statistic checking.  Created mostly s
 * Added 16-MAR-2016 - v003 now also summarizes half of Module 5 (ANOVA) and part of Module 6 (non-parametric)  
 * Added 16-MAR-2016 - v003 now summarizes half of Module 5 (ANOVA) and more of Module 6 (non-parametric)  
 * Added 17-MAR-2016 - v003 now summarizes half of Module 5 (ANOVA) and all of Module 6 (non-parametric)  
+* Added 18-MAR-2016 - v003 now summarizes all of Modules 1-6  
