@@ -1479,4 +1479,49 @@ randGroup5 <- genRandMuSigma(tgtMean=10, tgtSD=8, tgtN=12)
 round(randGroup5, 3)
 
 ```
+  
+Next, a function is created to show that high correlations (low p-values) will occur by chance with sufficient numbers of random trials.  This shows the risks of p-hacking through multiple models looking for an impact.  
+  
+```{r}
+
+fakeCorrel <- function(nPer=40, nTries=10000) {
+    
+    for (intCtr in 1:nTries) {
+        fakeX <- rnorm(nPer)
+        fakeY <- rnorm(nPer)
+        
+        if (intCtr==1) {
+            storeX <- fakeX
+            storeY <- fakeY
+            storeP <- cor.test(fakeX, fakeY)$p.value
+            storeN <- intCtr
+        } else {
+            if (cor.test(fakeX, fakeY)$p.value < storeP) {
+                storeX <- fakeX
+                storeY <- fakeY
+                storeP <- cor.test(fakeX, fakeY)$p.value
+                storeN <- intCtr
+            }
+        }
+    }
+    
+    return(list(storeX, storeY, storeP, storeN))
+    
+}
+
+fakeList <- fakeCorrel()
+fakeList
+cor.test(fakeList[[1]],fakeList[[2]])
+
+plot(fakeList[[2]],fakeList[[1]],xlab="Random 1",ylab="Random 2",
+     main=paste0("Random data generated at trial ",fakeList[[4]])
+     )
+fakeLM <- lm(fakeList[[2]] ~ fakeList[[1]])
+summary(fakeLM)
+abline(a=coef(fakeLM)[[1]], b=coef(fakeLM)[[2]],col="blue",lwd=1.5)
+title(sub=paste0("R-squared: ", round(summary(fakeLM)$r.squared, 3)," with Slope: ",
+                 round(coef(fakeLM)[[2]],2)," and Intercept: ",round(coef(fakeLM)[[1]],2)
+                 )
+      )
+```
 

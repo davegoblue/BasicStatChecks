@@ -2829,4 +2829,122 @@ round(randGroup5, 3)
 ##  [1] 11.000 14.000  3.000 14.000  0.000  4.000  9.000  6.000  2.000 12.000
 ## [11] 29.152 15.848
 ```
+  
+Next, a function is created to show that high correlations (low p-values) will occur by chance with sufficient numbers of random trials.  This shows the risks of p-hacking through multiple models looking for an impact.  
+  
+
+```r
+fakeCorrel <- function(nPer=40, nTries=10000) {
+    
+    for (intCtr in 1:nTries) {
+        fakeX <- rnorm(nPer)
+        fakeY <- rnorm(nPer)
+        
+        if (intCtr==1) {
+            storeX <- fakeX
+            storeY <- fakeY
+            storeP <- cor.test(fakeX, fakeY)$p.value
+            storeN <- intCtr
+        } else {
+            if (cor.test(fakeX, fakeY)$p.value < storeP) {
+                storeX <- fakeX
+                storeY <- fakeY
+                storeP <- cor.test(fakeX, fakeY)$p.value
+                storeN <- intCtr
+            }
+        }
+    }
+    
+    return(list(storeX, storeY, storeP, storeN))
+    
+}
+
+fakeList <- fakeCorrel()
+fakeList
+```
+
+```
+## [[1]]
+##  [1] -1.77698192 -1.65947427  1.42792339  0.21820668  1.26930804
+##  [6] -0.60310009 -1.13742923  1.57300624 -0.36329628  1.59995686
+## [11] -0.41904749  1.46158678  1.21618988 -0.75772172  0.36365666
+## [16] -1.26057220  1.67409451  1.33385455 -0.26732996  1.36747061
+## [21]  0.12313666 -0.98927509 -2.16049727  0.31066532  1.39511338
+## [26] -0.11951718 -0.74391504 -1.08597715  0.23443222 -0.02276521
+## [31]  1.32743615  0.10931297 -1.35512442 -1.67515460  1.04211544
+## [36] -1.76028263  1.05793038 -1.51499693 -0.56711115  0.52206420
+## 
+## [[2]]
+##  [1]  0.54450995 -1.18677522  1.72682638  0.16335482  2.22695727
+##  [6] -0.34356403  1.06491373  0.93898733 -1.43545293  1.25344596
+## [11]  0.91936212 -1.25752829  0.13501065 -0.78393059  0.61068363
+## [16] -0.05245019  1.50064076  1.06389177  0.07836032  0.58587629
+## [21] -0.75509164 -0.53127394  0.71066924  0.75418093  0.96860596
+## [26]  0.30130494 -1.93149556  0.19783818  0.73953251 -0.35114015
+## [31]  0.83531354 -0.24259721 -0.86837900 -0.32524884  1.84189445
+## [36] -1.79588556  1.12050420 -1.35316783  0.18326399  0.20049826
+## 
+## [[3]]
+## [1] 0.0001569684
+## 
+## [[4]]
+## [1] 1208
+```
+
+```r
+cor.test(fakeList[[1]],fakeList[[2]])
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  fakeList[[1]] and fakeList[[2]]
+## t = 4.1965, df = 38, p-value = 0.000157
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.3046307 0.7438521
+## sample estimates:
+##       cor 
+## 0.5627388
+```
+
+```r
+plot(fakeList[[2]],fakeList[[1]],xlab="Random 1",ylab="Random 2",
+     main=paste0("Random data generated at trial ",fakeList[[4]])
+     )
+fakeLM <- lm(fakeList[[2]] ~ fakeList[[1]])
+summary(fakeLM)
+```
+
+```
+## 
+## Call:
+## lm(formula = fakeList[[2]] ~ fakeList[[1]])
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.16491 -0.50076  0.05439  0.41548  1.57172 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)     0.1938     0.1341   1.445 0.156707    
+## fakeList[[1]]   0.4882     0.1163   4.196 0.000157 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.8482 on 38 degrees of freedom
+## Multiple R-squared:  0.3167,	Adjusted R-squared:  0.2987 
+## F-statistic: 17.61 on 1 and 38 DF,  p-value: 0.000157
+```
+
+```r
+abline(a=coef(fakeLM)[[1]], b=coef(fakeLM)[[2]],col="blue",lwd=1.5)
+title(sub=paste0("R-squared: ", round(summary(fakeLM)$r.squared, 3)," with Slope: ",
+                 round(coef(fakeLM)[[2]],2)," and Intercept: ",round(coef(fakeLM)[[1]],2)
+                 )
+      )
+```
+
+![plot of chunk unnamed-chunk-27](figure/unnamed-chunk-27-1.png)
 

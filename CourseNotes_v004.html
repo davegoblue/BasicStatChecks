@@ -2841,6 +2841,116 @@ randGroup1 &lt;- genRandMuSigma(tgtMean=10, tgtSD=2, tgtN=12)
 ## [11] 29.152 15.848
 </code></pre>
 
+<p>Next, a function is created to show that high correlations (low p-values) will occur by chance with sufficient numbers of random trials.  This shows the risks of p-hacking through multiple models looking for an impact.  </p>
+
+<pre><code class="r">fakeCorrel &lt;- function(nPer=40, nTries=10000) {
+
+    for (intCtr in 1:nTries) {
+        fakeX &lt;- rnorm(nPer)
+        fakeY &lt;- rnorm(nPer)
+
+        if (intCtr==1) {
+            storeX &lt;- fakeX
+            storeY &lt;- fakeY
+            storeP &lt;- cor.test(fakeX, fakeY)$p.value
+            storeN &lt;- intCtr
+        } else {
+            if (cor.test(fakeX, fakeY)$p.value &lt; storeP) {
+                storeX &lt;- fakeX
+                storeY &lt;- fakeY
+                storeP &lt;- cor.test(fakeX, fakeY)$p.value
+                storeN &lt;- intCtr
+            }
+        }
+    }
+
+    return(list(storeX, storeY, storeP, storeN))
+
+}
+
+fakeList &lt;- fakeCorrel()
+fakeList
+</code></pre>
+
+<pre><code>## [[1]]
+##  [1] -1.77698192 -1.65947427  1.42792339  0.21820668  1.26930804
+##  [6] -0.60310009 -1.13742923  1.57300624 -0.36329628  1.59995686
+## [11] -0.41904749  1.46158678  1.21618988 -0.75772172  0.36365666
+## [16] -1.26057220  1.67409451  1.33385455 -0.26732996  1.36747061
+## [21]  0.12313666 -0.98927509 -2.16049727  0.31066532  1.39511338
+## [26] -0.11951718 -0.74391504 -1.08597715  0.23443222 -0.02276521
+## [31]  1.32743615  0.10931297 -1.35512442 -1.67515460  1.04211544
+## [36] -1.76028263  1.05793038 -1.51499693 -0.56711115  0.52206420
+## 
+## [[2]]
+##  [1]  0.54450995 -1.18677522  1.72682638  0.16335482  2.22695727
+##  [6] -0.34356403  1.06491373  0.93898733 -1.43545293  1.25344596
+## [11]  0.91936212 -1.25752829  0.13501065 -0.78393059  0.61068363
+## [16] -0.05245019  1.50064076  1.06389177  0.07836032  0.58587629
+## [21] -0.75509164 -0.53127394  0.71066924  0.75418093  0.96860596
+## [26]  0.30130494 -1.93149556  0.19783818  0.73953251 -0.35114015
+## [31]  0.83531354 -0.24259721 -0.86837900 -0.32524884  1.84189445
+## [36] -1.79588556  1.12050420 -1.35316783  0.18326399  0.20049826
+## 
+## [[3]]
+## [1] 0.0001569684
+## 
+## [[4]]
+## [1] 1208
+</code></pre>
+
+<pre><code class="r">cor.test(fakeList[[1]],fakeList[[2]])
+</code></pre>
+
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  fakeList[[1]] and fakeList[[2]]
+## t = 4.1965, df = 38, p-value = 0.000157
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.3046307 0.7438521
+## sample estimates:
+##       cor 
+## 0.5627388
+</code></pre>
+
+<pre><code class="r">plot(fakeList[[2]],fakeList[[1]],xlab=&quot;Random 1&quot;,ylab=&quot;Random 2&quot;,
+     main=paste0(&quot;Random data generated at trial &quot;,fakeList[[4]])
+     )
+fakeLM &lt;- lm(fakeList[[2]] ~ fakeList[[1]])
+summary(fakeLM)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = fakeList[[2]] ~ fakeList[[1]])
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.16491 -0.50076  0.05439  0.41548  1.57172 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)     0.1938     0.1341   1.445 0.156707    
+## fakeList[[1]]   0.4882     0.1163   4.196 0.000157 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.8482 on 38 degrees of freedom
+## Multiple R-squared:  0.3167, Adjusted R-squared:  0.2987 
+## F-statistic: 17.61 on 1 and 38 DF,  p-value: 0.000157
+</code></pre>
+
+<pre><code class="r">abline(a=coef(fakeLM)[[1]], b=coef(fakeLM)[[2]],col=&quot;blue&quot;,lwd=1.5)
+title(sub=paste0(&quot;R-squared: &quot;, round(summary(fakeLM)$r.squared, 3),&quot; with Slope: &quot;,
+                 round(coef(fakeLM)[[2]],2),&quot; and Intercept: &quot;,round(coef(fakeLM)[[1]],2)
+                 )
+      )
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAApVBMVEUAAAAAADoAAGYAAP8AOjoAOmYAOpAAZmYAZpAAZrY6AAA6ADo6AGY6Ojo6OmY6OpA6ZrY6kJA6kLY6kNtmAABmADpmAGZmOgBmZgBmZjpmkJBmtrZmtv+QOgCQOjqQZgCQkDqQkGaQtpCQ27aQ29uQ2/+2ZgC2Zjq2tma225C2/7a2///bkDrb25Db/7bb/9vb////tmb/25D/29v//7b//9v///9d/q0OAAAACXBIWXMAAAsSAAALEgHS3X78AAASSklEQVR4nO2dC3vjOBWG3XYpm87AsqTT5ZIOLNDATgM0JfH//2no5lvipL5I1pG+731mpmlsHdl+LR1ZTjxFSSApYm8AiQPFg0LxoFA8KBQPCsWDQvGgUDwoFA8KxYNC8aBQPCgUDwrFg0LxoFA8KBQPCsWDQvGgUDwoFA8KxYNC8aBQPCgUD4oo8YfHQnP7enH5/dtHEdprbDezN+ksxPk21KvULw6PzS60Xr8/rMxqdg+Pz0WxKu1OX9zjcEgUX1zSO1L8tpgt/jzE2TbUq/RX14jfWtFbd26bnyu3zx/tl3+EidcHyfy7V0fj5kU1i9t/NQ3kz+ag79SidanW+P5ZLVG/ueNdr2HL6l/VgXWBqjVuv9UxNmUrfPPOzR/V+p0Q1bLWNpRltxa7rFjZ4n9v7UElXi3/jV7x8GgKbd4fbl/1sveH+zf93tLHWqj4qh2Yw6mPrHuhDvrWvbMvKuoja9dwZf9rTLQblFnju4c6xrqsw3ffuf9PO8Tp2jZYp5ayEW+LN3tQi/+qzqaV7u91/Tf2F/XTil++rxcmvqhElPYEUAdyrRTfv+kGolqefmGakT5yurkUm6q51GtUZeu+tzqurRhqLdXa2+Gbd1Zl2QlRL+vUcFaLeWGLVxXaU7iWuq9C6xr3utfSRXR3Mj8njUai+E31WnswmvVxWpXNC3W0NnuTIN0qpTusNgO78ZJV0gyeWjEMus+tw7ffKTsh6mWtGk5WMVjxunjVc+nlPeL3OgXU4re2O1kaYeJNF7nWjdP24bqhXRWvs8GJ+Kqsa65NMugTX4fviO+E6BffWcXQFV8tPxe/M2OOqqvfmzzGHP+qj6ju/9amZ67N9HX1XfH1GlVZ15G6X8rTrl7TCl+/o6N1QtTLOl19ZxVDV3y1/Ez8zp6G1TIrfvm+Xp54c2T2xUmL7xvcdcXXa1RlzfVT/Ut5PrjTZV341ju2ObZCtJa1BnfdVTRbO6p34qvlp+LrdNa5nIMf3LkLN3Ow16o/b8zoo/5j93KuK75Zw5XVfcf9W/WLjV9dzm2twCZ8846J1glRLWttw9kqpen81SC/zvFu+al4lzg2nMBZmH2EyRKJIIl3vezyI2iJIIm33ewq9lbIAEo8aaB4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigdljviCSCag+BllSWgoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4Uik+BD2dYJ4SctThYWdKmKP0fTYpPAIoHheJRYY4nvqB4UCheFAH69Es1zVocrCwoIUZxV6qavjhY2Yy51qgpPl+uuqX4fLnuljk+WxZs1Feh+KVZrlFfheJBoXhQKB4UigeF4kFJRLyQoXBGpCFeysVvRlA8KBSfLPPSXxrimePPmdkYEhFPzqD49PDSf1F8cngasUDk+KwQMVSleM8MaIcUnyGDpEq4RqF4v4hozQO4u7u+nOJHckl8fyOP1fSVdrZ4z1wwXPYdj0jdg2ntFL8IgsS7Tp7iF0GM+Dq3U/wyyMjxrSEdxePQGclTPAjFyQUcxWOgtXeEUDwCd3dn40iKz567qrVT/AQkTK9PokrtpztA8YNIZQr+lMtT8hQ/iDTFX7sTQ/GDSFH89RtwFD+M5HL8zPuuFJ8mH2mn+Cz5WDvFZ8gQ7RSfHcO0U3xe3A3VTvE5Mdx6SfH5MEo7xefCSO0UnwejtVN8DkzQTvECmDkbPEk7xcdn3v0f++WICacOxcdmjnjb2idFoPjYTBdff7hmSgSKj860HN+apKN4HLojOuZ4ECYO5DvMFX94LCy3r3WZivlbR3rwod1Diz8+ryeXJePxo91HV3/48jK5LBmJL+3M8UnhTzvFJ4RP7RSfDH61U3wajPhI1VAoXj7+rZcUL58g2ileOoG0U7xsgmmneMkE1E7xcgmqneKlElg7xcskuHaKl8gC2ileHAEm6XqheFEsZL2keFEsp53iBbGkdooXw7LaKV4IS2uneBEsr53iBRBDO8VHJ452io9MLO0UH5OlJul6ofhYxLReUnwsImun+DhE107xMRCgneKXR4R2il8aIdopflnEaKf4JRGkneKXQ5R2il+IqJN0vVD8AoizXlL8AkjUTvHBkamd4gMjVTvFj2PkUxvlaqf4URTlmL2SrJ3iRzFGvGztFD+K4eKla6f4cQzM8fK1U7x/5E3S9ULxfknDeknxfklGO8X7JCHtFO+PpLRTvC8S007xfkhOO8X7IEHtFD+fJLVT/Fz6tCfxP69R/Az6J+nG3cOLBcVP5lIfT/Ezysrncmqn+BllpXN1RMccnytjBvJSzwKKH82o6zex/T7Fj2TkZTvF58Ho2RqKz4Epk3TM8amTyEeqhkLxw5hqXWqDp/hBTG7sYlM8xQ/Aap/Udik+XVxrn6aQ4lOl7uQnKmSOT5JWbpfbdqdB8ZfpDunEtt1pUPwl8rpsP4Pi+8lcO8X3ktkkXS95ip+VjwGsl5mKnzMCx9BO8Xb9uoNA0U7xndVxtGcqfmSOd+KRtOcqfhxGPJZ2ijcUcNop3oCnfZj494fi5qUsD0+vPkOLAVH7IPHH5436u85TPMIkXS8DxFvh21WG4lGtl4NbvGL33ec+8SoPaG7Pl4kXD6x9WI4/PK71j12P3OqsKPf3byNDxwZa+/xRfdX/t/JAUTFz04ICrn2++DRbvNEu/NQMzOzr+MNjcjnefVy6FLyJ4cGbwKk6eYofsHh/qVXPCB2HJrdT/MeLD19e/IeOQWdIxxz/4eKxUzeDQi8O7CRdL8O6+t3af+iFofUuA8WnnuOp/RSIHO9fe/rjA4AcH6C1Z3BFkH2OD9LJo4i/PDs3I/QiBMrtKOKDhF6AcEM6kBwfJHRwOJK/xjDxx2d1ip/ff5sVOjDUfp1B4vUn7tQIb6T5iOI5SfchIy7nkvnMHa0PIL8WT+2DyC3HU/tA8hrVU/tgchJP7SMY8oWKR/epWdkzd6G0pz9X08uwFr81g7uV19B+CdbaM5id7SWPy7mAnTy0eOGXc0FzO7R4ezk3sqdf6HAFn6SDzvEhQnuBA/mpJC2e2qeT8BcqqH0OAz+Bs/EfeibUPg+hH7b8aERF7XMZMYHjOfRHRa8Up/b5yPyw5VXx1O4DmaP6K+Kp3Q8yxV/M8dTui5S+O5fDJ+nEzAMO/e7cfhX77lwG1iXN/A+9nLN/fIYeRxbakxN//Pqi/rz3PuBwcugxZKI9OfGlcr4vipEX8952MBvtZWo5PkjooeSkXRBjxP8vwgcxqD0QQ8S/P+gruePz8pdz1B6MAeL1B692q/3yX6ig9oAM+Xi1uow7PBaj78zOE5/DbI1khoqf8PijOeJpPTRDxU+4Iz9dPLWHR6B4al8CcV+hEqxdzOSLD4RN4AjWLmi61QeixEvWTvG+Qp8hWzvF+wp9QgTtY3M2c7yX0B1itPa8WvBYJIiPNElH8dMX+ygbLbVT/PTF88vGHNFllbPHEle89IF8xsQUT+0RiSee2qMSSzy1RyaOeGqPTgzx1C6A5cVTuwgWE28vmvlJOiksJd5Mky1jHXpeZjALil+osWPPxA5mMfFK+zI6KH4QC4m/u1usA6b4QSwiftkRHXP8EBYQz4G8RIKLp3aZBBZP7VIJKp7a5RJQPLVLJvZHr0gkKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHBUc8P5/RYa74K89Ck3Wc+YmsLrNbvP2/5aeVXRKK7zK/qz97zG1RMX2rAkDxXZjjQcERTzr4Eb/ry/MULxmKB4XiQWGOH0NGA0SKH0FOl4QUPwKK9xE6QSjeR+gUYY73EJpEPZEoPiIxUwfFR4TiQaF4VJjjydJQPCgUDwrFg0LxoFA8KBTfR0Zz8peg+B5yugt3CYrvgeIpPlsovg/meFDxAFA8KBQPSkbiARKzR/IRjzAU9wjFg0LxoOQjnjl+FBmJJ2OgeFAoHhSKB4XiQaF4UCgeFIoHheJBkS2ek3HBEC2e0+/hoHhQKB4U0eKZ48MhWzwJBsWDQvGgUDwoFA8KxYNC8aBQPChpieeEjjeSEs8pXH9Ai0fuQJDFQ3cgSYn33EQpfvLiYGUXgeInLw5WdhmY46cuDlaWhIbiQYkiHrmLlUIM8dCDKilQvE8S6soo3iMp7RhzvEcofnbZNKH42WUTJaGujOJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBmS3+/aG4eSnLw9Pr+LIkHnPFH5836u+a4lNjrngrfLui+MTw0eIVu+8+U3xSzM7xh8e1/rG7rcUXFTM3jYSEo3pQKB4UP+J36+llSRQoHhSKB4U5HhSKB4XiQaF4UCgeFIoHheIDIvl+BcWHQ/TX5Sk+HBQPCsWjwhxPxEHxoFA8KBQPCsWDQvGgUDwoFA8KxYNC8aBQPCghxRPJhBPvN0hmsaVvOMWnGJzi5caWvuEUn2JwipcbW/qGU3yKwSlebmzpG85JGFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UH+LfH4pi4yHOhejnz0v3wuGxuH8LEtkQarN9HW4P4g9fXsr3Ty/zA/WyL26DHEH9HP7dKkRkQ6jN9na4PYjf68O3DdTktzd/C9N09P+4Ea5VBttsb4fbU47Xp2EgAtl5/+Et5FYHPKlKL4fbj3j9vxWFItAR3N+nK97H4Z4pflsUq/p/L/GMjc0Wf4aXw+1nVB9uTB/sCIbN8WFH9T4OtwfxYb2HOoK6uww4qg8n3tPh9iB+Z763EUw+r+O7eDrcnLkDheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhQs8fr7hkX/t9r0d+kulQr5pZhYgIk3Cnd9n669LD7c9x9jgihe/2u/a/z+w1/MJ5UPj8WvftroH8rx8evPRbHeq7+mTMDvP8YEUbxq8ea7xp9f3x/W5kt0W/VDnQBb89vxeaXOi1XTw7OrTx6b411Pf3h6NW3/86v+OpXq6vUPdUYcv76U+m/9zTqKTx6tcH9jfG71IM+JN2a3G/1DGaf4/DAKdyqPHx43lXG2eACMQpPDtfFPL078SY6n+Oxwo3o1pNsVehxfiT8+d0b1FE+yheJBoXhQKB4Uigclnvgrd8qu0txNaR5msq8C6QF4z7NC7CV7a3SuiuoSH4zX209LMdWqbb60wXazmoAfXwo0a7TrMe9eqccXEcVfvlN2lVp881BSo1u/qm+k7c/CdsTr+Rtd9XU7naee7oqNKXZpg2eIb9dj9uBaPb6ILb7ae9dm1bn//dd6XsXdQvvtT7ev9hLb3UazhboPLDPzMNWNNHsJrg+ofurr/v7fn7+p8r98/oPrCUwxtZL+aSMfnv5a6Llc+9t5BWojNu1n4/Xe3bOnl3nPxHHB3Par8O26DmaLTuqxexD6GXya2OLdia33XZ305hlkN5X4+haaOqRb+3AyN8VmA3QOT9P261/K3do01N3adfXuXpw+JWy11azd/dvh8f5tf/ta1XNawfHrP57b4vvv7pWt91zo3co8n0yfg+pN+4arq7n7196R9/zFd+6U2d10s+VViy/rW2h6uXrpJtVtgPZDSd8f7K0X11Srd394++fPq6PpQpqZeVu40C3QzdOr9XXvqlZ09ZxVsFvrak0XfFMJObu7V9YJxf5wwZpqq72wddXiO09XtZ1Qu54wxG3x5k6ZeXSpOg20CHWqH5uuvrmFpgdjhe0K6ic3d9uFfWUP5r6+8frt6ZfP355ez8XrdT+5E6IyriK7ek4rUK+qwd3vv9qlPXf3ylPxzUbrUGW1F66uyy2+XU8oInf1u9bgVXe4nRbfuoXmWmGnxZ88lHTbDK621bNet3/63fHrz6vyVLx59Lc99lWL/2Im6OvW3q3AXiisqzfL/rt75an4p/pKoxk0lPYcbbf4zo5ULzpbEoDI4vWdMo1uoy5Z7myT2Ln29Mk185NkWrYfStr0lTZo3Vj2hc3yp+LNqN6dYVWOX9UVVOPpzlNPTVevt6seS5zf3TsR74LZu0BmIzp1tUb17YGFS2whH7eqiT2400MhzbYe1f9a73VR/Pj02rqFVtpRsbuNVuV/c/n7bi/dWzm+6f/NmN6O0o/PZgzdFHU5vhppf/ljNap373cqcJdr+3pQ0nt3ry1e1ffaClaP6vW/ti63RSf1mH+beoIhb+Yu9HA2fq1x9vAEil++Voon8aB4UP4PNkeNQ6z+eecAAAAASUVORK5CYII=" alt="plot of chunk unnamed-chunk-27"/></p>
+
 </body>
 
 </html>
