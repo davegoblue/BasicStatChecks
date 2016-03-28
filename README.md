@@ -18,4 +18,5 @@ This is a simple repository for some basic statistic checking.  Created mostly s
 * Added 17-MAR-2016 - v003 now summarizes half of Module 5 (ANOVA) and all of Module 6 (non-parametric)  
 * Added 18-MAR-2016 - v003 now summarizes all of Modules 1-6  
 * Added 27-MAR-2016 - v004 includes code to generate a vector to hit a precise, pre-specified mean, SD, and N  
+* Added 28-MAR-2016 - v004 includes an example of random vs. random showing "statistical significance" with enough trials  
   
