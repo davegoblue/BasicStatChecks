@@ -2664,7 +2664,11 @@ This can be handy for assessing whether or not trends observed in data are consi
 
 ## Module 7: Practical examples  
 Below are a few practical examples that may come in handy:  
-
+  
+1. Random data to hit a target mean and SD  
+2. Dredging through multiple simulations to get significant-p for rnorm vs. rnorm  
+3. Chebyshev's inequality recap  
+  
 First, the ability to leverage the meaning of standard deviation and mean to simulate random data that hits a target mean and standard deviation for a pre-supplied N.  
   
 
@@ -2836,9 +2840,12 @@ Next, a function is created to show that high correlations (low p-values) will o
 ```r
 fakeCorrel <- function(nPer=40, nTries=10000) {
     
+    vecP <- rep(-9.9999, nTries)
+    
     for (intCtr in 1:nTries) {
         fakeX <- rnorm(nPer)
         fakeY <- rnorm(nPer)
+        vecP[intCtr] <- cor.test(fakeX, fakeY)$p.value
         
         if (intCtr==1) {
             storeX <- fakeX
@@ -2855,16 +2862,16 @@ fakeCorrel <- function(nPer=40, nTries=10000) {
         }
     }
     
-    return(list(storeX, storeY, storeP, storeN))
+    return(list(xVal=storeX, yVal=storeY, minP=storeP, atN=storeN, vecP=vecP))
     
 }
 
 fakeList <- fakeCorrel()
-fakeList
+fakeList[1:4]
 ```
 
 ```
-## [[1]]
+## $xVal
 ##  [1] -1.77698192 -1.65947427  1.42792339  0.21820668  1.26930804
 ##  [6] -0.60310009 -1.13742923  1.57300624 -0.36329628  1.59995686
 ## [11] -0.41904749  1.46158678  1.21618988 -0.75772172  0.36365666
@@ -2874,7 +2881,7 @@ fakeList
 ## [31]  1.32743615  0.10931297 -1.35512442 -1.67515460  1.04211544
 ## [36] -1.76028263  1.05793038 -1.51499693 -0.56711115  0.52206420
 ## 
-## [[2]]
+## $yVal
 ##  [1]  0.54450995 -1.18677522  1.72682638  0.16335482  2.22695727
 ##  [6] -0.34356403  1.06491373  0.93898733 -1.43545293  1.25344596
 ## [11]  0.91936212 -1.25752829  0.13501065 -0.78393059  0.61068363
@@ -2884,10 +2891,10 @@ fakeList
 ## [31]  0.83531354 -0.24259721 -0.86837900 -0.32524884  1.84189445
 ## [36] -1.79588556  1.12050420 -1.35316783  0.18326399  0.20049826
 ## 
-## [[3]]
+## $minP
 ## [1] 0.0001569684
 ## 
-## [[4]]
+## $atN
 ## [1] 1208
 ```
 
@@ -2947,4 +2954,113 @@ title(sub=paste0("R-squared: ", round(summary(fakeLM)$r.squared, 3)," with Slope
 ```
 
 ![plot of chunk unnamed-chunk-27](figure/unnamed-chunk-27-1.png)
+
+```r
+plot(x=fakeList$vecP[order(fakeList$vecP)], ylab="P-value", xlab="N-th Lowest P-value",
+     main=paste0("P-values for ",length(fakeList$vecP)," random correlations")
+     )
+```
+
+![plot of chunk unnamed-chunk-27](figure/unnamed-chunk-27-2.png)
+
+```r
+plot(x=log10(fakeList$vecP[order(fakeList$vecP)]), ylab="Log10(P-value)", 
+     xlab="N-th Lowest P-value", type="l", col="blue", lwd=2,
+     ylim=c(floor(log10(0.05/length(fakeList$vecP))), 0),
+     main=paste0("P-values for ",length(fakeList$vecP)," random correlations")
+     )
+
+abline(h=log10(0.05/length(fakeList$vecP)), lty=2, col="red")
+lines(x=log10(0.05*(1:length(fakeList$vecP))/length(fakeList$vecP)), 
+      lty=2, col="dark green"
+      )
+ctBon <- sum(fakeList$vecP <= 0.05/length(fakeList$vecP))
+ctFDR <- sum(fakeList$vecP[order(fakeList$vecP)] <= 
+             0.05 * (1:length(fakeList$vecP) / length(fakeList$vecP))
+             )
+legend("right", legend=c("Log10 of P", paste0("FDR (",ctFDR,")"), paste0("Bonferroni (",ctBon,")")), 
+       lty=c(1,2,2), lwd=c(2,1,1), col=c("blue","dark green","red")
+       )
+```
+
+![plot of chunk unnamed-chunk-27](figure/unnamed-chunk-27-3.png)
+  
+The Chebyshev inequality states that there can never be more than 1/k^2 of the distribution that lies further than k-sigma from the mean.  The inequality is powerful in that it need not make any assumptions about distribution, but weak in that you can make a much more precise interval claim if you know the distribution.  The below code provides an example of how this works:  
+
+
+```r
+## Create a dummy distribution with problems
+## 80% from rnorm(mean=1,sd=0.1), 15% from 0.1*rpois(lambda=10), 5% from 1000*rbinom(prob=0.05)
+
+dat1 <- rnorm(8000, mean=1, sd=0.1) ## mean 1
+dat2 <- rpois(1500, lambda=10) ## mean 10
+dat3 <- 1000 * rep(0:1, c(450,50)) ## mean 100
+datAll <- c(dat1, dat2, dat3)
+
+nAll <- length(datAll)
+meanAll <- mean(datAll)
+sdAll <- sd(datAll)
+print(paste0("Mean: ", round(meanAll,2), " with SD: ", round(sdAll, 2)) )
+```
+
+```
+## [1] "Mean: 7.3 with SD: 70.46"
+```
+
+```r
+## Graph by abs(0.1 + SD away from mean)
+orderSD <- log10(0.1 + abs((datAll - meanAll)/sdAll))
+
+plot(x=orderSD[order(orderSD)], type="l", col="blue", 
+     ylab="Log10 of (0.1 + abs(#SD from Mean))", main="Sorted Data"
+     )
+```
+
+![plot of chunk unnamed-chunk-28](figure/unnamed-chunk-28-1.png)
+
+```r
+## Number 1/2/3/5/10/14/15/16 SD from mean
+resFrame <- NULL
+
+for (sdAway in c(1, 2, 3, 5, 10, 14, 15, 16)) {
+    actData <- sum(abs((datAll-meanAll)/sdAll) >= sdAway)
+    gaussData <- 2 * (1 - pnorm(sdAway)) * nAll
+    chebyData <- (1/sdAway^2) * nAll
+    resFrame <- rbind(resFrame, data.frame(sdAway=sdAway, actData=actData, 
+                                           gaussData=round(gaussData,0), 
+                                           chebyData=round(chebyData,0)
+                                           )
+                     )
+}
+
+## Print actual vs. theoretical
+resFrame
+```
+
+```
+##   sdAway actData gaussData chebyData
+## 1      1      50      3173     10000
+## 2      2      50       455      2500
+## 3      3      50        27      1111
+## 4      5      50         0       400
+## 5     10      50         0       100
+## 6     14      50         0        51
+## 7     15       0         0        44
+## 8     16       0         0        39
+```
+
+```r
+minSD <- (min(datAll)-meanAll)/sdAll
+maxSD <- (max(datAll)-meanAll)/sdAll
+
+print(paste0("Min/Max SD from mean are: ", round(minSD,3), " to ", round(maxSD, 3)) )
+```
+
+```
+## [1] "Min/Max SD from mean are: -0.104 to 14.089"
+```
+  
+With the highly skewed distribution, the Gaussian rule for standard deviations fails terribly.  Still, the Chebyshev inequality is spot on, with the actual data no longer being n SD from the mean once the relevant 1/n^2 is no longer sufficiently large to allow it.  
+
+Further, note that this data is all positive skew.  The most negative data are only -0.1 SD from the mean, showing again what a debacle could be created by assuming the normal +/- 1/2/3 standard deviation rules.  
 
