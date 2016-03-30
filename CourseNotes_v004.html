@@ -2701,9 +2701,12 @@ print(paste0(&quot;With expected mu &quot;,round(muRuns,2),&quot; and sigma &quo
 <li>Random data to hit a target mean and SD<br/></li>
 <li>Dredging through multiple simulations to get significant-p for rnorm vs. rnorm<br/></li>
 <li>Chebyshev&#39;s inequality recap<br/></li>
+<li>Impact of paired testing (t-test)<br/></li>
+<li>Impact of paired testing (prop-test)<br/></li>
 </ol>
 
-<p>First, the ability to leverage the meaning of standard deviation and mean to simulate random data that hits a target mean and standard deviation for a pre-supplied N.  </p>
+<p>####<em>7.01 Random data for target mean/SD</em><br/>
+First, the ability to leverage the meaning of standard deviation and mean to simulate random data that hits a target mean and standard deviation for a pre-supplied N.  </p>
 
 <pre><code class="r">## Generating random data to exactly hit a target mean and SD
 genRandMuSigma &lt;- function(tgtMean, tgtSD, tgtN, nTries=100, forceInt=TRUE, forceNonNeg=TRUE) {
@@ -2847,7 +2850,8 @@ randGroup1 &lt;- genRandMuSigma(tgtMean=10, tgtSD=2, tgtN=12)
 ## [11] 29.152 15.848
 </code></pre>
 
-<p>Next, a function is created to show that high correlations (low p-values) will occur by chance with sufficient numbers of random trials.  This shows the risks of p-hacking through multiple models looking for an impact.  </p>
+<p>####<em>7.02 Random data for Bonferroni/FDR</em><br/>
+Next, a function is created to show that high correlations (low p-values) will occur by chance with sufficient numbers of random trials.  This shows the risks of failing to run an appropriate correction such as Bonferroni or FDR in assessing &ldquo;is this specific finding significant&rdquo;.  </p>
 
 <pre><code class="r">fakeCorrel &lt;- function(nPer=40, nTries=10000) {
 
@@ -2988,7 +2992,8 @@ legend(&quot;right&quot;, legend=c(&quot;Log10 of P&quot;, paste0(&quot;FDR (&qu
 
 <p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-27"/></p>
 
-<p>The Chebyshev inequality states that there can never be more than 1/k<sup>2</sup> of the distribution that lies further than k-sigma from the mean.  The inequality is powerful in that it need not make any assumptions about distribution, but weak in that you can make a much more precise interval claim if you know the distribution.  The below code provides an example of how this works:  </p>
+<p>####<em>7.03 Chebyshev Inequality</em><br/>
+The Chebyshev inequality states that there can never be more than 1/k<sup>2</sup> of the distribution that lies further than k-sigma from the mean.  The inequality is powerful in that it need not make any assumptions about distribution, but weak in that you can make a much more precise interval claim if you know the distribution.  The below code provides an example of how this works:  </p>
 
 <pre><code class="r">## Create a dummy distribution with problems
 ## 80% from rnorm(mean=1,sd=0.1), 15% from 0.1*rpois(lambda=10), 5% from 1000*rbinom(prob=0.05)
@@ -3058,6 +3063,140 @@ print(paste0(&quot;Min/Max SD from mean are: &quot;, round(minSD,3), &quot; to &
 <p>With the highly skewed distribution, the Gaussian rule for standard deviations fails terribly.  Still, the Chebyshev inequality is spot on, with the actual data no longer being n SD from the mean once the relevant 1/n<sup>2</sup> is no longer sufficiently large to allow it.  </p>
 
 <p>Further, note that this data is all positive skew.  The most negative data are only -0.1 SD from the mean, showing again what a debacle could be created by assuming the normal +/- &frac12;/3 standard deviation rules.  </p>
+
+<p>####<em>7.04 Paired data (t-test)</em><br/>
+Paired data can often significantly reduce the variance, allowing for detection of events that would be non-significant if looking at two independent groups.  Below is an example of very high variance data that participates in two trials.  The variance of Trial A vs. Trial B is set to be very small.  </p>
+
+<pre><code class="r">## Create Trial A vector with mean 200 and SD 40
+trialA &lt;- rnorm(100,mean=200,sd=40)
+
+## Create Trial B vector as Trial A vector plus N(1, 1)
+trialB &lt;- trialA + rnorm(100,mean=1,sd=1)
+
+## Plot data and differences
+plot(trialA, trialB, main=&quot;Trial A vs. Trial B&quot;)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-29"/></p>
+
+<pre><code class="r">plot(trialB - trialA, main=&quot;Trial B minus Trial A&quot;)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-29"/></p>
+
+<pre><code class="r">## Run various t-tests and see the outcomes
+t.test(trialA, trialB)
+</code></pre>
+
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  trialA and trialB
+## t = -0.1646, df = 198, p-value = 0.8694
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -11.87500  10.04536
+## sample estimates:
+## mean of x mean of y 
+##  199.4752  200.3900
+</code></pre>
+
+<pre><code class="r">t.test(trialA, trialB, paired=TRUE)
+</code></pre>
+
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  trialA and trialB
+## t = -10.683, df = 99, p-value &lt; 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -1.0847310 -0.7449028
+## sample estimates:
+## mean of the differences 
+##              -0.9148169
+</code></pre>
+
+<pre><code class="r">t.test(trialA-trialB) ## Same as paired
+</code></pre>
+
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  trialA - trialB
+## t = -10.683, df = 99, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  -1.0847310 -0.7449028
+## sample estimates:
+##  mean of x 
+## -0.9148169
+</code></pre>
+
+<p>If the t-test is required to assume non-paired data, then the differences are not statistically significant.  This is because the standard error for trial A mean (standalone) will be roughly 40 / sqrt(100) or 4, which swamps the true difference in means of only 1.  </p>
+
+<p>The paired t-test easily picks up the difference since the standard error for trialA - trialB will be roughly 1 / sqrt(100) or 0.1, with a mean of roughly -1.  Note that running the A vs. B paired t-test is identical to running a t-test on (A-B).  It is easier to interpret when using the &ldquo;paired&rdquo; statement.  </p>
+
+<p>####<em>7.05 Paired data (prop-test)</em><br/>
+Paired data can also be important for tests of proportions, when the variable of interest is either paired and/or dependent.  An example is included below:  </p>
+
+<pre><code class="r">## Example (paired) - a group of students of varying capability took two tests
+## Each of their odds of passing improved by ~10% after a quick online study
+studentPreProb &lt;- c(runif(n=400, min=0.1, max=0.2), runif(n=400, min=0.8, max=0.9))
+studentPostProb &lt;- studentPreProb + runif(n=800, min=0, max=0.1)
+studentPrePass &lt;- rbinom(length(studentPreProb), size=1, prob=studentPreProb)
+studentPostPass &lt;- rbinom(length(studentPostProb), size=1, prob=studentPostProb)
+
+## Assume two independent proportions
+prop.test(x=c(sum(studentPrePass), sum(studentPostPass)),  
+          n=c(length(studentPrePass), length(studentPostPass)), 
+          correct=FALSE
+          )
+</code></pre>
+
+<pre><code>## 
+##  2-sample test for equality of proportions without continuity
+##  correction
+## 
+## data:  c(sum(studentPrePass), sum(studentPostPass)) out of c(length(studentPrePass), length(studentPostPass))
+## X-squared = 6.5099, df = 1, p-value = 0.01073
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.11262146 -0.01487854
+## sample estimates:
+##  prop 1  prop 2 
+## 0.48500 0.54875
+</code></pre>
+
+<pre><code class="r">## Assume two paired proportions
+## Create matrix of Pass/Fail
+passBoth &lt;- sum(studentPrePass * studentPostPass)
+failBoth &lt;- sum((studentPrePass==0) * (studentPostPass==0))
+passPre &lt;- sum((studentPrePass==1) * (studentPostPass==0))
+passPost &lt;- sum((studentPrePass==0) * (studentPostPass==1))
+
+pfMatrix &lt;- matrix(data=c(passBoth, passPre, passPost, failBoth), nrow=2, byrow=TRUE, 
+                   dimnames=list(c(&quot;Pass Pre&quot;, &quot;Fail Pre&quot;),c(&quot;Pass Post&quot;, &quot;Fail Post&quot;))
+                   )
+pfMatrix
+</code></pre>
+
+<pre><code>##          Pass Post Fail Post
+## Pass Pre       319        69
+## Fail Pre       120       292
+</code></pre>
+
+<pre><code class="r">mcnemar.test(pfMatrix, correct=FALSE)
+</code></pre>
+
+<pre><code>## 
+##  McNemar&#39;s Chi-squared test
+## 
+## data:  pfMatrix
+## McNemar&#39;s chi-squared = 13.762, df = 1, p-value = 0.0002075
+</code></pre>
+
+<p>By looking only at cases of Pass -&gt; Fail vs. Fail -&gt; Pass, the mcnemar.test is able to more precisely tease out the differences in the groups.  The challenge with the proportions test assuming independence is that most students either passed both exams or failed both exams based on their natural talents, which tends to wash out the impact that we hope to study.  </p>
 
 </body>
 

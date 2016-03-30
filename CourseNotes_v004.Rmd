@@ -1386,10 +1386,13 @@ This can be handy for assessing whether or not trends observed in data are consi
 ## Module 7: Practical examples  
 Below are a few practical examples that may come in handy:  
   
-1. Random data to hit a target mean and SD  
-2. Dredging through multiple simulations to get significant-p for rnorm vs. rnorm  
-3. Chebyshev's inequality recap  
+01. Random data to hit a target mean and SD  
+02. Dredging through multiple simulations to get significant-p for rnorm vs. rnorm  
+03. Chebyshev's inequality recap  
+04. Impact of paired testing (t-test)  
+05. Impact of paired testing (prop-test)  
   
+####_7.01 Random data for target mean/SD_  
 First, the ability to leverage the meaning of standard deviation and mean to simulate random data that hits a target mean and standard deviation for a pre-supplied N.  
   
 ```{r}
@@ -1484,7 +1487,8 @@ round(randGroup5, 3)
 
 ```
   
-Next, a function is created to show that high correlations (low p-values) will occur by chance with sufficient numbers of random trials.  This shows the risks of p-hacking through multiple models looking for an impact.  
+####_7.02 Random data for Bonferroni/FDR_  
+Next, a function is created to show that high correlations (low p-values) will occur by chance with sufficient numbers of random trials.  This shows the risks of failing to run an appropriate correction such as Bonferroni or FDR in assessing "is this specific finding significant".  
   
 ```{r}
 
@@ -1555,6 +1559,7 @@ legend("right", legend=c("Log10 of P", paste0("FDR (",ctFDR,")"), paste0("Bonfer
 
 ```
   
+####_7.03 Chebyshev Inequality_  
 The Chebyshev inequality states that there can never be more than 1/k^2 of the distribution that lies further than k-sigma from the mean.  The inequality is powerful in that it need not make any assumptions about distribution, but weak in that you can make a much more precise interval claim if you know the distribution.  The below code provides an example of how this works:  
 
 ```{r}
@@ -1606,4 +1611,68 @@ print(paste0("Min/Max SD from mean are: ", round(minSD,3), " to ", round(maxSD, 
 With the highly skewed distribution, the Gaussian rule for standard deviations fails terribly.  Still, the Chebyshev inequality is spot on, with the actual data no longer being n SD from the mean once the relevant 1/n^2 is no longer sufficiently large to allow it.  
 
 Further, note that this data is all positive skew.  The most negative data are only -0.1 SD from the mean, showing again what a debacle could be created by assuming the normal +/- 1/2/3 standard deviation rules.  
+  
+  
+####_7.04 Paired data (t-test)_  
+Paired data can often significantly reduce the variance, allowing for detection of events that would be non-significant if looking at two independent groups.  Below is an example of very high variance data that participates in two trials.  The variance of Trial A vs. Trial B is set to be very small.  
+  
+```{r}
 
+## Create Trial A vector with mean 200 and SD 40
+trialA <- rnorm(100,mean=200,sd=40)
+
+## Create Trial B vector as Trial A vector plus N(1, 1)
+trialB <- trialA + rnorm(100,mean=1,sd=1)
+
+## Plot data and differences
+plot(trialA, trialB, main="Trial A vs. Trial B")
+plot(trialB - trialA, main="Trial B minus Trial A")
+
+## Run various t-tests and see the outcomes
+t.test(trialA, trialB)
+t.test(trialA, trialB, paired=TRUE)
+t.test(trialA-trialB) ## Same as paired
+
+```
+  
+If the t-test is required to assume non-paired data, then the differences are not statistically significant.  This is because the standard error for trial A mean (standalone) will be roughly 40 / sqrt(100) or 4, which swamps the true difference in means of only 1.  
+
+The paired t-test easily picks up the difference since the standard error for trialA - trialB will be roughly 1 / sqrt(100) or 0.1, with a mean of roughly -1.  Note that running the A vs. B paired t-test is identical to running a t-test on (A-B).  It is easier to interpret when using the "paired" statement.  
+  
+  
+####_7.05 Paired data (prop-test)_  
+Paired data can also be important for tests of proportions, when the variable of interest is either paired and/or dependent.  An example is included below:  
+  
+```{r}
+
+## Example (paired) - a group of students of varying capability took two tests
+## Each of their odds of passing improved by ~10% after a quick online study
+studentPreProb <- c(runif(n=400, min=0.1, max=0.2), runif(n=400, min=0.8, max=0.9))
+studentPostProb <- studentPreProb + runif(n=800, min=0, max=0.1)
+studentPrePass <- rbinom(length(studentPreProb), size=1, prob=studentPreProb)
+studentPostPass <- rbinom(length(studentPostProb), size=1, prob=studentPostProb)
+
+## Assume two independent proportions
+prop.test(x=c(sum(studentPrePass), sum(studentPostPass)),  
+          n=c(length(studentPrePass), length(studentPostPass)), 
+          correct=FALSE
+          )
+
+## Assume two paired proportions
+## Create matrix of Pass/Fail
+passBoth <- sum(studentPrePass * studentPostPass)
+failBoth <- sum((studentPrePass==0) * (studentPostPass==0))
+passPre <- sum((studentPrePass==1) * (studentPostPass==0))
+passPost <- sum((studentPrePass==0) * (studentPostPass==1))
+
+pfMatrix <- matrix(data=c(passBoth, passPre, passPost, failBoth), nrow=2, byrow=TRUE, 
+                   dimnames=list(c("Pass Pre", "Fail Pre"),c("Pass Post", "Fail Post"))
+                   )
+pfMatrix
+mcnemar.test(pfMatrix, correct=FALSE)
+
+
+```
+
+By looking only at cases of Pass -> Fail vs. Fail -> Pass, the mcnemar.test is able to more precisely tease out the differences in the groups.  The challenge with the proportions test assuming independence is that most students either passed both exams or failed both exams based on their natural talents, which tends to wash out the impact that we hope to study.  
+  
