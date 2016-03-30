@@ -20,4 +20,4 @@ This is a simple repository for some basic statistic checking.  Created mostly s
 * Added 27-MAR-2016 - v004 includes code to generate a vector to hit a precise, pre-specified mean, SD, and N  
 * Added 28-MAR-2016 - v004 includes an example of random vs. random showing "statistical significance" with enough trials  
 * Added 29-MAR-2016 - v004 includes an example of Chebyshev's inequality  
-  
+* Added 30-MAR-2016 - v004 includes examples of paired testing for means and proportions (mcnemar)   
