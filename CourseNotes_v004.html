@@ -2703,6 +2703,7 @@ print(paste0(&quot;With expected mu &quot;,round(muRuns,2),&quot; and sigma &quo
 <li>Chebyshev&#39;s inequality recap<br/></li>
 <li>Impact of paired testing (t-test)<br/></li>
 <li>Impact of paired testing (prop-test)<br/></li>
+<li>Factorial transforms for Fisher Exact</li>
 </ol>
 
 <p>####<em>7.01 Random data for target mean/SD</em><br/>
@@ -3197,6 +3198,78 @@ pfMatrix
 </code></pre>
 
 <p>By looking only at cases of Pass -&gt; Fail vs. Fail -&gt; Pass, the mcnemar.test is able to more precisely tease out the differences in the groups.  The challenge with the proportions test assuming independence is that most students either passed both exams or failed both exams based on their natural talents, which tends to wash out the impact that we hope to study.  </p>
+
+<p>####<em>7.06 Fisher Exact Factorials</em><br/>
+The Fisher Exact Test is an odds ratio based on the permutations of non-negative integers in a 2x2 table with fixed marginals.  Essentially, the fixed marginals and non-negative marginals mean there are a finite number of combinations, each with an associated p.  The odds ratio sums all of the p that are equal or more extreme than a specific combination, reporting that back as the overall p-value.  </p>
+
+<pre><code class="r">fishExact &lt;- function(mtxIn) {
+    curA &lt;- mtxIn[1,1]
+    maxA &lt;- min(colSums(mtxIn)[1],rowSums(mtxIn)[1])
+    minA &lt;- max(0, sum(diag(mtxIn) * c(1,-1)) )
+
+    storeData &lt;- matrix(data=NA,nrow=(maxA-minA+1), ncol=2)
+
+    for (intDelta in (minA-curA):(maxA-curA)) {
+        mtxWork &lt;- mtxIn + matrix(data=intDelta*c(1,-1,-1,1), nrow=2)
+
+        numer &lt;- prod(factorial(c(colSums(mtxWork), rowSums(mtxWork)) ) )
+        denom &lt;- prod(factorial(mtxWork), factorial(sum(mtxWork)) )
+
+        print(paste0(&quot;Using value A=&quot;,curA+intDelta,&quot; gives ratio=&quot;,round(numer/denom,4)))
+
+        storeData[intDelta - minA + curA + 1, 1] &lt;- curA + intDelta
+        storeData[intDelta - minA + curA + 1, 2] &lt;- numer/denom
+    }
+
+    storeData
+}
+
+fishMatrix &lt;- matrix(data=c(8,4,2,5), nrow=2, byrow=TRUE)
+fishData &lt;- fishExact(fishMatrix)
+</code></pre>
+
+<pre><code>## [1] &quot;Using value A=3 gives ratio=0.0024&quot;
+## [1] &quot;Using value A=4 gives ratio=0.0375&quot;
+## [1] &quot;Using value A=5 gives ratio=0.18&quot;
+## [1] &quot;Using value A=6 gives ratio=0.3501&quot;
+## [1] &quot;Using value A=7 gives ratio=0.3001&quot;
+## [1] &quot;Using value A=8 gives ratio=0.1125&quot;
+## [1] &quot;Using value A=9 gives ratio=0.0167&quot;
+## [1] &quot;Using value A=10 gives ratio=7e-04&quot;
+</code></pre>
+
+<pre><code class="r">pCurA &lt;- fishData[fishData[,1]==8, 2] ## Current upper right
+pTwoSide &lt;- sum(fishData[,2] * (fishData[,2] &lt;= pCurA)) ## Two-sided p
+print(paste0(&quot;Sum of probability &lt;= &quot;,round(pCurA,4),&quot; is &quot;,round(pTwoSide,4)))
+</code></pre>
+
+<pre><code>## [1] &quot;Sum of probability &lt;= 0.1125 is 0.1698&quot;
+</code></pre>
+
+<pre><code class="r">fisher.test(fishMatrix)
+</code></pre>
+
+<pre><code>## 
+##  Fisher&#39;s Exact Test for Count Data
+## 
+## data:  fishMatrix
+## p-value = 0.1698
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##   0.4748063 69.1739992
+## sample estimates:
+## odds ratio 
+##   4.556516
+</code></pre>
+
+<pre><code class="r">barplot(height=fishData[,2], names.arg=fishData[,1], col=&quot;light blue&quot;, 
+        main=&quot;Probabilities by Upper-Left Value&quot;, xlab=&quot;x[1,1]&quot;, ylab=&quot;Probability&quot;
+        )
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-31"/></p>
+
+<p>The results of the hand calculation match the fisher.test outcome, and the bar plot shows how much the relative probabilities of a configuration can change as the upper-left value changes.</p>
 
 </body>
 

@@ -1391,6 +1391,7 @@ Below are a few practical examples that may come in handy:
 03. Chebyshev's inequality recap  
 04. Impact of paired testing (t-test)  
 05. Impact of paired testing (prop-test)  
+06. Factorial transforms for Fisher Exact
   
 ####_7.01 Random data for target mean/SD_  
 First, the ability to leverage the meaning of standard deviation and mean to simulate random data that hits a target mean and standard deviation for a pre-supplied N.  
@@ -1676,3 +1677,45 @@ mcnemar.test(pfMatrix, correct=FALSE)
 
 By looking only at cases of Pass -> Fail vs. Fail -> Pass, the mcnemar.test is able to more precisely tease out the differences in the groups.  The challenge with the proportions test assuming independence is that most students either passed both exams or failed both exams based on their natural talents, which tends to wash out the impact that we hope to study.  
   
+  
+####_7.06 Fisher Exact Factorials_  
+The Fisher Exact Test is an odds ratio based on the permutations of non-negative integers in a 2x2 table with fixed marginals.  Essentially, the fixed marginals and non-negative marginals mean there are a finite number of combinations, each with an associated p.  The odds ratio sums all of the p that are equal or more extreme than a specific combination, reporting that back as the overall p-value.  
+  
+```{r}
+
+fishExact <- function(mtxIn) {
+    curA <- mtxIn[1,1]
+    maxA <- min(colSums(mtxIn)[1],rowSums(mtxIn)[1])
+    minA <- max(0, sum(diag(mtxIn) * c(1,-1)) )
+    
+    storeData <- matrix(data=NA,nrow=(maxA-minA+1), ncol=2)
+    
+    for (intDelta in (minA-curA):(maxA-curA)) {
+        mtxWork <- mtxIn + matrix(data=intDelta*c(1,-1,-1,1), nrow=2)
+        
+        numer <- prod(factorial(c(colSums(mtxWork), rowSums(mtxWork)) ) )
+        denom <- prod(factorial(mtxWork), factorial(sum(mtxWork)) )
+        
+        print(paste0("Using value A=",curA+intDelta," gives ratio=",round(numer/denom,4)))
+        
+        storeData[intDelta - minA + curA + 1, 1] <- curA + intDelta
+        storeData[intDelta - minA + curA + 1, 2] <- numer/denom
+    }
+    
+    storeData
+}
+
+fishMatrix <- matrix(data=c(8,4,2,5), nrow=2, byrow=TRUE)
+fishData <- fishExact(fishMatrix)
+
+pCurA <- fishData[fishData[,1]==8, 2] ## Current upper right
+pTwoSide <- sum(fishData[,2] * (fishData[,2] <= pCurA)) ## Two-sided p
+print(paste0("Sum of probability <= ",round(pCurA,4)," is ",round(pTwoSide,4)))
+
+fisher.test(fishMatrix)
+barplot(height=fishData[,2], names.arg=fishData[,1], col="light blue", 
+        main="Probabilities by Upper-Left Value", xlab="x[1,1]", ylab="Probability"
+        )
+```
+  
+The results of the hand calculation match the fisher.test outcome, and the bar plot shows how much the relative probabilities of a configuration can change as the upper-left value changes.
