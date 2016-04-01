@@ -21,4 +21,5 @@ This is a simple repository for some basic statistic checking.  Created mostly s
 * Added 28-MAR-2016 - v004 includes an example of random vs. random showing "statistical significance" with enough trials  
 * Added 29-MAR-2016 - v004 includes an example of Chebyshev's inequality  
 * Added 30-MAR-2016 - v004 includes examples of paired testing for means and proportions (mcnemar)   
-* Added 31-MAR-2016 - v004 includes an example and barplot for the Fisher Exact test on a 2x2 matrix  
+* Added 31-MAR-2016 - v004 includes an example and barplot for the Fisher Exact test on a 2x2 matrix
+* Added 01-APR-2016 - v004 includes an example or correlations among repeatedly randomized integer vectors  
