@@ -2670,7 +2670,8 @@ Below are a few practical examples that may come in handy:
 03. Chebyshev's inequality recap  
 04. Impact of paired testing (t-test)  
 05. Impact of paired testing (prop-test)  
-06. Factorial transforms for Fisher Exact
+06. Factorial transforms for Fisher Exact  
+07. Vector factorial and correlations  
   
 ####_7.01 Random data for target mean/SD_  
 First, the ability to leverage the meaning of standard deviation and mean to simulate random data that hits a target mean and standard deviation for a pre-supplied N.  
@@ -3301,4 +3302,102 @@ barplot(height=fishData[,2], names.arg=fishData[,1], col="light blue",
 
 ![plot of chunk unnamed-chunk-31](figure/unnamed-chunk-31-1.png)
   
-The results of the hand calculation match the fisher.test outcome, and the bar plot shows how much the relative probabilities of a configuration can change as the upper-left value changes.
+The results of the hand calculation match the fisher.test outcome, and the bar plot shows how much the relative probabilities of a configuration can change as the upper-left value changes.  
+  
+####_7.07 Vector Factorial and Correlation_  
+The correlation will change significantly if the vectors are reordered.  Below is an example of the degree to which various correlations are observed between two identical vectors, one randomized post-hoc.  
+  
+
+```r
+par(mfrow=c(1,2))
+
+## Run for vectors of length 10
+vecA <- 1:10
+pStore <- matrix(data=rep(-9, 8000),nrow=4000)
+
+for (intCtr in 1:nrow(pStore)) {
+    vecB <- sample(vecA, length(vecA), replace=FALSE)
+    pStore[intCtr, 1] <- cor.test(vecA, vecB)$estimate
+    pStore[intCtr, 2] <- cor.test(vecA, vecB)$p.value
+}
+
+summary(pStore[,1])
+```
+
+```
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## -0.903000 -0.236400 -0.006061 -0.003800  0.236400  0.915200
+```
+
+```r
+hist(pStore[,1], col="light blue", breaks=seq(-1,1,by=0.05), xlab="Correlation",
+     main="Correlations for Randomized Integer 1:10", cex.main=0.9
+     )
+hist(pStore[,2], col="dark green", breaks=seq(0,1,by=0.05), xlab="P-value",
+     main="P-Values for Correlations on 1:10", cex.main=0.9
+     )
+```
+
+![plot of chunk unnamed-chunk-32](figure/unnamed-chunk-32-1.png)
+
+```r
+## Run for vectors of length 100
+vecA <- 1:100
+pStore <- matrix(data=rep(-9, 8000),nrow=4000)
+
+for (intCtr in 1:nrow(pStore)) {
+    vecB <- sample(vecA, length(vecA), replace=FALSE)
+    pStore[intCtr, 1] <- cor.test(vecA, vecB)$estimate
+    pStore[intCtr, 2] <- cor.test(vecA, vecB)$p.value
+}
+
+summary(pStore[,1])
+```
+
+```
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## -0.303800 -0.066400  0.002574  0.002302  0.070700  0.368900
+```
+
+```r
+hist(pStore[,1], col="light blue", breaks=seq(-1,1,by=0.05), xlab="Correlation",
+     main="Correlations for Randomized Integer 1:100", cex.main=0.9
+     )
+hist(pStore[,2], col="dark green", breaks=seq(0,1,by=0.05), xlab="P-value",
+     main="P-Values for Correlations on 1:100", cex.main=0.9
+     )
+```
+
+![plot of chunk unnamed-chunk-32](figure/unnamed-chunk-32-2.png)
+
+```r
+## Run for vectors of length 1000
+vecA <- 1:1000
+pStore <- matrix(data=rep(-9, 8000),nrow=4000)
+
+for (intCtr in 1:nrow(pStore)) {
+    vecB <- sample(vecA, length(vecA), replace=FALSE)
+    pStore[intCtr, 1] <- cor.test(vecA, vecB)$estimate
+    pStore[intCtr, 2] <- cor.test(vecA, vecB)$p.value
+}
+
+summary(pStore[,1])
+```
+
+```
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## -0.133100 -0.019900  0.001465  0.001408  0.023220  0.115500
+```
+
+```r
+hist(pStore[,1], col="light blue", breaks=seq(-1,1,by=0.05), xlab="Correlation",
+     main="Correlations for Randomized Integer 1:1000", cex.main=0.9
+     )
+hist(pStore[,2], col="dark green", breaks=seq(0,1,by=0.05), xlab="P-value",
+     main="P-Values for Correlations on 1:1000", cex.main=0.9
+     )
+```
+
+![plot of chunk unnamed-chunk-32](figure/unnamed-chunk-32-3.png)
+  
+Consistent with the CLT, the distribution of the randomized correlations becomes much more compact as N increases.  For each value of N, the p-values are distributed as runif(min=0,max=1), consistent with the p-values that should be observed for multiple trials drawn from a true null hypothesis distribution.  
