@@ -3399,5 +3399,95 @@ hist(pStore[,2], col="dark green", breaks=seq(0,1,by=0.05), xlab="P-value",
 ```
 
 ![plot of chunk unnamed-chunk-32](figure/unnamed-chunk-32-3.png)
+
+```r
+par(mfrow=c(1,1))
+```
   
-Consistent with the CLT, the distribution of the randomized correlations becomes much more compact as N increases.  For each value of N, the p-values are distributed as runif(min=0,max=1), consistent with the p-values that should be observed for multiple trials drawn from a true null hypothesis distribution.  
+Consistent with CLT, the distribution of the randomized correlations becomes much more compact as n-per-trial increases.  For each value of n-per-trial, the p-values are distributed as runif(min=0, max=1), consistent with the p-values that should be observed for multiple trials drawn from a true null hypothesis distribution.  
+####_7.08 Impact of Each Pair in Vector Correlation_  
+Suppose that you have a air of vectors with correlation r.  In many cases, different paired points will have a different impact on the reported correlation.  Below is an experiment to see the contribution of each of the pairs.  
+  
+
+```r
+vecA <- 1:40
+vecB <- sample(1:40, 40, replace=FALSE)
+
+## Automated correlation
+pCor <- cor(vecA, vecB)
+pCor
+```
+
+```
+## [1] -0.07842402
+```
+
+```r
+## Hand-calculated correlation
+stdA <- (vecA - mean(vecA)) / sd(vecA)
+stdB <- (vecB - mean(vecB)) / sd(vecB)
+scoreN <- (stdA * stdB) / (length(stdA) - 1)
+sum(scoreN)
+```
+
+```
+## [1] -0.07842402
+```
+
+```r
+## Plot the individual contributions
+sortScore <- scoreN[order(-scoreN)]
+plot(x=1:length(sortScore), y=sortScore, ylab="Contribution", pch=20, col="light blue",
+     main=paste0("Pair Contribution to Overall Correlation"),
+     cex.axis=0.8, cex=4, ylim=c(-.1,.1)
+     )
+
+## Now change the top 4 points to each be the respective vector means
+modA <- vecA
+modB <- vecB
+
+chgKeys <- which(scoreN >= sortScore[4])
+modA[chgKeys] <- mean(vecA)
+modB[chgKeys] <- mean(vecB)
+cor(modA, modB)
+```
+
+```
+## [1] -0.3087338
+```
+
+```r
+## And layer the new leverage points on top of the existing graph
+newStdA <- (modA - mean(modA)) / sd(modA)
+newStdB <- (modB - mean(modB)) / sd(modB)
+newScoreN <- (newStdA * newStdB) / (length(newStdA) - 1)
+sum(newScoreN)
+```
+
+```
+## [1] -0.3087338
+```
+
+```r
+newPCor <- cor(newStdA, newStdB)
+newPCor
+```
+
+```
+## [1] -0.3087338
+```
+
+```r
+points(x=1:length(newScoreN), y=newScoreN[order(-scoreN)], col="orange", pch=20, cex=3)
+
+legend("top", legend=c(paste0("Original: ", round(pCor,3)), 
+                       paste0("Modified: ", round(newPCor,3)) 
+                       ),
+       pch=20, col=c("light blue", "orange"), pt.cex=c(4,3)
+       )
+```
+
+![plot of chunk unnamed-chunk-33](figure/unnamed-chunk-33-1.png)
+
+Moving just 10% of the points to the mean drives the correlation significantly more negative.  
+  
