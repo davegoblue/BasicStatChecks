@@ -24,3 +24,5 @@ This is a simple repository for some basic statistic checking.  Created mostly s
 * Added 31-MAR-2016 - v004 includes an example and barplot for the Fisher Exact test on a 2x2 matrix
 * Added 01-APR-2016 - v004 includes an example of correlations among repeatedly randomized integer vectors  
 * Added 02-APR-2016 - v004 includes an example of leverage various paired points have on overall correlation  
+* Added 03-APR-2016 - v004 includes an example of post-hoc (ANOVA) comparison of group means  
+  
