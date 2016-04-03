@@ -2672,6 +2672,8 @@ Below are a few practical examples that may come in handy:
 05. Impact of paired testing (prop-test)  
 06. Factorial transforms for Fisher Exact  
 07. Vector factorial and correlations  
+08. Impact of Pairs on Correlation  
+09. Post-hoc (ANOVA) group mean comparisons  
   
 ####_7.01 Random data for target mean/SD_  
 First, the ability to leverage the meaning of standard deviation and mean to simulate random data that hits a target mean and standard deviation for a pre-supplied N.  
@@ -3490,4 +3492,124 @@ legend("top", legend=c(paste0("Original: ", round(pCor,3)),
 ![plot of chunk unnamed-chunk-33](figure/unnamed-chunk-33-1.png)
 
 Moving just 10% of the points to the mean drives the correlation significantly more negative.  
+  
+####_7.09 Post-hoc group comparisons (ANOVA)_  
+ANOVA is often run to determine if one or more group means are different.  This is frequently followed by individual comparisons of group means, with some risk of Type I error if many groups are compared.  One school holds that for three-group ANOVA, there is no need for alpha-correction in the post-hoc tests.  Let's see what happens in a few key cases:  
+  
+
+```r
+## All three groups drawn from the same population
+## Run 2000 trials for 100 randoms for each of 3 groups
+nTrials <- 2000
+nPer <- 100
+aovP <- rep(-9, nTrials)
+aovCI <- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+
+for (intCtr in 1:2000) {
+    vecA <- rnorm(nPer, mean=0, sd=1)
+    vecB <- rnorm(nPer, mean=0, sd=1)
+    vecC <- rnorm(nPer, mean=0, sd=1)
+    
+    testFrame <- data.frame(value=c(vecA, vecB, vecC), 
+                            group=rep(c("A","B","C"), c(nPer, nPer, nPer) )
+                            )
+    
+    aovRes <- aov(value ~ group, data=testFrame)
+    aovP[intCtr] <- summary(aovRes)[[1]][1,5]  ## Better way to get p-value?
+    
+    critT <- qt(0.975, df=aovRes$df.residual)
+    keyRSS <- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
+    keyCI <- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
+    
+    aovCI[intCtr, 1] <- abs(mean(vecA) - mean(vecB)) > keyCI
+    aovCI[intCtr, 2] <- abs(mean(vecA) - mean(vecC)) > keyCI
+    aovCI[intCtr, 3] <- abs(mean(vecB) - mean(vecC)) > keyCI
+    
+}
+
+hist(aovP, col="light blue", xlab="ANOVA p-value", 
+     main="ANOVA P-Values - 3-Group Random (Same Mean)"
+     )
+```
+
+![plot of chunk unnamed-chunk-34](figure/unnamed-chunk-34-1.png)
+
+```r
+print(paste0("During ",nTrials," trials, ",sum(aovP<0.05)," have p < 0.05"))
+```
+
+```
+## [1] "During 2000 trials, 118 have p < 0.05"
+```
+
+```r
+print(paste("Significant pairwise comparisons:", sum(aovCI[,1] & aovP<0.05), 
+            sum(aovCI[,2] & aovP<0.05), sum(aovCI[,3] & aovP<0.05)
+           )
+      )
+```
+
+```
+## [1] "Significant pairwise comparisons: 62 59 59"
+```
+
+```r
+## One group drawn from different population
+## Run 2000 trials for 100 randoms for each of 3 groups
+nTrials <- 2000
+nPer <- 100
+aovP <- rep(-9, nTrials)
+aovCI <- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+
+for (intCtr in 1:2000) {
+    vecA <- rnorm(nPer, mean=0, sd=1)
+    vecB <- rnorm(nPer, mean=0, sd=1)
+    vecC <- rnorm(nPer, mean=1, sd=1)
+    
+    testFrame <- data.frame(value=c(vecA, vecB, vecC), 
+                            group=rep(c("A","B","C"), c(nPer, nPer, nPer) )
+                            )
+    
+    aovRes <- aov(value ~ group, data=testFrame)
+    aovP[intCtr] <- summary(aovRes)[[1]][1,5]  ## Better way to get p-value?
+    
+    critT <- qt(0.975, df=aovRes$df.residual)
+    keyRSS <- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
+    keyCI <- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
+    
+    aovCI[intCtr, 1] <- abs(mean(vecA) - mean(vecB)) > keyCI
+    aovCI[intCtr, 2] <- abs(mean(vecA) - mean(vecC)) > keyCI
+    aovCI[intCtr, 3] <- abs(mean(vecB) - mean(vecC)) > keyCI
+    
+}
+
+hist(aovP, col="light blue", xlab="ANOVA p-value", 
+     main="ANOVA P-Values - 3-Group Random (One Mean Different)"
+     )
+```
+
+![plot of chunk unnamed-chunk-34](figure/unnamed-chunk-34-2.png)
+
+```r
+print(paste0("During ",nTrials," trials, ",sum(aovP<0.05)," have p < 0.05"))
+```
+
+```
+## [1] "During 2000 trials, 2000 have p < 0.05"
+```
+
+```r
+print(paste("Significant pairwise comparisons:", sum(aovCI[,1] & aovP<0.05), 
+            sum(aovCI[,2] & aovP<0.05), sum(aovCI[,3] & aovP<0.05)
+           )
+      )
+```
+
+```
+## [1] "Significant pairwise comparisons: 89 2000 2000"
+```
+
+When the true population means are the same, the ANOVA comes back significant ~5% of the time with each of the pairwise comparisons being significant about 3% of the time (note that the pairwise comparisons are only counted as significant if the ANOVA came back significant).
+
+When the true population means have one different element, the ANOVA comes back significant 100% of the time, with the pairwise comparison of the items from the identical population showing significant difference only ~5% of the time.  
   
