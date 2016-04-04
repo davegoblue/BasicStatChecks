@@ -3504,8 +3504,10 @@ nTrials <- 2000
 nPer <- 100
 aovP <- rep(-9, nTrials)
 aovCI <- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+ttPoolNoneP <- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+ttPoolBonfP <- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
 
-for (intCtr in 1:2000) {
+for (intCtr in 1:nTrials) {
     vecA <- rnorm(nPer, mean=0, sd=1)
     vecB <- rnorm(nPer, mean=0, sd=1)
     vecC <- rnorm(nPer, mean=0, sd=1)
@@ -3521,9 +3523,17 @@ for (intCtr in 1:2000) {
     keyRSS <- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
     keyCI <- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
     
-    aovCI[intCtr, 1] <- abs(mean(vecA) - mean(vecB)) > keyCI
-    aovCI[intCtr, 2] <- abs(mean(vecA) - mean(vecC)) > keyCI
-    aovCI[intCtr, 3] <- abs(mean(vecB) - mean(vecC)) > keyCI
+    aovCI[intCtr, 1] <- abs(mean(vecA) - mean(vecB)) / keyCI
+    aovCI[intCtr, 2] <- abs(mean(vecA) - mean(vecC)) / keyCI
+    aovCI[intCtr, 3] <- abs(mean(vecB) - mean(vecC)) / keyCI
+    
+    ttPoolNoneP[intCtr, ] <- pairwise.t.test(testFrame$value, testFrame$group, 
+                                             pool.sd = TRUE, paired=FALSE, 
+                                             p.adjust.method="none")$p.value[c(1,2,4)]
+    
+    ttPoolBonfP[intCtr, ] <- pairwise.t.test(testFrame$value, testFrame$group, 
+                                             pool.sd = TRUE, paired=FALSE, 
+                                             p.adjust.method="bonf")$p.value[c(1,2,4)]
     
 }
 
@@ -3535,36 +3545,69 @@ hist(aovP, col="light blue", xlab="ANOVA p-value",
 ![plot of chunk unnamed-chunk-34](figure/unnamed-chunk-34-1.png)
 
 ```r
-print(paste0("During ",nTrials," trials, ",sum(aovP<0.05)," have p < 0.05"))
+print(paste0("During ",nTrials," ANOVA trials, ",sum(aovP<0.05)," have p < 0.05"))
 ```
 
 ```
-## [1] "During 2000 trials, 118 have p < 0.05"
+## [1] "During 2000 ANOVA trials, 118 have p < 0.05"
 ```
 
 ```r
-print(paste("Significant pairwise comparisons:", sum(aovCI[,1] & aovP<0.05), 
-            sum(aovCI[,2] & aovP<0.05), sum(aovCI[,3] & aovP<0.05)
+print(paste("Significant post-hoc ANOVA pairwise comparisons:", sum(aovCI[,1]>1 & aovP<0.05), 
+            sum(aovCI[,2]>1 & aovP<0.05), sum(aovCI[,3]>1 & aovP<0.05)
            )
       )
 ```
 
 ```
-## [1] "Significant pairwise comparisons: 62 59 59"
+## [1] "Significant post-hoc ANOVA pairwise comparisons: 62 59 59"
+```
+
+```r
+print(paste("Significant pairwise t-tests (no ANOVA, no p-adj): ", sum(ttPoolNoneP[,1]<0.05),
+            sum(ttPoolNoneP[,2]<0.05), sum(ttPoolNoneP[,3]<0.05)
+            )
+      )
+```
+
+```
+## [1] "Significant pairwise t-tests (no ANOVA, no p-adj):  106 104 108"
+```
+
+```r
+print(paste("Significant pairwise t-tests (sig. ANOVA, no p-adj): ", sum(ttPoolNoneP[,1]<0.05 & aovP<0.05),
+            sum(ttPoolNoneP[,2]<0.05 & aovP<0.05), sum(ttPoolNoneP[,3]<0.05 & aovP<0.05)
+            )
+      )
+```
+
+```
+## [1] "Significant pairwise t-tests (sig. ANOVA, no p-adj):  62 59 59"
+```
+
+```r
+print(paste("Significant pairwise t-tests (no ANOVA, Bonferroni): ", sum(ttPoolBonfP[,1]<0.05),
+            sum(ttPoolBonfP[,2]<0.05), sum(ttPoolBonfP[,3]<0.05)
+            )
+      )
+```
+
+```
+## [1] "Significant pairwise t-tests (no ANOVA, Bonferroni):  40 43 40"
 ```
 
 ```r
 ## One group drawn from different population
 ## Run 2000 trials for 100 randoms for each of 3 groups
-nTrials <- 2000
-nPer <- 100
 aovP <- rep(-9, nTrials)
 aovCI <- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+ttPoolNoneP <- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+ttPoolBonfP <- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
 
-for (intCtr in 1:2000) {
+for (intCtr in 1:nTrials) {
     vecA <- rnorm(nPer, mean=0, sd=1)
     vecB <- rnorm(nPer, mean=0, sd=1)
-    vecC <- rnorm(nPer, mean=1, sd=1)
+    vecC <- rnorm(nPer, mean=0.3, sd=1) ## Rough edge of detection range 2*1*sqrt(2/100)
     
     testFrame <- data.frame(value=c(vecA, vecB, vecC), 
                             group=rep(c("A","B","C"), c(nPer, nPer, nPer) )
@@ -3577,9 +3620,17 @@ for (intCtr in 1:2000) {
     keyRSS <- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
     keyCI <- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
     
-    aovCI[intCtr, 1] <- abs(mean(vecA) - mean(vecB)) > keyCI
-    aovCI[intCtr, 2] <- abs(mean(vecA) - mean(vecC)) > keyCI
-    aovCI[intCtr, 3] <- abs(mean(vecB) - mean(vecC)) > keyCI
+    aovCI[intCtr, 1] <- abs(mean(vecA) - mean(vecB)) / keyCI
+    aovCI[intCtr, 2] <- abs(mean(vecA) - mean(vecC)) / keyCI
+    aovCI[intCtr, 3] <- abs(mean(vecB) - mean(vecC)) / keyCI
+    
+    ttPoolNoneP[intCtr, ] <- pairwise.t.test(testFrame$value, testFrame$group, 
+                                             pool.sd = TRUE, paired=FALSE, 
+                                             p.adjust.method="none")$p.value[c(1,2,4)]
+    
+    ttPoolBonfP[intCtr, ] <- pairwise.t.test(testFrame$value, testFrame$group, 
+                                             pool.sd = TRUE, paired=FALSE, 
+                                             p.adjust.method="bonf")$p.value[c(1,2,4)]
     
 }
 
@@ -3595,21 +3646,58 @@ print(paste0("During ",nTrials," trials, ",sum(aovP<0.05)," have p < 0.05"))
 ```
 
 ```
-## [1] "During 2000 trials, 2000 have p < 0.05"
+## [1] "During 2000 trials, 1167 have p < 0.05"
 ```
 
 ```r
-print(paste("Significant pairwise comparisons:", sum(aovCI[,1] & aovP<0.05), 
-            sum(aovCI[,2] & aovP<0.05), sum(aovCI[,3] & aovP<0.05)
+print(paste("Significant pairwise comparisons:", sum(aovCI[,1]>1 & aovP<0.05), 
+            sum(aovCI[,2]>1 & aovP<0.05), sum(aovCI[,3]>1 & aovP<0.05)
            )
       )
 ```
 
 ```
-## [1] "Significant pairwise comparisons: 89 2000 2000"
+## [1] "Significant pairwise comparisons: 82 988 958"
 ```
 
-When the true population means are the same, the ANOVA comes back significant ~5% of the time with each of the pairwise comparisons being significant about 3% of the time (note that the pairwise comparisons are only counted as significant if the ANOVA came back significant).
+```r
+print(paste("Significant pairwise t-tests (no ANOVA, no p-adj): ", sum(ttPoolNoneP[,1]<0.05),
+            sum(ttPoolNoneP[,2]<0.05), sum(ttPoolNoneP[,3]<0.05)
+            )
+      )
+```
 
-When the true population means have one different element, the ANOVA comes back significant 100% of the time, with the pairwise comparison of the items from the identical population showing significant difference only ~5% of the time.  
+```
+## [1] "Significant pairwise t-tests (no ANOVA, no p-adj):  89 1117 1124"
+```
+
+```r
+print(paste("Significant pairwise t-tests (sig. ANOVA, no p-adj): ", sum(ttPoolNoneP[,1]<0.05 & aovP<0.05),
+            sum(ttPoolNoneP[,2]<0.05 & aovP<0.05), sum(ttPoolNoneP[,3]<0.05 & aovP<0.05)
+            )
+      )
+```
+
+```
+## [1] "Significant pairwise t-tests (sig. ANOVA, no p-adj):  82 988 958"
+```
+
+```r
+print(paste("Significant pairwise t-tests (no ANOVA, Bonferroni): ", sum(ttPoolBonfP[,1]<0.05),
+            sum(ttPoolBonfP[,2]<0.05), sum(ttPoolBonfP[,3]<0.05)
+            )
+      )
+```
+
+```
+## [1] "Significant pairwise t-tests (no ANOVA, Bonferroni):  36 796 764"
+```
+
+When the true population means are the same, the ANOVA comes back significant ~5% of the time with each of the pairwise comparisons being significant about 3% of the time (note that the pairwise comparisons are only counted as significant if the ANOVA came back significant).  
+  
+Additionally, pairwise t-tests assuming pooled standard deviation and no p-adjustment, counted as significant only when ANOVA is significant, return the same results as the post-hoc ANOVA approach.  The pairwise t-tests in the absence of any ANOVA come back 15% significant (5% each), an obvious problem.  The stand-alone Bonferroni paired t-tests have roughly the same false positive rate as the overall ANOVA.  
+  
+When the true population means have one different element (but near the edge of the 95% CI detection range), the ANOVA comes back significant ~60% of the time, with the pairwise comparison of the items from the identical population showing significant difference only ~5% of the time.  
+  
+In this case, Bonferroni comes back overly conservative, detecting ~10% fewer of the AC and BC differences in return for reporting ~2% fewer of the false AB differences.  While there are obviously trade-offs, there is no evidence suggesting wild bias in false positives for Fisher LSD (post-hoc ANOVA comparisons) with 3 groups.  
   

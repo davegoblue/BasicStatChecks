@@ -3447,8 +3447,10 @@ nTrials &lt;- 2000
 nPer &lt;- 100
 aovP &lt;- rep(-9, nTrials)
 aovCI &lt;- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+ttPoolNoneP &lt;- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+ttPoolBonfP &lt;- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
 
-for (intCtr in 1:2000) {
+for (intCtr in 1:nTrials) {
     vecA &lt;- rnorm(nPer, mean=0, sd=1)
     vecB &lt;- rnorm(nPer, mean=0, sd=1)
     vecC &lt;- rnorm(nPer, mean=0, sd=1)
@@ -3464,9 +3466,17 @@ for (intCtr in 1:2000) {
     keyRSS &lt;- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
     keyCI &lt;- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
 
-    aovCI[intCtr, 1] &lt;- abs(mean(vecA) - mean(vecB)) &gt; keyCI
-    aovCI[intCtr, 2] &lt;- abs(mean(vecA) - mean(vecC)) &gt; keyCI
-    aovCI[intCtr, 3] &lt;- abs(mean(vecB) - mean(vecC)) &gt; keyCI
+    aovCI[intCtr, 1] &lt;- abs(mean(vecA) - mean(vecB)) / keyCI
+    aovCI[intCtr, 2] &lt;- abs(mean(vecA) - mean(vecC)) / keyCI
+    aovCI[intCtr, 3] &lt;- abs(mean(vecB) - mean(vecC)) / keyCI
+
+    ttPoolNoneP[intCtr, ] &lt;- pairwise.t.test(testFrame$value, testFrame$group, 
+                                             pool.sd = TRUE, paired=FALSE, 
+                                             p.adjust.method=&quot;none&quot;)$p.value[c(1,2,4)]
+
+    ttPoolBonfP[intCtr, ] &lt;- pairwise.t.test(testFrame$value, testFrame$group, 
+                                             pool.sd = TRUE, paired=FALSE, 
+                                             p.adjust.method=&quot;bonf&quot;)$p.value[c(1,2,4)]
 
 }
 
@@ -3477,32 +3487,59 @@ hist(aovP, col=&quot;light blue&quot;, xlab=&quot;ANOVA p-value&quot;,
 
 <p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-34"/></p>
 
-<pre><code class="r">print(paste0(&quot;During &quot;,nTrials,&quot; trials, &quot;,sum(aovP&lt;0.05),&quot; have p &lt; 0.05&quot;))
+<pre><code class="r">print(paste0(&quot;During &quot;,nTrials,&quot; ANOVA trials, &quot;,sum(aovP&lt;0.05),&quot; have p &lt; 0.05&quot;))
 </code></pre>
 
-<pre><code>## [1] &quot;During 2000 trials, 118 have p &lt; 0.05&quot;
+<pre><code>## [1] &quot;During 2000 ANOVA trials, 118 have p &lt; 0.05&quot;
 </code></pre>
 
-<pre><code class="r">print(paste(&quot;Significant pairwise comparisons:&quot;, sum(aovCI[,1] &amp; aovP&lt;0.05), 
-            sum(aovCI[,2] &amp; aovP&lt;0.05), sum(aovCI[,3] &amp; aovP&lt;0.05)
+<pre><code class="r">print(paste(&quot;Significant post-hoc ANOVA pairwise comparisons:&quot;, sum(aovCI[,1]&gt;1 &amp; aovP&lt;0.05), 
+            sum(aovCI[,2]&gt;1 &amp; aovP&lt;0.05), sum(aovCI[,3]&gt;1 &amp; aovP&lt;0.05)
            )
       )
 </code></pre>
 
-<pre><code>## [1] &quot;Significant pairwise comparisons: 62 59 59&quot;
+<pre><code>## [1] &quot;Significant post-hoc ANOVA pairwise comparisons: 62 59 59&quot;
+</code></pre>
+
+<pre><code class="r">print(paste(&quot;Significant pairwise t-tests (no ANOVA, no p-adj): &quot;, sum(ttPoolNoneP[,1]&lt;0.05),
+            sum(ttPoolNoneP[,2]&lt;0.05), sum(ttPoolNoneP[,3]&lt;0.05)
+            )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Significant pairwise t-tests (no ANOVA, no p-adj):  106 104 108&quot;
+</code></pre>
+
+<pre><code class="r">print(paste(&quot;Significant pairwise t-tests (sig. ANOVA, no p-adj): &quot;, sum(ttPoolNoneP[,1]&lt;0.05 &amp; aovP&lt;0.05),
+            sum(ttPoolNoneP[,2]&lt;0.05 &amp; aovP&lt;0.05), sum(ttPoolNoneP[,3]&lt;0.05 &amp; aovP&lt;0.05)
+            )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Significant pairwise t-tests (sig. ANOVA, no p-adj):  62 59 59&quot;
+</code></pre>
+
+<pre><code class="r">print(paste(&quot;Significant pairwise t-tests (no ANOVA, Bonferroni): &quot;, sum(ttPoolBonfP[,1]&lt;0.05),
+            sum(ttPoolBonfP[,2]&lt;0.05), sum(ttPoolBonfP[,3]&lt;0.05)
+            )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Significant pairwise t-tests (no ANOVA, Bonferroni):  40 43 40&quot;
 </code></pre>
 
 <pre><code class="r">## One group drawn from different population
 ## Run 2000 trials for 100 randoms for each of 3 groups
-nTrials &lt;- 2000
-nPer &lt;- 100
 aovP &lt;- rep(-9, nTrials)
 aovCI &lt;- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+ttPoolNoneP &lt;- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
+ttPoolBonfP &lt;- matrix(data=rep(-9, nTrials*3), nrow=nTrials)
 
-for (intCtr in 1:2000) {
+for (intCtr in 1:nTrials) {
     vecA &lt;- rnorm(nPer, mean=0, sd=1)
     vecB &lt;- rnorm(nPer, mean=0, sd=1)
-    vecC &lt;- rnorm(nPer, mean=1, sd=1)
+    vecC &lt;- rnorm(nPer, mean=0.3, sd=1) ## Rough edge of detection range 2*1*sqrt(2/100)
 
     testFrame &lt;- data.frame(value=c(vecA, vecB, vecC), 
                             group=rep(c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;), c(nPer, nPer, nPer) )
@@ -3515,9 +3552,17 @@ for (intCtr in 1:2000) {
     keyRSS &lt;- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
     keyCI &lt;- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
 
-    aovCI[intCtr, 1] &lt;- abs(mean(vecA) - mean(vecB)) &gt; keyCI
-    aovCI[intCtr, 2] &lt;- abs(mean(vecA) - mean(vecC)) &gt; keyCI
-    aovCI[intCtr, 3] &lt;- abs(mean(vecB) - mean(vecC)) &gt; keyCI
+    aovCI[intCtr, 1] &lt;- abs(mean(vecA) - mean(vecB)) / keyCI
+    aovCI[intCtr, 2] &lt;- abs(mean(vecA) - mean(vecC)) / keyCI
+    aovCI[intCtr, 3] &lt;- abs(mean(vecB) - mean(vecC)) / keyCI
+
+    ttPoolNoneP[intCtr, ] &lt;- pairwise.t.test(testFrame$value, testFrame$group, 
+                                             pool.sd = TRUE, paired=FALSE, 
+                                             p.adjust.method=&quot;none&quot;)$p.value[c(1,2,4)]
+
+    ttPoolBonfP[intCtr, ] &lt;- pairwise.t.test(testFrame$value, testFrame$group, 
+                                             pool.sd = TRUE, paired=FALSE, 
+                                             p.adjust.method=&quot;bonf&quot;)$p.value[c(1,2,4)]
 
 }
 
@@ -3526,26 +3571,57 @@ hist(aovP, col=&quot;light blue&quot;, xlab=&quot;ANOVA p-value&quot;,
      )
 </code></pre>
 
-<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-34"/></p>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-34"/></p>
 
 <pre><code class="r">print(paste0(&quot;During &quot;,nTrials,&quot; trials, &quot;,sum(aovP&lt;0.05),&quot; have p &lt; 0.05&quot;))
 </code></pre>
 
-<pre><code>## [1] &quot;During 2000 trials, 2000 have p &lt; 0.05&quot;
+<pre><code>## [1] &quot;During 2000 trials, 1167 have p &lt; 0.05&quot;
 </code></pre>
 
-<pre><code class="r">print(paste(&quot;Significant pairwise comparisons:&quot;, sum(aovCI[,1] &amp; aovP&lt;0.05), 
-            sum(aovCI[,2] &amp; aovP&lt;0.05), sum(aovCI[,3] &amp; aovP&lt;0.05)
+<pre><code class="r">print(paste(&quot;Significant pairwise comparisons:&quot;, sum(aovCI[,1]&gt;1 &amp; aovP&lt;0.05), 
+            sum(aovCI[,2]&gt;1 &amp; aovP&lt;0.05), sum(aovCI[,3]&gt;1 &amp; aovP&lt;0.05)
            )
       )
 </code></pre>
 
-<pre><code>## [1] &quot;Significant pairwise comparisons: 89 2000 2000&quot;
+<pre><code>## [1] &quot;Significant pairwise comparisons: 82 988 958&quot;
 </code></pre>
 
-<p>When the true population means are the same, the ANOVA comes back significant ~5% of the time with each of the pairwise comparisons being significant about 3% of the time (note that the pairwise comparisons are only counted as significant if the ANOVA came back significant).</p>
+<pre><code class="r">print(paste(&quot;Significant pairwise t-tests (no ANOVA, no p-adj): &quot;, sum(ttPoolNoneP[,1]&lt;0.05),
+            sum(ttPoolNoneP[,2]&lt;0.05), sum(ttPoolNoneP[,3]&lt;0.05)
+            )
+      )
+</code></pre>
 
-<p>When the true population means have one different element, the ANOVA comes back significant 100% of the time, with the pairwise comparison of the items from the identical population showing significant difference only ~5% of the time.  </p>
+<pre><code>## [1] &quot;Significant pairwise t-tests (no ANOVA, no p-adj):  89 1117 1124&quot;
+</code></pre>
+
+<pre><code class="r">print(paste(&quot;Significant pairwise t-tests (sig. ANOVA, no p-adj): &quot;, sum(ttPoolNoneP[,1]&lt;0.05 &amp; aovP&lt;0.05),
+            sum(ttPoolNoneP[,2]&lt;0.05 &amp; aovP&lt;0.05), sum(ttPoolNoneP[,3]&lt;0.05 &amp; aovP&lt;0.05)
+            )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Significant pairwise t-tests (sig. ANOVA, no p-adj):  82 988 958&quot;
+</code></pre>
+
+<pre><code class="r">print(paste(&quot;Significant pairwise t-tests (no ANOVA, Bonferroni): &quot;, sum(ttPoolBonfP[,1]&lt;0.05),
+            sum(ttPoolBonfP[,2]&lt;0.05), sum(ttPoolBonfP[,3]&lt;0.05)
+            )
+      )
+</code></pre>
+
+<pre><code>## [1] &quot;Significant pairwise t-tests (no ANOVA, Bonferroni):  36 796 764&quot;
+</code></pre>
+
+<p>When the true population means are the same, the ANOVA comes back significant ~5% of the time with each of the pairwise comparisons being significant about 3% of the time (note that the pairwise comparisons are only counted as significant if the ANOVA came back significant).  </p>
+
+<p>Additionally, pairwise t-tests assuming pooled standard deviation and no p-adjustment, counted as significant only when ANOVA is significant, return the same results as the post-hoc ANOVA approach.  The pairwise t-tests in the absence of any ANOVA come back 15% significant (5% each), an obvious problem.  The stand-alone Bonferroni paired t-tests have roughly the same false positive rate as the overall ANOVA.  </p>
+
+<p>When the true population means have one different element (but near the edge of the 95% CI detection range), the ANOVA comes back significant ~60% of the time, with the pairwise comparison of the items from the identical population showing significant difference only ~5% of the time.  </p>
+
+<p>In this case, Bonferroni comes back overly conservative, detecting ~10% fewer of the AC and BC differences in return for reporting ~2% fewer of the false AB differences.  While there are obviously trade-offs, there is no evidence suggesting wild bias in false positives for Fisher LSD (post-hoc ANOVA comparisons) with 3 groups.  </p>
 
 </body>
 
