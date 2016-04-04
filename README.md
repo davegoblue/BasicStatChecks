@@ -25,4 +25,5 @@ This is a simple repository for some basic statistic checking.  Created mostly s
 * Added 01-APR-2016 - v004 includes an example of correlations among repeatedly randomized integer vectors  
 * Added 02-APR-2016 - v004 includes an example of leverage various paired points have on overall correlation  
 * Added 03-APR-2016 - v004 includes an example of post-hoc (ANOVA) comparison of group means  
+* Added 04-APR-2016 - v004 includes refined examples of comparing 3-group means  
   
