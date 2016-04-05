@@ -2706,7 +2706,8 @@ print(paste0(&quot;With expected mu &quot;,round(muRuns,2),&quot; and sigma &quo
 <li>Factorial transforms for Fisher Exact<br/></li>
 <li>Vector factorial and correlations<br/></li>
 <li>Impact of Pairs on Correlation<br/></li>
-<li>Post-hoc (ANOVA) group mean comparisons<br/></li>
+<li>Post-hoc (ANOVA) 3-group mean comparisons<br/></li>
+<li>Post-hoc (ANOVA) 7-group mean comparisons</li>
 </ol>
 
 <p>####<em>7.01 Random data for target mean/SD</em><br/>
@@ -3438,7 +3439,7 @@ legend(&quot;top&quot;, legend=c(paste0(&quot;Original: &quot;, round(pCor,3)),
 
 <p>Moving just 10% of the points to the mean drives the correlation significantly more negative.  </p>
 
-<p>####<em>7.09 Post-hoc group comparisons (ANOVA)</em><br/>
+<p>####<em>7.09 Post-hoc mean comparisons (ANOVA, 3 groups)</em><br/>
 ANOVA is often run to determine if one or more group means are different.  This is frequently followed by individual comparisons of group means, with some risk of Type I error if many groups are compared.  One school holds that for three-group ANOVA, there is no need for alpha-correction in the post-hoc tests.  Let&#39;s see what happens in a few key cases:  </p>
 
 <pre><code class="r">## All three groups drawn from the same population
@@ -3622,6 +3623,345 @@ hist(aovP, col=&quot;light blue&quot;, xlab=&quot;ANOVA p-value&quot;,
 <p>When the true population means have one different element (but near the edge of the 95% CI detection range), the ANOVA comes back significant ~60% of the time, with the pairwise comparison of the items from the identical population showing significant difference only ~5% of the time.  </p>
 
 <p>In this case, Bonferroni comes back overly conservative, detecting ~10% fewer of the AC and BC differences in return for reporting ~2% fewer of the false AB differences.  While there are obviously trade-offs, there is no evidence suggesting wild bias in false positives for Fisher LSD (post-hoc ANOVA comparisons) with 3 groups.  </p>
+
+<p>####<em>7.10 Post-hoc mean comparisons (ANOVA, 7 groups)</em><br/>
+The ANOVA example above is expaded for comparison of 7 groups.  Again, suppose we have two situations, one where the group means are actually all the same, and one where a single group mean is different.  </p>
+
+<pre><code class="r">## All groups drawn from the same population
+## Run 2000 trials for 100 randoms for each of 7 groups
+nTrials &lt;- 2000
+nPer &lt;- 100
+aovP &lt;- rep(-9, nTrials)
+aovCI &lt;- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+ttPoolNoneP &lt;- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+ttPoolBonfP &lt;- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+
+for (intCtr in 1:nTrials) {
+    vecA &lt;- rnorm(nPer, mean=0, sd=1)
+    vecB &lt;- rnorm(nPer, mean=0, sd=1)
+    vecC &lt;- rnorm(nPer, mean=0, sd=1)
+    vecD &lt;- rnorm(nPer, mean=0, sd=1)
+    vecE &lt;- rnorm(nPer, mean=0, sd=1)
+    vecF &lt;- rnorm(nPer, mean=0, sd=1)
+    vecG &lt;- rnorm(nPer, mean=0, sd=1)
+
+    testFrame &lt;- data.frame(value=c(vecA, vecB, vecC, vecD, vecE, vecF, vecG), 
+                            group=rep(c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;), 
+                                      rep(nPer,7) 
+                                      )
+                            )
+
+    aovRes &lt;- aov(value ~ group, data=testFrame)
+    aovP[intCtr] &lt;- summary(aovRes)[[1]][1,5]  ## Better way to get p-value?
+
+    critT &lt;- qt(0.975, df=aovRes$df.residual)
+    keyRSS &lt;- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
+    keyCI &lt;- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
+
+    aovCI[intCtr, 1] &lt;- abs(mean(vecA) - mean(vecB)) / keyCI
+    aovCI[intCtr, 2] &lt;- abs(mean(vecA) - mean(vecC)) / keyCI
+    aovCI[intCtr, 3] &lt;- abs(mean(vecA) - mean(vecD)) / keyCI
+    aovCI[intCtr, 4] &lt;- abs(mean(vecA) - mean(vecE)) / keyCI
+    aovCI[intCtr, 5] &lt;- abs(mean(vecA) - mean(vecF)) / keyCI
+    aovCI[intCtr, 6] &lt;- abs(mean(vecA) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 7] &lt;- abs(mean(vecB) - mean(vecC)) / keyCI
+    aovCI[intCtr, 8] &lt;- abs(mean(vecB) - mean(vecD)) / keyCI
+    aovCI[intCtr, 9] &lt;- abs(mean(vecB) - mean(vecE)) / keyCI
+    aovCI[intCtr, 10] &lt;- abs(mean(vecB) - mean(vecF)) / keyCI
+    aovCI[intCtr, 11] &lt;- abs(mean(vecB) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 12] &lt;- abs(mean(vecC) - mean(vecD)) / keyCI
+    aovCI[intCtr, 13] &lt;- abs(mean(vecC) - mean(vecE)) / keyCI
+    aovCI[intCtr, 14] &lt;- abs(mean(vecC) - mean(vecF)) / keyCI
+    aovCI[intCtr, 15] &lt;- abs(mean(vecC) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 16] &lt;- abs(mean(vecD) - mean(vecE)) / keyCI
+    aovCI[intCtr, 17] &lt;- abs(mean(vecD) - mean(vecF)) / keyCI
+    aovCI[intCtr, 18] &lt;- abs(mean(vecD) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 19] &lt;- abs(mean(vecE) - mean(vecF)) / keyCI
+    aovCI[intCtr, 20] &lt;- abs(mean(vecE) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 21] &lt;- abs(mean(vecF) - mean(vecG)) / keyCI
+
+    myTempN &lt;- pairwise.t.test(testFrame$value, testFrame$group, pool.sd = TRUE, 
+                               paired=FALSE, p.adjust.method=&quot;none&quot;)
+
+    ttPoolNoneP[intCtr, ] &lt;- myTempN$p.value[lower.tri(myTempN$p.value, diag=TRUE)]
+
+    myTempB &lt;- pairwise.t.test(testFrame$value, testFrame$group, pool.sd = TRUE, 
+                               paired=FALSE, p.adjust.method=&quot;bonf&quot;)
+
+    ttPoolBonfP[intCtr, ] &lt;- myTempB$p.value[lower.tri(myTempB$p.value, diag=TRUE)]
+
+}
+
+hist(aovP, col=&quot;light blue&quot;, xlab=&quot;ANOVA p-value&quot;, 
+     main=&quot;ANOVA P-Values - 7-Group Random (Same Mean)&quot;
+     )
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-35"/></p>
+
+<pre><code class="r">print(paste0(&quot;During &quot;,nTrials,&quot; ANOVA trials, &quot;,sum(aovP&lt;0.05),&quot; have p &lt; 0.05&quot;))
+</code></pre>
+
+<pre><code>## [1] &quot;During 2000 ANOVA trials, 113 have p &lt; 0.05&quot;
+</code></pre>
+
+<pre><code class="r">foo &lt;- function(x) { paste0(x, collapse=&quot;&quot;) }
+mtxRowNames &lt;- apply(combn(c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;),2), 2, FUN=foo)
+
+sigCheck &lt;- matrix(data=rep(0, 21*4), nrow=21, 
+                   dimnames=list(mtxRowNames,c(&quot;PostHoc_ANOVA&quot;, &quot;PairwiseT_NoANOVA_NoAdj&quot;,
+                                               &quot;PairwiseT_ANOVA_NoAdj&quot;, &quot;PairwiseT_Bonf&quot;
+                                               )
+                                 )
+                   )
+
+for (intCtr2 in 1:21) {
+    sigCheck[intCtr2, 1] &lt;- sum(aovCI[,intCtr2]&gt;1 &amp; aovP&lt;0.05)
+    sigCheck[intCtr2, 2] &lt;- sum(ttPoolNoneP[,intCtr2] &lt; 0.05)
+    sigCheck[intCtr2, 3] &lt;- sum(ttPoolNoneP[,intCtr2] &lt; 0.05 &amp; aovP &lt; 0.05)
+    sigCheck[intCtr2, 4] &lt;- sum(ttPoolBonfP[,intCtr2] &lt; 0.05)
+}
+
+sigCheck ## Significant differences
+</code></pre>
+
+<pre><code>##    PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj PairwiseT_ANOVA_NoAdj
+## AB            38                     108                    38
+## AC            28                     101                    28
+## AD            20                     106                    20
+## AE            26                     111                    26
+## AF            28                      91                    28
+## AG            29                      98                    29
+## BC            33                     107                    33
+## BD            25                     103                    25
+## BE            20                      94                    20
+## BF            35                      85                    35
+## BG            29                     103                    29
+## CD            31                     105                    31
+## CE            27                     126                    27
+## CF            24                     107                    24
+## CG            30                     113                    30
+## DE            28                     106                    28
+## DF            23                      93                    23
+## DG            37                     112                    37
+## EF            18                      95                    18
+## EG            31                      97                    31
+## FG            31                      99                    31
+##    PairwiseT_Bonf
+## AB              2
+## AC              5
+## AD              4
+## AE              4
+## AF              6
+## AG              5
+## BC              4
+## BD              7
+## BE              4
+## BF              4
+## BG              7
+## CD              9
+## CE              7
+## CF              6
+## CG              6
+## DE              5
+## DF              6
+## DG              6
+## EF              3
+## EG              6
+## FG              5
+</code></pre>
+
+<pre><code class="r">colSums(sigCheck) ## Total by Test
+</code></pre>
+
+<pre><code>##           PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj   PairwiseT_ANOVA_NoAdj 
+##                     591                    2160                     591 
+##          PairwiseT_Bonf 
+##                     111
+</code></pre>
+
+<pre><code class="r">colSums(sigCheck)/nTrials ## Percentage Trials by Test
+</code></pre>
+
+<pre><code>##           PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj   PairwiseT_ANOVA_NoAdj 
+##                  0.2955                  1.0800                  0.2955 
+##          PairwiseT_Bonf 
+##                  0.0555
+</code></pre>
+
+<pre><code class="r">## One group drawn from different population
+## Run 2000 trials for 100 randoms for each of 7 groups
+aovP &lt;- rep(-9, nTrials)
+aovCI &lt;- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+ttPoolNoneP &lt;- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+ttPoolBonfP &lt;- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+
+for (intCtr in 1:nTrials) {
+    vecA &lt;- rnorm(nPer, mean=0.3, sd=1) ## Rough edge of detection range 2*1*sqrt(2/100)
+    vecB &lt;- rnorm(nPer, mean=0, sd=1)
+    vecC &lt;- rnorm(nPer, mean=0, sd=1)
+    vecD &lt;- rnorm(nPer, mean=0, sd=1)
+    vecE &lt;- rnorm(nPer, mean=0, sd=1)
+    vecF &lt;- rnorm(nPer, mean=0, sd=1)
+    vecG &lt;- rnorm(nPer, mean=0, sd=1)
+
+    testFrame &lt;- data.frame(value=c(vecA, vecB, vecC, vecD, vecE, vecF, vecG), 
+                            group=rep(c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;), 
+                                      rep(nPer,7) 
+                                      )
+                            )
+
+    aovRes &lt;- aov(value ~ group, data=testFrame)
+    aovP[intCtr] &lt;- summary(aovRes)[[1]][1,5]  ## Better way to get p-value?
+
+    critT &lt;- qt(0.975, df=aovRes$df.residual)
+    keyRSS &lt;- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
+    keyCI &lt;- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
+
+    aovCI[intCtr, 1] &lt;- abs(mean(vecA) - mean(vecB)) / keyCI
+    aovCI[intCtr, 2] &lt;- abs(mean(vecA) - mean(vecC)) / keyCI
+    aovCI[intCtr, 3] &lt;- abs(mean(vecA) - mean(vecD)) / keyCI
+    aovCI[intCtr, 4] &lt;- abs(mean(vecA) - mean(vecE)) / keyCI
+    aovCI[intCtr, 5] &lt;- abs(mean(vecA) - mean(vecF)) / keyCI
+    aovCI[intCtr, 6] &lt;- abs(mean(vecA) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 7] &lt;- abs(mean(vecB) - mean(vecC)) / keyCI
+    aovCI[intCtr, 8] &lt;- abs(mean(vecB) - mean(vecD)) / keyCI
+    aovCI[intCtr, 9] &lt;- abs(mean(vecB) - mean(vecE)) / keyCI
+    aovCI[intCtr, 10] &lt;- abs(mean(vecB) - mean(vecF)) / keyCI
+    aovCI[intCtr, 11] &lt;- abs(mean(vecB) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 12] &lt;- abs(mean(vecC) - mean(vecD)) / keyCI
+    aovCI[intCtr, 13] &lt;- abs(mean(vecC) - mean(vecE)) / keyCI
+    aovCI[intCtr, 14] &lt;- abs(mean(vecC) - mean(vecF)) / keyCI
+    aovCI[intCtr, 15] &lt;- abs(mean(vecC) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 16] &lt;- abs(mean(vecD) - mean(vecE)) / keyCI
+    aovCI[intCtr, 17] &lt;- abs(mean(vecD) - mean(vecF)) / keyCI
+    aovCI[intCtr, 18] &lt;- abs(mean(vecD) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 19] &lt;- abs(mean(vecE) - mean(vecF)) / keyCI
+    aovCI[intCtr, 20] &lt;- abs(mean(vecE) - mean(vecG)) / keyCI
+
+    aovCI[intCtr, 21] &lt;- abs(mean(vecF) - mean(vecG)) / keyCI
+
+    myTempN &lt;- pairwise.t.test(testFrame$value, testFrame$group, pool.sd = TRUE, 
+                               paired=FALSE, p.adjust.method=&quot;none&quot;)
+
+    ttPoolNoneP[intCtr, ] &lt;- myTempN$p.value[lower.tri(myTempN$p.value, diag=TRUE)]
+
+    myTempB &lt;- pairwise.t.test(testFrame$value, testFrame$group, pool.sd = TRUE, 
+                               paired=FALSE, p.adjust.method=&quot;bonf&quot;)
+
+    ttPoolBonfP[intCtr, ] &lt;- myTempB$p.value[lower.tri(myTempB$p.value, diag=TRUE)]
+
+}
+
+hist(aovP, col=&quot;light blue&quot;, xlab=&quot;ANOVA p-value&quot;, 
+     main=&quot;ANOVA P-Values - 7-Group Random (Same Mean)&quot;
+     )
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-35"/></p>
+
+<pre><code class="r">print(paste0(&quot;During &quot;,nTrials,&quot; ANOVA trials, &quot;,sum(aovP&lt;0.05),&quot; have p &lt; 0.05&quot;))
+</code></pre>
+
+<pre><code>## [1] &quot;During 2000 ANOVA trials, 1021 have p &lt; 0.05&quot;
+</code></pre>
+
+<pre><code class="r">foo &lt;- function(x) { paste0(x, collapse=&quot;&quot;) }
+mtxRowNames &lt;- apply(combn(c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;),2), 2, FUN=foo)
+
+sigCheck &lt;- matrix(data=rep(0, 21*4), nrow=21, 
+                   dimnames=list(mtxRowNames,c(&quot;PostHoc_ANOVA&quot;, &quot;PairwiseT_NoANOVA_NoAdj&quot;,
+                                               &quot;PairwiseT_ANOVA_NoAdj&quot;, &quot;PairwiseT_Bonf&quot;
+                                               )
+                                 )
+                   )
+
+for (intCtr2 in 1:21) {
+    sigCheck[intCtr2, 1] &lt;- sum(aovCI[,intCtr2]&gt;1 &amp; aovP&lt;0.05)
+    sigCheck[intCtr2, 2] &lt;- sum(ttPoolNoneP[,intCtr2] &lt; 0.05)
+    sigCheck[intCtr2, 3] &lt;- sum(ttPoolNoneP[,intCtr2] &lt; 0.05 &amp; aovP &lt; 0.05)
+    sigCheck[intCtr2, 4] &lt;- sum(ttPoolBonfP[,intCtr2] &lt; 0.05)
+}
+
+sigCheck ## Significant differences
+</code></pre>
+
+<pre><code>##    PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj PairwiseT_ANOVA_NoAdj
+## AB           792                    1111                   792
+## AC           805                    1119                   805
+## AD           801                    1122                   801
+## AE           782                    1111                   782
+## AF           818                    1146                   818
+## AG           790                    1102                   790
+## BC            92                     112                    92
+## BD            76                      97                    76
+## BE            78                     102                    78
+## BF            88                     102                    88
+## BG            77                      96                    77
+## CD            78                      94                    78
+## CE            76                      95                    76
+## CF            88                     115                    88
+## CG            85                     102                    85
+## DE            83                     103                    83
+## DF            98                     112                    98
+## DG            76                      99                    76
+## EF            66                      81                    66
+## EG            76                     106                    76
+## FG            84                     106                    84
+##    PairwiseT_Bonf
+## AB            365
+## AC            374
+## AD            363
+## AE            350
+## AF            357
+## AG            365
+## BC              4
+## BD              5
+## BE              7
+## BF              8
+## BG              2
+## CD              4
+## CE              6
+## CF              7
+## CG              5
+## DE              9
+## DF              6
+## DG              7
+## EF              6
+## EG              3
+## FG              4
+</code></pre>
+
+<pre><code class="r">colSums(sigCheck) ## Total by Test
+</code></pre>
+
+<pre><code>##           PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj   PairwiseT_ANOVA_NoAdj 
+##                    6009                    8233                    6009 
+##          PairwiseT_Bonf 
+##                    2257
+</code></pre>
+
+<pre><code class="r">colSums(sigCheck)/nTrials ## Percentage Trials by Test
+</code></pre>
+
+<pre><code>##           PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj   PairwiseT_ANOVA_NoAdj 
+##                  3.0045                  4.1165                  3.0045 
+##          PairwiseT_Bonf 
+##                  1.1285
+</code></pre>
+
+<p>The benefits (and trade-offs) of Bonferroni are more evident here.  When there is no true difference in means, Bonferroni shines in having only ~100 (5% of 2000 trials) of the 42,000 comparisons declared significant, while post-hoc ANOVA declares ~500 (25% of 2000 trials) significant mean differences and pairwise T-tests with no ANOVA or alpha-correction declare ~2000 (100% of 2000 trials) significant mean differences.  </p>
+
+<p>When there is a single mean difference that is near the edge of detection, the trade-off betweeb power and false positive is more evident.  Bonferroni captures mean differences between A/other ~20% of the time, while post-hoc ANOVA detects differences ~40% of the time and pairwise T-test with no ANOVA or alpha-correction detects differences ~50% of the time.  The trade-off is that Bonferroni has negligible false positives while the other approaches detect significant differences among groups pulled from the same population ~5% per comparison.  </p>
 
 </body>
 

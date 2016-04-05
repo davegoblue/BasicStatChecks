@@ -2673,7 +2673,8 @@ Below are a few practical examples that may come in handy:
 06. Factorial transforms for Fisher Exact  
 07. Vector factorial and correlations  
 08. Impact of Pairs on Correlation  
-09. Post-hoc (ANOVA) group mean comparisons  
+09. Post-hoc (ANOVA) 3-group mean comparisons  
+10. Post-hoc (ANOVA) 7-group mean comparisons
   
 ####_7.01 Random data for target mean/SD_  
 First, the ability to leverage the meaning of standard deviation and mean to simulate random data that hits a target mean and standard deviation for a pre-supplied N.  
@@ -3493,7 +3494,7 @@ legend("top", legend=c(paste0("Original: ", round(pCor,3)),
 
 Moving just 10% of the points to the mean drives the correlation significantly more negative.  
   
-####_7.09 Post-hoc group comparisons (ANOVA)_  
+####_7.09 Post-hoc mean comparisons (ANOVA, 3 groups)_  
 ANOVA is often run to determine if one or more group means are different.  This is frequently followed by individual comparisons of group means, with some risk of Type I error if many groups are compared.  One school holds that for three-group ANOVA, there is no need for alpha-correction in the post-hoc tests.  Let's see what happens in a few key cases:  
   
 
@@ -3700,4 +3701,363 @@ Additionally, pairwise t-tests assuming pooled standard deviation and no p-adjus
 When the true population means have one different element (but near the edge of the 95% CI detection range), the ANOVA comes back significant ~60% of the time, with the pairwise comparison of the items from the identical population showing significant difference only ~5% of the time.  
   
 In this case, Bonferroni comes back overly conservative, detecting ~10% fewer of the AC and BC differences in return for reporting ~2% fewer of the false AB differences.  While there are obviously trade-offs, there is no evidence suggesting wild bias in false positives for Fisher LSD (post-hoc ANOVA comparisons) with 3 groups.  
+  
+####_7.10 Post-hoc mean comparisons (ANOVA, 7 groups)_  
+The ANOVA example above is expaded for comparison of 7 groups.  Again, suppose we have two situations, one where the group means are actually all the same, and one where a single group mean is different.  
+  
+  
+
+```r
+## All groups drawn from the same population
+## Run 2000 trials for 100 randoms for each of 7 groups
+nTrials <- 2000
+nPer <- 100
+aovP <- rep(-9, nTrials)
+aovCI <- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+ttPoolNoneP <- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+ttPoolBonfP <- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+
+for (intCtr in 1:nTrials) {
+    vecA <- rnorm(nPer, mean=0, sd=1)
+    vecB <- rnorm(nPer, mean=0, sd=1)
+    vecC <- rnorm(nPer, mean=0, sd=1)
+    vecD <- rnorm(nPer, mean=0, sd=1)
+    vecE <- rnorm(nPer, mean=0, sd=1)
+    vecF <- rnorm(nPer, mean=0, sd=1)
+    vecG <- rnorm(nPer, mean=0, sd=1)
+    
+    testFrame <- data.frame(value=c(vecA, vecB, vecC, vecD, vecE, vecF, vecG), 
+                            group=rep(c("A","B","C","D","E","F","G"), 
+                                      rep(nPer,7) 
+                                      )
+                            )
+    
+    aovRes <- aov(value ~ group, data=testFrame)
+    aovP[intCtr] <- summary(aovRes)[[1]][1,5]  ## Better way to get p-value?
+    
+    critT <- qt(0.975, df=aovRes$df.residual)
+    keyRSS <- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
+    keyCI <- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
+    
+    aovCI[intCtr, 1] <- abs(mean(vecA) - mean(vecB)) / keyCI
+    aovCI[intCtr, 2] <- abs(mean(vecA) - mean(vecC)) / keyCI
+    aovCI[intCtr, 3] <- abs(mean(vecA) - mean(vecD)) / keyCI
+    aovCI[intCtr, 4] <- abs(mean(vecA) - mean(vecE)) / keyCI
+    aovCI[intCtr, 5] <- abs(mean(vecA) - mean(vecF)) / keyCI
+    aovCI[intCtr, 6] <- abs(mean(vecA) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 7] <- abs(mean(vecB) - mean(vecC)) / keyCI
+    aovCI[intCtr, 8] <- abs(mean(vecB) - mean(vecD)) / keyCI
+    aovCI[intCtr, 9] <- abs(mean(vecB) - mean(vecE)) / keyCI
+    aovCI[intCtr, 10] <- abs(mean(vecB) - mean(vecF)) / keyCI
+    aovCI[intCtr, 11] <- abs(mean(vecB) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 12] <- abs(mean(vecC) - mean(vecD)) / keyCI
+    aovCI[intCtr, 13] <- abs(mean(vecC) - mean(vecE)) / keyCI
+    aovCI[intCtr, 14] <- abs(mean(vecC) - mean(vecF)) / keyCI
+    aovCI[intCtr, 15] <- abs(mean(vecC) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 16] <- abs(mean(vecD) - mean(vecE)) / keyCI
+    aovCI[intCtr, 17] <- abs(mean(vecD) - mean(vecF)) / keyCI
+    aovCI[intCtr, 18] <- abs(mean(vecD) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 19] <- abs(mean(vecE) - mean(vecF)) / keyCI
+    aovCI[intCtr, 20] <- abs(mean(vecE) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 21] <- abs(mean(vecF) - mean(vecG)) / keyCI
+    
+    myTempN <- pairwise.t.test(testFrame$value, testFrame$group, pool.sd = TRUE, 
+                               paired=FALSE, p.adjust.method="none")
+    
+    ttPoolNoneP[intCtr, ] <- myTempN$p.value[lower.tri(myTempN$p.value, diag=TRUE)]
+    
+    myTempB <- pairwise.t.test(testFrame$value, testFrame$group, pool.sd = TRUE, 
+                               paired=FALSE, p.adjust.method="bonf")
+    
+    ttPoolBonfP[intCtr, ] <- myTempB$p.value[lower.tri(myTempB$p.value, diag=TRUE)]
+    
+}
+
+hist(aovP, col="light blue", xlab="ANOVA p-value", 
+     main="ANOVA P-Values - 7-Group Random (Same Mean)"
+     )
+```
+
+![plot of chunk unnamed-chunk-35](figure/unnamed-chunk-35-1.png)
+
+```r
+print(paste0("During ",nTrials," ANOVA trials, ",sum(aovP<0.05)," have p < 0.05"))
+```
+
+```
+## [1] "During 2000 ANOVA trials, 113 have p < 0.05"
+```
+
+```r
+foo <- function(x) { paste0(x, collapse="") }
+mtxRowNames <- apply(combn(c("A","B","C","D","E","F","G"),2), 2, FUN=foo)
+
+sigCheck <- matrix(data=rep(0, 21*4), nrow=21, 
+                   dimnames=list(mtxRowNames,c("PostHoc_ANOVA", "PairwiseT_NoANOVA_NoAdj",
+                                               "PairwiseT_ANOVA_NoAdj", "PairwiseT_Bonf"
+                                               )
+                                 )
+                   )
+
+for (intCtr2 in 1:21) {
+    sigCheck[intCtr2, 1] <- sum(aovCI[,intCtr2]>1 & aovP<0.05)
+    sigCheck[intCtr2, 2] <- sum(ttPoolNoneP[,intCtr2] < 0.05)
+    sigCheck[intCtr2, 3] <- sum(ttPoolNoneP[,intCtr2] < 0.05 & aovP < 0.05)
+    sigCheck[intCtr2, 4] <- sum(ttPoolBonfP[,intCtr2] < 0.05)
+}
+
+sigCheck ## Significant differences
+```
+
+```
+##    PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj PairwiseT_ANOVA_NoAdj
+## AB            38                     108                    38
+## AC            28                     101                    28
+## AD            20                     106                    20
+## AE            26                     111                    26
+## AF            28                      91                    28
+## AG            29                      98                    29
+## BC            33                     107                    33
+## BD            25                     103                    25
+## BE            20                      94                    20
+## BF            35                      85                    35
+## BG            29                     103                    29
+## CD            31                     105                    31
+## CE            27                     126                    27
+## CF            24                     107                    24
+## CG            30                     113                    30
+## DE            28                     106                    28
+## DF            23                      93                    23
+## DG            37                     112                    37
+## EF            18                      95                    18
+## EG            31                      97                    31
+## FG            31                      99                    31
+##    PairwiseT_Bonf
+## AB              2
+## AC              5
+## AD              4
+## AE              4
+## AF              6
+## AG              5
+## BC              4
+## BD              7
+## BE              4
+## BF              4
+## BG              7
+## CD              9
+## CE              7
+## CF              6
+## CG              6
+## DE              5
+## DF              6
+## DG              6
+## EF              3
+## EG              6
+## FG              5
+```
+
+```r
+colSums(sigCheck) ## Total by Test
+```
+
+```
+##           PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj   PairwiseT_ANOVA_NoAdj 
+##                     591                    2160                     591 
+##          PairwiseT_Bonf 
+##                     111
+```
+
+```r
+colSums(sigCheck)/nTrials ## Percentage Trials by Test
+```
+
+```
+##           PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj   PairwiseT_ANOVA_NoAdj 
+##                  0.2955                  1.0800                  0.2955 
+##          PairwiseT_Bonf 
+##                  0.0555
+```
+
+```r
+## One group drawn from different population
+## Run 2000 trials for 100 randoms for each of 7 groups
+aovP <- rep(-9, nTrials)
+aovCI <- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+ttPoolNoneP <- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+ttPoolBonfP <- matrix(data=rep(-9, nTrials*21), nrow=nTrials)
+
+for (intCtr in 1:nTrials) {
+    vecA <- rnorm(nPer, mean=0.3, sd=1) ## Rough edge of detection range 2*1*sqrt(2/100)
+    vecB <- rnorm(nPer, mean=0, sd=1)
+    vecC <- rnorm(nPer, mean=0, sd=1)
+    vecD <- rnorm(nPer, mean=0, sd=1)
+    vecE <- rnorm(nPer, mean=0, sd=1)
+    vecF <- rnorm(nPer, mean=0, sd=1)
+    vecG <- rnorm(nPer, mean=0, sd=1)
+    
+    testFrame <- data.frame(value=c(vecA, vecB, vecC, vecD, vecE, vecF, vecG), 
+                            group=rep(c("A","B","C","D","E","F","G"), 
+                                      rep(nPer,7) 
+                                      )
+                            )
+    
+    aovRes <- aov(value ~ group, data=testFrame)
+    aovP[intCtr] <- summary(aovRes)[[1]][1,5]  ## Better way to get p-value?
+    
+    critT <- qt(0.975, df=aovRes$df.residual)
+    keyRSS <- sqrt(sum(aovRes$residual^2) / aovRes$df.residual)
+    keyCI <- critT * keyRSS * sqrt(1/nPer + 1/nPer) ## Fisher LSD
+    
+    aovCI[intCtr, 1] <- abs(mean(vecA) - mean(vecB)) / keyCI
+    aovCI[intCtr, 2] <- abs(mean(vecA) - mean(vecC)) / keyCI
+    aovCI[intCtr, 3] <- abs(mean(vecA) - mean(vecD)) / keyCI
+    aovCI[intCtr, 4] <- abs(mean(vecA) - mean(vecE)) / keyCI
+    aovCI[intCtr, 5] <- abs(mean(vecA) - mean(vecF)) / keyCI
+    aovCI[intCtr, 6] <- abs(mean(vecA) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 7] <- abs(mean(vecB) - mean(vecC)) / keyCI
+    aovCI[intCtr, 8] <- abs(mean(vecB) - mean(vecD)) / keyCI
+    aovCI[intCtr, 9] <- abs(mean(vecB) - mean(vecE)) / keyCI
+    aovCI[intCtr, 10] <- abs(mean(vecB) - mean(vecF)) / keyCI
+    aovCI[intCtr, 11] <- abs(mean(vecB) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 12] <- abs(mean(vecC) - mean(vecD)) / keyCI
+    aovCI[intCtr, 13] <- abs(mean(vecC) - mean(vecE)) / keyCI
+    aovCI[intCtr, 14] <- abs(mean(vecC) - mean(vecF)) / keyCI
+    aovCI[intCtr, 15] <- abs(mean(vecC) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 16] <- abs(mean(vecD) - mean(vecE)) / keyCI
+    aovCI[intCtr, 17] <- abs(mean(vecD) - mean(vecF)) / keyCI
+    aovCI[intCtr, 18] <- abs(mean(vecD) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 19] <- abs(mean(vecE) - mean(vecF)) / keyCI
+    aovCI[intCtr, 20] <- abs(mean(vecE) - mean(vecG)) / keyCI
+    
+    aovCI[intCtr, 21] <- abs(mean(vecF) - mean(vecG)) / keyCI
+    
+    myTempN <- pairwise.t.test(testFrame$value, testFrame$group, pool.sd = TRUE, 
+                               paired=FALSE, p.adjust.method="none")
+    
+    ttPoolNoneP[intCtr, ] <- myTempN$p.value[lower.tri(myTempN$p.value, diag=TRUE)]
+    
+    myTempB <- pairwise.t.test(testFrame$value, testFrame$group, pool.sd = TRUE, 
+                               paired=FALSE, p.adjust.method="bonf")
+    
+    ttPoolBonfP[intCtr, ] <- myTempB$p.value[lower.tri(myTempB$p.value, diag=TRUE)]
+    
+}
+
+hist(aovP, col="light blue", xlab="ANOVA p-value", 
+     main="ANOVA P-Values - 7-Group Random (Same Mean)"
+     )
+```
+
+![plot of chunk unnamed-chunk-35](figure/unnamed-chunk-35-2.png)
+
+```r
+print(paste0("During ",nTrials," ANOVA trials, ",sum(aovP<0.05)," have p < 0.05"))
+```
+
+```
+## [1] "During 2000 ANOVA trials, 1021 have p < 0.05"
+```
+
+```r
+foo <- function(x) { paste0(x, collapse="") }
+mtxRowNames <- apply(combn(c("A","B","C","D","E","F","G"),2), 2, FUN=foo)
+
+sigCheck <- matrix(data=rep(0, 21*4), nrow=21, 
+                   dimnames=list(mtxRowNames,c("PostHoc_ANOVA", "PairwiseT_NoANOVA_NoAdj",
+                                               "PairwiseT_ANOVA_NoAdj", "PairwiseT_Bonf"
+                                               )
+                                 )
+                   )
+
+for (intCtr2 in 1:21) {
+    sigCheck[intCtr2, 1] <- sum(aovCI[,intCtr2]>1 & aovP<0.05)
+    sigCheck[intCtr2, 2] <- sum(ttPoolNoneP[,intCtr2] < 0.05)
+    sigCheck[intCtr2, 3] <- sum(ttPoolNoneP[,intCtr2] < 0.05 & aovP < 0.05)
+    sigCheck[intCtr2, 4] <- sum(ttPoolBonfP[,intCtr2] < 0.05)
+}
+
+sigCheck ## Significant differences
+```
+
+```
+##    PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj PairwiseT_ANOVA_NoAdj
+## AB           792                    1111                   792
+## AC           805                    1119                   805
+## AD           801                    1122                   801
+## AE           782                    1111                   782
+## AF           818                    1146                   818
+## AG           790                    1102                   790
+## BC            92                     112                    92
+## BD            76                      97                    76
+## BE            78                     102                    78
+## BF            88                     102                    88
+## BG            77                      96                    77
+## CD            78                      94                    78
+## CE            76                      95                    76
+## CF            88                     115                    88
+## CG            85                     102                    85
+## DE            83                     103                    83
+## DF            98                     112                    98
+## DG            76                      99                    76
+## EF            66                      81                    66
+## EG            76                     106                    76
+## FG            84                     106                    84
+##    PairwiseT_Bonf
+## AB            365
+## AC            374
+## AD            363
+## AE            350
+## AF            357
+## AG            365
+## BC              4
+## BD              5
+## BE              7
+## BF              8
+## BG              2
+## CD              4
+## CE              6
+## CF              7
+## CG              5
+## DE              9
+## DF              6
+## DG              7
+## EF              6
+## EG              3
+## FG              4
+```
+
+```r
+colSums(sigCheck) ## Total by Test
+```
+
+```
+##           PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj   PairwiseT_ANOVA_NoAdj 
+##                    6009                    8233                    6009 
+##          PairwiseT_Bonf 
+##                    2257
+```
+
+```r
+colSums(sigCheck)/nTrials ## Percentage Trials by Test
+```
+
+```
+##           PostHoc_ANOVA PairwiseT_NoANOVA_NoAdj   PairwiseT_ANOVA_NoAdj 
+##                  3.0045                  4.1165                  3.0045 
+##          PairwiseT_Bonf 
+##                  1.1285
+```
+
+The benefits (and trade-offs) of Bonferroni are more evident here.  When there is no true difference in means, Bonferroni shines in having only ~100 (5% of 2000 trials) of the 42,000 comparisons declared significant, while post-hoc ANOVA declares ~500 (25% of 2000 trials) significant mean differences and pairwise T-tests with no ANOVA or alpha-correction declare ~2000 (100% of 2000 trials) significant mean differences.  
+  
+When there is a single mean difference that is near the edge of detection, the trade-off betweeb power and false positive is more evident.  Bonferroni captures mean differences between A/other ~20% of the time, while post-hoc ANOVA detects differences ~40% of the time and pairwise T-test with no ANOVA or alpha-correction detects differences ~50% of the time.  The trade-off is that Bonferroni has negligible false positives while the other approaches detect significant differences among groups pulled from the same population ~5% per comparison.  
   
